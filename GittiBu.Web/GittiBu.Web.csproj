@@ -338,6 +338,13 @@
   <ItemGroup>
     <Folder Include="wwwroot\AdminContent" />
     <Folder Include="wwwroot\Content\img\users" />
+    <Folder Include="wwwroot\Upload\Blog\Old\" />
+    <Folder Include="wwwroot\Upload\Dopings\" />
+    <Folder Include="wwwroot\Upload\Identities\" />
+    <Folder Include="wwwroot\Upload\Parses\" />
+    <Folder Include="wwwroot\Upload\Sales\" />
+    <Folder Include="wwwroot\Upload\TempSales\" />
+    <Folder Include="wwwroot\Upload\Users\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="wwwroot\Content\plugins\jquery-unobtrusive\jquery-unobtrusive.js" />
