@@ -1,0 +1,569 @@
+@model RegisterViewModel
+@using static GittiBu.Common.Enums;
+@{
+    var lang = Constants.GetLang(Context.Session.GetString("lang"));
+    ViewBag.Title = Localization.Get("Kayıt Ol", "Register", lang);
+    Layout = "_Layout";
+    var isFirm = (!string.IsNullOrWhiteSpace(Model.CompanyName) || !string.IsNullOrWhiteSpace(Model.CompanyEmail) || !string.IsNullOrWhiteSpace(Model.TaxNumber) || !string.IsNullOrWhiteSpace(Model.TaxOffice) || !string.IsNullOrWhiteSpace(Model.CompanyPhone)) ? true : false;
+}
+@section style
+    {
+    <link rel="stylesheet" href="/Content/plugins/intl/intlTelInput.min.css" />
+
+    <style>
+        .error {
+            color: red;
+        }
+
+        .textfield {
+            margin-bottom: 0
+        }
+
+        .custom-alert ul {
+            list-style-type: none;
+        }
+
+            .custom-alert ul li {
+                text-align: left;
+            }
+
+        .custom-alert {
+            box-shadow: none !important;
+            border: none !important;
+            background: none !important;
+        }
+
+        .checkbox-field-2 {
+            margin-bottom: 7px;
+        }
+
+        @@media screen and (min-width: 1200px) {
+
+            .w-container {
+                max-width: 906px;
+            }
+
+            .register-form {
+                width: 80%;
+                margin: auto;
+            }
+
+                .register-form .w-checkbox-input, .register-form .w-radio-input,
+                .checkbox-field-2 {
+                    float: none !important;
+                }
+        }
+    </style>
+}
+<div class="urun-det">
+    <div class="container-4 w-container">
+        <div class="div-cizgi div-head">
+            <div class="div-block-17 form-wrapper form-hesaplar formfull w-clearfix">
+                <h3 class="form-text heading-2">@ViewBag.Title </h3>
+                <div class="form-block-5 w-form m-0 text-center">
+                    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "w-clearfix", id = "form-register", enctype = "multipart/form-data" }))
+                    {
+                        <div class="row margin_bottom">
+                            <div class="col-sm-6 col-xs-6 col-md-3 col-lg-12">
+                                <img src="~/Content/img/no-image-user.png" width="180" height="180" id="imgpp" class="object-fit-cover rounded mx-auto d-block" />
+                                <br />
+                                <a href="javascript:;" onclick="fileInput()">@Localization.Get("Profil Resmi Seç", "Choose Profile Picture", lang)</a>
+                                <input type="file" name="ProfilePictureFile" class="display-none" id="ppFile" />
+                            </div>
+                            @*<div class="col-xs-12 col-sm-12 col-md-9 col-lg-9">
+                                    @Html.Raw(TextService.GetText(Enums.Texts.KullaniciEklemePop, lang))
+                                </div>*@
+                        </div>
+                        <br />
+
+                        <div class="register-form">
+                            <div class="row margin_bottom ">
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                    <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Kullanıcı Adı", "Username", lang):</label>
+                                    <input class="textfield w-input" data-val="true" maxlength="50" asp-for="UserName" type="text" id="username" onkeydown="letterControl(this,event)">
+                                    <span asp-validation-for="UserName" class="text-danger"></span>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
+                                    <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Ad", "Name", lang):</label>
+                                    <input class="textfield w-input" data-val="true" maxlength="100" asp-for="Name" type="text" onkeydown="letterControl(this,event)">
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
+                                    <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Soyad", "Surname", lang):</label>
+                                    <input class="textfield w-input" data-val="true" maxlength="100" asp-for="Surname" type="text" onkeydown="letterControl(this,event)">
+                                    <span asp-validation-for="Surname" class="text-danger"></span>
+                                </div>
+
+                            </div>
+                            <div class="row margin_bottom">
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                    <label class="field-label"><span class="text-danger">*</span> @Localization.Get("E-Posta", "E-Mail", lang):</label>
+                                    <input class="textfield w-input" data-val="true" maxlength="100" asp-for="Email" type="email" id="email">
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                    <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Şifre", "Password", lang):</label>
+                                    <input id="pass1" class="textfield w-input" data-val="true" maxlength="100" asp-for="Password" type="password" autocomplete="off">
+                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                    <label class="field-label">@Localization.Get("Şifre Tekrar", "Re Password", lang):</label>
+                                    <input id="pass2" class="textfield w-input" data-val="true" maxlength="100" asp-for="Password2" type="password" autocomplete="off">
+                                    <span asp-validation-for="Password2" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="row margin_bottom">
+
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                    <label class="field-label">@Localization.Get("Dil", "Language", lang):</label>
+                                    <select class="form-control w-dropdown textfield" name="LanguageID">
+                                        <option value="1">Türkçe</option>
+                                        <option value="2">English</option>
+                                    </select>
+                                </div>
+
+                            </div>
+
+
+                            @*   <div class="row margin_bottom">
+
+                                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                        <label class="field-label">@Localization.Get("Cep Telefonu", "Mobile Phone", lang)*:</label>
+                                        <input class="textfield w-input" data-val="true" maxlength="100" type="text" id="phone" asp-for="MobilePhone" data-val-intlTelNumber="asdqwdqwdasd">
+                                        <span asp-validation-for="MobilePhone" class="text-danger"></span>
+                                        <input class="textfield w-input" maxlength="100" name="" type="hidden" id="hdnPhone">
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                        <label class="field-label">@Localization.Get("İş Telefonu", "Work Phone", lang):</label>
+                                        <input class="textfield w-input" data-val="true" maxlength="100" name="" id="workPhone" type="text">
+                                        <input class="textfield w-input" data-val="true" maxlength="100" name="WorkPhone" id="hdnWorkPhone" type="hidden">
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                        <label class="field-label">@Localization.Get("Web Sitesi", "Website", lang):</label>
+                                        <input class="textfield w-input" data-val="true" maxlength="100" name="WebSite" type="text">
+                                    </div>
+                                </div>*@
+                            @*<div class="row margin_bottom">
+                                    <div class="col-6">
+                                        <label class="field-label">@Localization.Get("Cinsiyet", "Gender", lang):</label>
+                                        <select class="form-control w-dropdown textfield" name="GenderID">
+                                            <option value="1">@Localization.Get("Seçiniz", "Select", lang)</option>
+                                            <option value="1">@Localization.Get("Erkek", "Man", lang)</option>
+                                            <option value="2">@Localization.Get("Kadın", "Woman", lang)</option>
+                                            <option value="2">@Localization.Get("Belirtmek istemiyorum", "Belirtmek istemiyorum", lang)</option>
+                                        </select>
+                                    </div>
+
+                                </div>*@
+                            @*<div class="row margin_bottom">
+                                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                        <label class="field-label">@Localization.Get("Ülke", "Country", lang)*:</label>
+                                        <select class="form-control w-dropdown textfield" name="CountryID" id="country">
+                                            @foreach (var country in Model.Countries)
+                                            {
+                                                <option value="@country.ID">@country.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                        <label class="field-label">@Localization.Get("Şehir", "City", lang)*:</label>
+                                        <select class="form-control w-dropdown textfield" name="CityID" id="city">
+                                            @foreach (var city in Model.Cities.Where(x => x.CountryID == Model.Countries.First().ID))
+                                            {
+                                                <option value="@city.ID">@city.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                        <label class="field-label">@Localization.Get("İlçe", "District", lang)*:</label>
+                                        <select class="form-control w-dropdown textfield" name="DistrictID" id="district"></select>
+                                    </div>
+                                </div>
+                                <div class="row margin_bottom">
+
+                                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                        <label class="field-label">@Localization.Get("Dil", "Language", lang)*:</label>
+                                        <select class="form-control w-dropdown textfield" name="LanguageID">
+                                            <option value="1">Türkçe</option>
+                                            <option value="2">English</option>
+                                        </select>
+                                    </div>
+
+                                </div> *@
+
+                            @*<div class="row margin_bottom">
+                                    <div class="col-6">
+                                        <label class="field-label">@Localization.Get("Doğum Tarihi", "Birthday", lang):</label>
+                                        <input class="textfield w-input" name="BirthDate" id="birthDay" type="date">
+                                    </div>
+
+                                </div>*@
+                            @*<div class="row margin_bottom">
+
+
+                                </div>*@
+
+
+                            <div class="row margin_bottom" style="    margin-bottom: 0px;">
+                                <div class="col-12">
+                                    @*<label class="field-label">@Localization.Get("Hakkınızda", "About", lang):</label>
+                                        <input class="textfield w-input" name="About" type="text">*@
+                                    <label for="name-4">@Localization.Get("Hakkınızda", "About", lang):</label>
+                                    <textarea class="textfield w-input" cols="1" id="content" name="About" rows="10"></textarea>
+                                    <br />
+                                </div>
+                            </div>
+                            <div class="margin_bottom">
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" asp-for="MemberType" class="custom-control-input" id="MemberTypeBuyer" onchange="getSellerFields(@((int)MemberType.Buyer))" value="@((int)MemberType.Buyer)">
+                                    <label class="custom-control-label" for="MemberTypeBuyer">@Localization.Get("Alıcıyım", "Buyer", lang)</label>
+                                </div>
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" asp-for="MemberType" class="custom-control-input" id="MemberTypeSeller" onchange="getSellerFields(@((int)MemberType.Seller))" value="@((int)MemberType.Seller)">
+                                    <label class="custom-control-label" for="MemberTypeSeller">@Localization.Get("Satıcıyım", "Seller", lang)</label>
+                                </div>
+                            </div>
+                            <div class="row margin_bottom sellerFields" style="@(Model.MemberType == (int)MemberType.Buyer ? Html.Raw("display:none") : null)">
+                                <p>
+                                    <span>@Localization.Get("Bu sayfadaki Email, Adres, Telefon, TC Kimlik No ve IBAN Bilgileri gibi her türlü bilginin tarafıma/firmama ait olduğunu ve siteyi sadece kendim / firmam  adına kullanacağımı, başkasının nam ve hesabına kullanmayacağımı, aksi takdirde doğabilecek aksaklıkları kabul ediyorum.", "I accept that all information on this page, such as Email, Address, Telephone, TC Identity Number and IBAN Information, belongs to me / my company and that I will use the site only for myself / my company, not for someone else's name and account, otherwise I accept problems that may arise.", lang) </span>
+                                </p>
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Cep Telefonu", "Mobile Phone", lang):</label>
+                                    <input class="textfield w-input" data-val="true" maxlength="100" type="text" id="phone" asp-for="MobilePhone" data-val-intlTelNumber="asdqwdqwdasd">
+                                    <span asp-validation-for="MobilePhone" class="text-danger"></span>
+                                    <input class="textfield w-input" maxlength="100" name="" type="hidden" id="hdnPhone">
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 margin_bottom">
+                                    <label class="field-label" id="tc-field-label"><span class="text-danger">*</span> @Localization.Get("TC Kimlik Numaranız", "TC Identity Number", lang):</label>
+                                    <input class="textfield w-input" maxlength="11" asp-for="TC" type="text" id="tc">
+                                    <span asp-validation-for="TC" class="text-danger"></span>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <label class="field-label"><span class="text-danger">*</span> IBAN:</label>
+                                    <input class="textfield w-input" maxlength="35" asp-for="IBAN" id="iban" type="text" value="TR">
+                                    <span asp-validation-for="IBAN" class="text-danger"></span>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 margin_bottom">
+                                    <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Gönderici Adresi", "Sender Address", lang):</label>
+                                    <textarea class="textfield w-input form-error-sahis" rows="2" asp-for="SenderAddress" maxlength="200"></textarea>
+                                    <span asp-validation-for="SenderAddress" class="text-danger"></span>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Fatura Adresi", "Invoice Address", lang):</label>
+                                    <textarea class="textfield w-input form-error-sahis" rows="2" asp-for="InvoiceAddress" maxlength="200"></textarea>
+                                    <span asp-validation-for="InvoiceAddress" class="text-danger"></span>
+                                </div>
+                                <div class="col-12 mt-3 margin_bottom">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="firmInfo" name="firmInfo" checked="@(isFirm ?  Html.Raw("checked") : null)">
+                                        <label class="custom-control-label" for="firmInfo">@Localization.Get("Firma Bilgilerimi eklemek istiyorum", "I want to added my company information", lang)</label>
+                                    </div>
+                                </div>
+
+                                <div class="register-form firm-info" style="@(!isFirm ?  Html.Raw("display:none") : null)">
+                                    <h3>@Localization.Get("Firma Bilgileriniz", "Company Information", lang)</h3>
+                                    @*     <p> *@
+                                    @*         @Localization.Get("Bu bilgileri girmek zorunda değilsiniz. Satışlarınızı kurumsal olarak yapmak istiyor iseniz bu bilgileri doldurabilirisiniz.", *@
+                                    @*             "You do not have to enter this information. If you want to make your sales as an enterprise, you can fill this information.", lang) *@
+                                    @*     </p> *@
+                                    <div class="row margin_bottom">
+
+                                        <div class="col-xs-12 col-sm-12 col-md-6 d-md-flex flex-md-column">
+                                            <label class="field-label">@Localization.Get("Firma Türü", "Company Type", lang):</label>
+                                            <div class="d-md-flex align-items-md-center mt-2">
+                                                <div class="custom-control custom-radio">
+                                                    <input type="radio" name="SubMerchantType" class="custom-control-input" id="@Iyzipay.Model.SubMerchantType.PRIVATE_COMPANY" value="@Iyzipay.Model.SubMerchantType.PRIVATE_COMPANY" checked="checked" />
+                                                    <label class="custom-control-label" for="@Iyzipay.Model.SubMerchantType.PRIVATE_COMPANY"> @Localization.Get("Şahıs Şirketi", "Private Company", lang)</label>
+                                                </div>
+                                                <div class="custom-control custom-radio ml-3">
+                                                    <input type="radio" name="SubMerchantType" class="custom-control-input" id="@Iyzipay.Model.SubMerchantType.LIMITED_OR_JOINT_STOCK_COMPANY" value="@Iyzipay.Model.SubMerchantType.LIMITED_OR_JOINT_STOCK_COMPANY">
+                                                    <label class="custom-control-label" for="@Iyzipay.Model.SubMerchantType.LIMITED_OR_JOINT_STOCK_COMPANY">    @Localization.Get("Ltd. veya Anonim", "Limited or Joint Stock Comp.", lang)</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-12 col-sm-12 col-md-6 margin_bottom ">
+                                            <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Firma Adı", "Company Name", lang):</label>
+                                            <input class="textfield w-input" maxlength="100" asp-for="CompanyName" type="text">
+                                            <span asp-validation-for="CompanyName" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-12 col-md-6">
+                                            <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Firma Email", "Company Email", lang):</label>
+                                            <input class="textfield w-input" maxlength="100" type="text" asp-for="CompanyEmail">
+                                            <span asp-validation-for="CompanyEmail" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-12 col-md-6 margin_bottom">
+                                            <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Vergi Dairesi", "Tax Office", lang):</label>
+                                            <input class="textfield w-input" maxlength="50" asp-for="TaxOffice" type="text">
+                                            <span asp-validation-for="TaxOffice" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-12 col-md-6">
+                                            <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Vergi No", "Tax Number", lang):</label>
+                                            <input class="textfield w-input" maxlength="40" asp-for="TaxNumber" name="TaxNumber" type="text">
+                                            <span asp-validation-for="TaxNumber" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-12 col-md-6">
+                                            <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Firma Telefonu", "Company Phone", lang):</label>
+                                            <input class="textfield w-input" id="compPhone" maxlength="50" asp-for="CompanyPhone" name="CompanyPhone" type="text">
+                                        </div>
+                                        @*<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                                <label class="field-label">@Localization.Get("Firma Fax", "Company Fax", lang):</label>
+                                                <input class="textfield w-input" maxlength="40" name="CompanyFax" type="text">
+                                            </div>*@
+                                    </div>
+                                </div>
+                            </div>
+                            @*<div class="row margin_bottom">
+                                    <div class="col-12">
+                                        <style>
+                                            #closeFirma,
+                                            #openFirma{
+                                                color:blue;
+                                            }
+                                            #closeFirma,
+                                            #firma{
+                                                display:none;
+                                            }
+                                        </style>
+                                        <span id="openFirma">Şahıs olarak değil firma olarak satış yapmak istiyorsanız lütfen tıklayınız.</span>
+                                        <span id="closeFirma">Kapatmak için tıklayınız.</span>
+                                    </div>
+                                </div>*@
+
+                        </div>
+
+                        <div class="register-form mt-4">
+                            <div class="row margin_bottom">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="text-align:center">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" asp-for="TermsAndConditions">
+                                        <label class="custom-control-label" for="TermsAndConditions">  <a href="@(Constants.GetURL(Enums.Routing.KullanimKosullari, lang))" target="_blank">@Localization.Get("Üyelik Sözleşmesini okudum, kabul ediyorum", "I have read the membership agreement, I accept", lang) </a></label>
+                                    </div>
+                                    <span asp-validation-for="TermsAndConditions" class="text-danger"></span>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="text-align:center">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="checkbox2" name="term2">
+                                        <label class="custom-control-label" for="checkbox2"> <a href="@(Constants.GetURL(Enums.Routing.KullanimKosullari, lang))" target="_blank">@Localization.Get("Pazaryeri Satıcı Sözleşmesini okudum, kabul ediyorum", "I have read the marketplace agreement, I accept", lang) </a></label>
+
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 pt-4" style="text-align:center; margin-bottom: -30px;">
+                                    <div class="row" style="text-align:center">
+                                        <div class="col-3"></div>
+                                        <div class="col-6"><div class="g-recaptcha" data-sitekey="@Constants.RecaptchaSiteKey"></div></div>
+                                        <div class="col-3"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <input type="submit" value="@Localization.Get("Kayıt Ol", "Register", lang)" class="button button-main button-satn button-submit w-button">
+                                <div asp-validation-summary="All" class="text-danger col-12 custom-alert"></div>
+                            </div>
+                        </div>
+
+
+                    }
+                    @{
+                        await Html.RenderPartialAsync("~/Views/Partials/UserCreateInformation.cshtml");
+                    }
+                    <div id="alertArea">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Trigger the modal with a button -->
+@section Scripts{
+    <script src="/Content/plugins/intl/intlTelInput.min.js"></script>
+    <script src="/Content/plugins/JQueryMask/jquery.mask.js"></script>
+    <script src="/Content/plugins/jquery-validate/jquery.validate.min.js"></script>
+    <script src="/Content/plugins/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="/Content/plugins/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="/Content/plugins/jquery-unobtrusive/jquery-unobtrusive.js"></script>
+    <script>
+
+        const spinnerId = "tc-spinner";
+        const spinnerHtml = `<i class="fa fa-spin fa-spinner m-l-10"   id="${spinnerId}"></i>`;
+        const input = document.querySelector("#phone");
+       @* const input2 = document.querySelector("#workPhone");*@
+     const iti = window.intlTelInput(input,
+            {
+                dropdownContainer: document.body,
+                initialCountry: "tr",
+                preferredCountries: ['tr', 'us'],
+                utilsScript: "/Content/plugins/intl/utils.js",
+            });
+       @*const iti2 = window.intlTelInput(input2,
+            {
+                dropdownContainer: document.body,
+                initialCountry: "tr",
+                preferredCountries: ['tr', 'us'],
+                utilsScript: "/Content/plugins/intl/utils.js",
+            }); *@
+        @* let countries = @Html.Raw(Json.Serialize(Model.Countries));
+        let cities = @Html.Raw(Json.Serialize(Model.Cities));
+        let districts = @Html.Raw(Json.Serialize(Model.Districts));
+
+        $('#country').change(function() {
+            const country = parseInt($(this).val());
+            loadCities(country);
+        });
+
+        $('#city').change(function() {
+            var city = parseInt($(this).val());
+            loadDistricts(city);
+        });
+
+        function loadCities(country) {
+            $('#city').html('');
+            $('#district').html('');
+            cities.forEach(function(item) {
+                if (item.countryID === country) {
+                    $('#city').append('<option value="' + item.id + '">' + item.name + '</option>');
+                }
+            });
+            loadDistricts(parseInt($('#city').val()));
+        }
+
+        function loadDistricts(city) {
+            $('#district').html('');
+            districts.forEach(function(item) {
+                if (item.cityID === city) {
+                    $('#district').append('<option value="' + item.id + '">' + item.name + '</option>');
+                }
+            });
+        } *@
+
+        $(function () {
+          jQuery.validator.addMethod("phoneNumberControl", function(value, element) {
+                return iti.isValidNumber();
+            }, '@Localization.Get("Lütfen telefon numaranızı düzgün giriniz.", "Please enter your phone number corrcetly.", lang)');
+
+            var defaultRangeValidator = $.validator.methods.range;
+            $.validator.methods.range = function(value, element, param) {
+                if(element.type === 'checkbox') {
+                    // if it's a checkbox return true if it is checked
+                    return element.checked;
+                } else {
+                    // otherwise run the default validation function
+                    return defaultRangeValidator.call(this, value, element, param);
+                }
+            }
+
+            $("#phone").rules("add", { phoneNumberControl: true });
+            $("#phone").mask("+99 (999) 999-9999");
+            //$("#workPhone").mask("+99 (999) 999-9999");
+            $("#compPhone").mask("+99 (999) 999-9999");
+            //$("#birthDay").mask("99/99/9999");
+            //loadDistricts(parseInt($('#city').val()));
+        });
+
+        function fileInput() {
+            $('#ppFile').click();
+        }
+
+        function replaceAt(string, index, replace) {
+            return string.substring(0, index) + replace + string.substring(index + 1);
+        }
+
+        $('#ppFile').change(function() {
+            var input = $('#ppFile')[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#imgpp').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+        });
+
+        $('#username').keypress(function(e) {
+            var regex = new RegExp("^[a-zA-Z0-9]+$");
+            var str = String.fromCharCode(!e.charCode ? e.which : e.charCode);
+            if (regex.test(str)) {
+                return true;
+            }
+            e.preventDefault();
+            return false;
+            });
+
+            function getSellerFields(memberTypeId) {
+                if (memberTypeId === @((int)MemberType.Buyer)) {
+                    $(".sellerFields").hide();
+                    $(".firmLink").hide();
+                }
+                else if (memberTypeId === @((int)MemberType.Seller)) {
+                    $("#myModal").modal();
+                    $(".sellerFields").show();
+                    $(".firmLink").show();
+                }
+        }
+
+        $("#firmInfo").change(function () {
+            if ($(this).is(':checked'))
+                $(".firm-info").show();
+
+            else {
+                $('input[name="SubMerchantType"]').attr("checked", false);
+                $('input[name="SubMerchantType"]').val("@Html.Raw(Iyzipay.Model.SubMerchantType.PERSONAL)");
+                $('.firm-info input[type="text"]').val("");
+                $(".firm-info").hide();
+            }
+
+        });
+
+    </script>
+    <script src="/Content/plugins/tinymce/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: '#content',
+            plugins: 'image code',
+            toolbar: 'undo redo | image code',
+            menubar: false,
+            plugins: [
+                "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+                "searchreplace wordcount visualblocks visualchars code fullscreen",
+                "insertdatetime media nonbreaking save table contextmenu directionality",
+                "emoticons template paste textcolor colorpicker textpattern"
+            ],
+            image_advtab: true,
+            toolbar: 'insert | undo redo |  formatselect | bold italic underline backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | image | help',
+            // without images_upload_url set, Upload tab won't show up
+            images_upload_url: '/Account/Blog/UploadImage',
+
+            // we override default upload handler to simulate successful upload
+            images_upload_handler: function (blobInfo, success, failure) {
+
+                var xhr, formData;
+                xhr = new XMLHttpRequest();
+                xhr.withCredentials = false;
+                xhr.open('POST', '/Account/Blog/UploadImage');
+                xhr.onload = function () {
+                    var json;
+
+                    if (xhr.status !== 200) {
+                        failure('HTTP Error: ' + xhr.status);
+                        return;
+                    }
+                    json = JSON.parse(xhr.responseText);
+
+                    if (!json || typeof json.location != 'string') {
+                        failure('Invalid JSON: ' + xhr.responseText);
+                        return;
+                    }
+                    success(json.location);
+                };
+                formData = new FormData();
+                formData.append('file', blobInfo.blob(), blobInfo.fileName);
+                xhr.send(formData);
+
+
+            },
+
+            init_instance_callback: function (ed) {
+                //ed.execCommand('mceImage');
+            }
+        });
+    </script>
+}

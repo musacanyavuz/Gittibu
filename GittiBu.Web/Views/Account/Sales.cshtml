@@ -1,0 +1,264 @@
+﻿@model CommercialAccountViewModel
+
+@{
+    var lang = Constants.GetLang(Context.Session.GetString("lang"));
+    ViewBag.Title = Localization.Get("Hesap Hareketleri", "Transactions of Account", lang);
+    Layout = "_Layout";
+    var salesCount = 0;
+    if (ViewBag.PendingCargo != null && ViewBag.PendingCargo.ToString() != "")
+    {
+        salesCount = Convert.ToInt32(ViewBag.PendingCargo);
+    }
+
+}
+@section style
+    {
+    <link rel="stylesheet" href="~/Content/css/sweetalert.min.css" />
+    <link rel="stylesheet" href="/Content/css/sales.css" asp-append-version="true" />
+
+    <style>
+        label {
+            float: left;
+            width: 140px
+        }
+
+        .w-tab-link {
+            padding: 8px 16px;
+        }
+    </style>
+}
+
+<div class="section-1 sec-altsayfa sec-hesaplar">
+    <div class="w-container">
+
+        @{
+            await Html.RenderPartialAsync("~/Views/Partials/AccountSideMenu.cshtml", 46);
+        }
+
+        <div class="content w-clearfix">
+            <div class="div-block-20 div-ilan hesap w-clearfix display-grid">
+                <h4 class="h2 h4 h-kat h-kategori">@ViewBag.Title </h4>
+                <p>
+                    Eğer sürekli bir satış faaliyeti içinde iseniz ve yıllık satış tutarınız 42.000 TL yi aşarsa (2018)  “Basit Usulde Vergi Mükellefiyeti” tescil ettirmenizi öneririz.
+                </p>
+            </div>
+            <div class="product product-list urulerim bannerlar">
+
+                <div data-duration-in="300" data-duration-out="100" class="w-tabs">
+                    <div class="w-tab-menu">
+                        <a data-w-tab="Tab 1" id="tab1" onclick="katsec('0')" class="tab-link-3 w-inline-block w-tab-link w--current">
+                            <div>@Localization.Get("Satışlarım", "My Sales", lang) (@salesCount) </div>
+                        </a>
+                    </div>
+                    <div class="w-tab-content m-t-10">
+                        <div data-w-tab="Tab 1" class="w-clearfix w-tab-pane w--tab-active">
+                            <p>
+                                *@Localization.Get("Mesafeli Satış Sözleşmesi", "Distance Sales Contract", lang)
+                            </p>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>@Localization.Get("İlan No", "Ad No", lang)</th>
+                                            <th width="1%">@Localization.Get("Alıcı", "Buyer", lang)</th>
+                                            <th>@Localization.Get("Başlık", "Title", lang)</th>
+                                            <th>@Localization.Get("Ücret", "Price", lang)</th>
+                                            <th>@Localization.Get("Tarih", "Date", lang) </th>
+                                            <th>@Localization.Get("Teslim Tarih", "Delivery Date", lang) </th>
+                                            <th>@Localization.Get("Durum", "Status", lang) </th>
+                                            <th width="20%">@Localization.Get("Ödeme Durumu", "Payment Status", lang)</th>
+                                            <th width="10%">@Localization.Get("Teslimat Detayları", "Cargo Details", lang)</th>
+                                            <th>@Localization.Get("MSS*", "DSC*", lang)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="font-size:13px">
+                                        @if (Model.Sales == null || !Model.Sales.Any())
+                                        {
+                                            <tr>
+                                                <td colspan="11" class="text-center">@Localization.Get("Satın alma bulunamadı.", "No Records Found.", lang) </td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            var no = Model.Sales.Count;
+                                            foreach (var sale in Model.Sales)
+                                            {
+                                                if (sale.Advert != null)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            @no
+                                                        </td>
+                                                        <td>
+
+                                                            <a href="@Constants.GetURL((int) Enums.Routing.Ilan, lang)/@Localization.Slug(sale.Advert?.Title)/@sale.Advert.ID" target="_blank">@sale.Advert?.ID</a>
+                                                        </td>
+
+                                                        <td>
+                                                            #@sale.UserID @(sale.Buyer?.Name) <br />
+                                                            @(sale.Buyer?.MobilePhone) <br />
+                                                            <a href="mailto:@(sale.Buyer?.Email)">@(sale.Buyer?.Email)</a>
+                                                        </td>
+                                                        <td>@sale.Advert?.Title</td>
+                                                        <td>@sale.Price TL </td>
+                                                        <td>@(sale.CreatedDate.ToString("dd.MM.yy")) </td>
+                                                        <td>@(sale.CargoDeliveryDate?.ToString("dd.MM.yy"))</td>
+                                                        <td> @Html.Raw(Constants.GetPaymentRequestStatus(sale.Status, lang, sale.ID))</td>
+                                                        <td>
+                                                            @if (sale.Status == Enums.PaymentRequestStatus.Bekleniyor || sale.Status == Enums.PaymentRequestStatus.KargoyaVerildi)
+                                                            {
+
+                                                                @Localization.Get("Alıcı teslimatı onayladıktan sonra 1 hafta içerisinde ödemeniz yapılacaktır.", "When buyer be confirm delivery, within 1 week payment transfer you.", lang)
+                                                            }
+                                                            else if (sale.Status == Enums.PaymentRequestStatus.Onaylandi)
+                                                            {
+                                                                @Localization.Get("Onaylama tarihinden sonraki 1 hafta içinde ödemeler yapılır.", "You will be paid within 1 week after approve date.", lang)
+                                                                ;
+                                                            }
+                                                            else if (sale.Status == Enums.PaymentRequestStatus.OnlineOdemeYapildi || sale.Status == Enums.PaymentRequestStatus.OdemeAktarildi)
+                                                            {
+                                                                @Localization.Get("Ödeme Yapıldı.", "It was paid.", lang)
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            @if (sale.Status != Enums.PaymentRequestStatus.Onaylandi
+                                                           && sale.Status != Enums.PaymentRequestStatus.AliciIptalEtti
+                                                           && sale.Status != Enums.PaymentRequestStatus.Iptal
+                                                           && sale.Status != Enums.PaymentRequestStatus.SaticiIptalEtti
+                                                           && sale.Status != Enums.PaymentRequestStatus.AliciIptalTalebiOlusturdu)
+                                                            {
+                                                                <button type="button"
+                                                                        onclick="cargoInfo(@sale.ID)"
+                                                                        class="btn btn-sm btn-light @Html.Raw(sale.Status == Enums.PaymentRequestStatus.Bekleniyor ? "flash-button" : "")">
+                                                                    @Html.Raw(sale.Status == Enums.PaymentRequestStatus.Bekleniyor ? Localization.Get("Kargo Bilgisi Giriniz", "Input Cargo Info", lang) : Localization.Get("Kargo Bilgisi", "Cargo Information", lang))
+                                                                </button>
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            <a href="/DistanceSalesContract/@sale.ID" target="_blank">@Localization.Get("Sözleşme", "Contract", lang)</a>
+                                                        </td>
+                                                    </tr>
+                                                    no--;
+                                                }
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="modal fade mt-5" id="enterCargoInfo" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLongTitle">@Localization.Get("Sipariş Bilgileri", "Order Information", lang)</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("UpdateCargoDetails", "Account", FormMethod.Post))
+            {
+                <div class="modal-body">
+                    <input type="hidden" id="saleId" name="id" value="0" />
+                    <div class="form-group row margin_bottom">
+                        <label class="col-sm-4 col-form-label">@Localization.Get("Kargo Firması", "Cargo Firm", lang)</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="cargoFirm" name="CargoFirm" required>
+                        </div>
+                    </div>
+                    <div class="form-group row margin_bottom">
+                        <label class="col-sm-4 col-form-label">@Localization.Get("Takip No:", "Cargo Code:", lang)</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="cargoNo" name="CargoNo" required>
+                        </div>
+                    </div>
+                    <div class="form-group row margin_bottom">
+                        <label class="col-sm-4 col-form-label">@Localization.Get("Verilen Tarihi:", "Cargo Date:", lang)</label>
+                        <div class="col-sm-8">
+                            <input type="date" class="form-control" id="cargoDate" name="CargoDate" required>
+                        </div>
+                    </div>
+                    <div class="form-group row margin_bottom">
+                        <label class="col-sm-4 col-form-label">@Localization.Get("Durum:", "Status:", lang)</label>
+                        <div class="col-sm-8">
+                            <select id="status" name="Status" class="form-control">
+                                <option value="@((int)Enums.PaymentRequestStatus.Bekleniyor)">@Localization.Get("Bekleniyor", "Waiting", lang)</option>
+                                <option value="@((int)Enums.PaymentRequestStatus.KargoyaVerildi)">@Localization.Get("Kargoya Verildi", "Shipping", lang)</option>
+                                <option value="@((int)Enums.PaymentRequestStatus.KargoyaVerildi)">@Localization.Get("Hizmet Teslim Edildi", "Delivered", lang)</option>
+                                <option value="@((int)Enums.PaymentRequestStatus.Iptal)">@Localization.Get("İptal Et", "Cancel", lang)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary " id="btnCargoInfo">
+                        @Localization.Get("Kaydet", "Save changes", lang)
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script src="~/Content/script/sweetalert.min.js" type="text/javascript"></script>
+    <script>
+        function cargoInfo(id) {
+            var request = $.ajax({
+                url: "/Account/GetPaymentRequest",
+                data: { id },
+                method: "POST"
+            });
+            request.done(function (result) {
+                if (result.isSuccess) {
+                    if (result.data.cargoNo) {
+                        $("#btnCargoInfo").attr("disabled", "disabled");
+                    } else {
+                        $("#btnCargoInfo").removeAttr("disabled");
+                    }
+                    $('#saleId').val(result.data.id);
+                    $('#cargoFirm').val(result.data.cargoFirm);
+                    $('#cargoNo').val(result.data.cargoNo);
+                    $('#cargoDate').val(getFormattedDate(result.data.cargoDate));
+                    $('#status').val(result.data.status);
+
+
+                    $("#enterCargoInfo").modal();
+                } else {
+                    notify('error', result.message);
+                }
+            });
+        }
+
+        function getFormattedDate(dateto) {
+            if (dateto !== null) {
+                var date = new Date(dateto);
+                var year = date.getFullYear();
+
+                var month = (1 + date.getMonth()).toString();
+                month = month.length > 1 ? month : '0' + month;
+
+                var day = date.getDate().toString();
+                day = day.length > 1 ? day : '0' + day;
+
+                return year + '-' + month + '-' + day;
+            }
+            return '';
+        }
+
+
+    </script>
+}

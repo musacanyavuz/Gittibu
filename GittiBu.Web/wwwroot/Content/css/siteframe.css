@@ -1,0 +1,59 @@
+img.visa-logo-width {
+    height: 20px;
+    vertical-align: baseline;
+}
+
+a.link-block-9.w-inline-block.p-l-0-i {
+    height: 20px;
+    width: 90px;
+    vertical-align: super;
+}
+
+a.link-block-9.w-inline-block.social-media-link {
+    height: 26px;
+    overflow: hidden;
+}
+
+.fa-2x {
+    font-size: 20px;
+    vertical-align: -webkit-baseline-middle;
+}
+
+.div-block-3 {
+    -webkit-justify-content: center;
+}
+
+.social-media-link {
+    margin-right: 7px;
+    padding-left: 8px;
+}
+
+@media (max-width: 992px) {
+    .f-link {
+        font-size: 10px;
+    }
+
+    a.link-block-9.w-inline-block.social-media-link {
+        margin-top: 10px;
+    }
+}
+
+.sec-altsayfa .bannerlar tr > td {
+    padding: 1%;
+    color: #000000;
+    font-size: 12px;
+    font-weight: 300;
+}
+
+.add-button {
+    border: 1px solid #f8f8f8;
+    padding: 10px;
+    float: right;
+    margin-top: 10px;
+    background: #1893f9;
+    color: #fff;
+}
+
+    .add-button:hover {
+        color: #fff !important
+    }

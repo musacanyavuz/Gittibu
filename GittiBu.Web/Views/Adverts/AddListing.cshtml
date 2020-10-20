@@ -1,0 +1,870 @@
+@model AddListingStep1ViewModel
+@{
+    var lang = Constants.GetLang(Context.Session.GetString("lang"));
+    ViewBag.Title = Localization.Get("İlan Ekle", "Add Listing", lang);
+    Layout = "_Layout";
+}
+@section style{
+    <link rel="stylesheet" href="~/Content/css/dropzone.min.css">
+    <link rel="stylesheet" href="~/Content/css/dropzone.min.css">
+    <link rel="stylesheet" href="~/Content/css/cropper.css">
+    <style>
+        .dz-image-preview {
+            display: table-cell;
+            text-align: center;
+        }
+
+        #sortable {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            display: flex
+        }
+
+            #sortable li {
+                margin: 3px 3px 3px 0;
+                padding: 1px;
+                float: left;
+                text-align: center;
+                cursor: grab;
+            }
+
+        .btn {
+            color: #fff !important;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: .65 !important;
+        }
+    </style>
+    <style>
+
+        /* Limit image width to avoid overflow the container */
+        .crop-area {
+        }
+
+            .crop-area img {
+                max-width: 100%; /* This rule is very important, please do not ignore this! */
+                max-height: 300px;
+            }
+
+
+        @@media screen and (min-width: 1200px) {
+
+            .w-container {
+                max-width: 906px !important;
+            }
+
+            .register-form {
+                width: 80%;
+                margin: auto;
+            }
+
+                .register-form .w-checkbox-input, .register-form .w-radio-input,
+                .checkbox-field-2 {
+                    float: none !important;
+                }
+        }
+
+        .sec-altsayfa.sec-hesaplar.section-1 {
+            background-color: #fff !important;
+        }
+
+        .div-block-20.div-ilan.hesap {
+            background-color: white !important;
+        }
+
+        @@media screen and (max-width: 992px) {
+            .h2.h4.h-kat {
+                margin-bottom: 0px;
+            }
+
+            .div-block-20.div-ilan.hesap {
+                padding-top: 25px;
+                padding-bottom: 0px;
+            }
+
+            .radio-button {
+                margin-right: 5px;
+            }
+        }
+    </style>
+}
+
+<div class="sec-altsayfa sec-hesaplar section-1">
+    <div class="w-container">
+        <div class="w-clearfix">
+            <div class="div-block-20 div-ilan hesap urun-ekle w-clearfix m-b-10">
+                <h4 class="h2 h4 h-kat h-kategori">@ViewBag.Title</h4>
+            </div>
+
+            <div class="div-block-17 form-wrapper form-hesaplar urun-ekle w-clearfix" style="padding-bottom:5px">
+                @*<h3 class="heading-2 form-text">@Localization.Get("İlan Bilgileri", "Product Information", lang)</h3>*@
+
+                @using (Html.BeginForm("AddListing", "Adverts", FormMethod.Post, new { @class = "w-clearfix", id = "main-form", validate = "novalidate" }))
+                {
+                    <div class="form-block-5 w-form">
+                        <label class="field-label">@Localization.Get("Başlık", "Title", lang) </label>
+                        <input class="textfield w-input text-transform-capitalize" maxlength="70" name="Title" type="text" value="@(Model.Advert?.Title)" required onkeydown="letterControl(this,event)">
+
+                        <label class="field-label">@Localization.Get("İlan Açıklaması", "Description", lang) </label>
+                        <textarea class="textfield w-input" maxlength="5000" name="Content" required rows="5">@(Model.Advert?.Content)</textarea>
+
+
+                        <div class="div--marka w-clearfix" style="margin-bottom:25px">
+                            <div class="p-b-5">
+                                <label class="field-label">@Localization.Get("İlan Özellikleri", "Product Features", lang)</label>
+                            </div>
+                            <hr><br>
+                            <div class="row" style="margin-bottom:5px">
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <label class="field-label">@Localization.Get("Durumu", "Status", lang)</label>
+                                    <select class="dropdown-4 select-urun urun-ozellik-select w-dropdown textfield valid" name="ProductStatus" id="productStatus" required>
+                                        <option value="">@Localization.Get("Seçiniz", "Choose", lang)</option>
+                                        <option value="@Localization.Get("Bozuk", "Not Working", lang)">@Localization.Get("Bozuk", "Not Working", lang)</option>
+                                        <option value="@Localization.Get("Normal", "Normal", lang)">@Localization.Get("Normal", "Normal", lang)</option>
+                                        <option value="@Localization.Get("İyi", "Good", lang)">@Localization.Get("İyi", "Good", lang)</option>
+                                        <option value="@Localization.Get("Çok İyi", "Perfect", lang)">@Localization.Get("Çok İyi", "Perfect", lang)</option>
+                                        <option value="@Localization.Get("Yeni", "New", lang)">@Localization.Get("Yeni", "New", lang)</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <label class="field-label">@Localization.Get("Kategori", "Category", lang)</label>
+                                    <select id="categories" onchange="setInstallmentChoices(this.value)" name="CategoryID" class="dropdown-4 select-urun urun-ozellik-select w-dropdown textfield valid" required>
+                                        <option value="">@Localization.Get("Seçiniz", "Choose", lang)</option>
+                                        @foreach (var category in Model.AdvertCategories)
+                                        {
+                                            <option value="@category.ID">@category.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" id="cargoAreaSelect">
+                                    <label class="field-label">@Localization.Get("Gönderim Yeri", "Shipment Area", lang)</label>
+                                    <select class="dropdown-4 select-urun urun-ozellik-select w-dropdown textfield valid" name="CargoAreaID" required>
+                                        @foreach (var item in Model.CargoAreas)
+                                        {
+                                            if (Model.Advert?.CargoAreaID == item.ID)
+                                            {
+                                                <option selected value="@item.ID">@item.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.ID">@item.Name</option>
+                                            }
+
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" style="text-align:center" id="freeShippingArea">
+                                    <label class="field-label">@Localization.Get("Gönderim Maliyeti", "Cost of Shipment", lang)</label>
+                                    <div class="div-block-32" style="    padding-left: 20px;">
+                                        <div class="radio-button w-radio">
+                                            <label class="w-form-label">
+                                                <input class="w-radio-input" name="FreeShipping" type="radio" id="freeShipping0" value="false"> @Localization.Get("Alıcıya Ait", "Buyer Pays", lang)
+                                            </label>
+                                        </div>
+                                        <div class="w-radio">
+                                            <label class="w-form-label">
+                                                <input class="w-radio-input" name="FreeShipping" type="radio" id="freeShipping1" value="true"> @Localization.Get("Satıcıya Ait", "Seller Pays", lang)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" id="shippingPriceArea">
+                                    <label class="field-label">@Localization.Get("Tahmini Kargo Ücreti", "Estimated Cost of Cargo", lang)</label>
+                                    <input type="number" value="@Model.Advert?.ShippingPrice" min="0" name="ShippingPrice" class="textfield w-input" />
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <label class="field-label">@Localization.Get("İlgili Web Adresi", "Related Web Address", lang) </label>
+                                    <input class="textfield w-input" maxlength="200" name="WebSite" type="text" value="@(Model.Advert?.WebSite)">
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <label class="field-label">@Localization.Get("Ürün Ayıpları", "Defects of Product", lang)* </label>
+                                    <textarea class="textfield w-input" maxlength="5000" name="ProductDefects" rows="3" required>@(Model.Advert?.ProductDefects)</textarea>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                    <label class="field-label">@Localization.Get("Orijinal  Satış Fiyatı", "Orijinal Price", lang) </label>
+                                    <input class="textfield w-input" min="0" name="NewProductPrice" type="number" required id="orjPrice" value="@(Model.Advert?.NewProductPrice)">
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                    <label class="field-label">@Localization.Get("Satış Fiyatınız", "Your Sales Price", lang) </label>
+                                    <input class="textfield w-input" name="Price" id="price" type="number" min="@Model.Cash" required value="@(Model.Advert?.Price)">
+                                    <label class="text-danger priceMessage" style="display:none">@Localization.Get("Orjinal satış fiyatından büyük olamaz bu yüzden orjinalinin fiyatı atandı", "Cannot be greater than the sale price of the orjinal one so the price of the new one is assigned", lang)  </label>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                    <label class="field-label">@Localization.Get("Miktar", "Amount", lang) </label>
+                                    <input class="textfield w-input" min="0" name="StockAmount" type="number" value="@(Model.Advert?.StockAmount)" required>
+                                </div>
+                            </div>
+                            <div class="div--marka w-clearfix" style="margin-bottom:0px;    padding-top: 0px; padding-left: 0px;
+    padding-right: 0px;">
+                                <br />
+                                <div class="row mb-0">
+
+                                </div>
+                                @{
+                                    var installment = Localization.Get("Taksit", "Settlem", lang);
+                                }
+                                <div class="row justify-content-center" id="installments" style="margin-bottom:11px">
+                                    <div class="col-md-6 align-self-center text-center">
+                                        <h5>
+                                            @Html.Raw(Localization.Get("Alıcılar hangi taksit seçeneklerini kullanabilir?  Boş bırakırsanız yasal tüm taksitler kullanılır. Bu kategori için kullanabileceğiniz taksit sayısı en fazla <span id=\"selectedInstallment\">12</span> olmalıdır.",
+                                            "How many instalments that you credit your buyer? If you leave empty, all options will be valid.  As per law, this category’s maximum terms cannot pass <span id=\"selectedInstallment\">12</span>", lang))
+                                            <br>
+                                            @Localization.Get("Boş bırakırsanız tüm taksitler kullanılır", "If you leave empty, all options will be valid", lang)
+                                        </h5>
+                                        <table class="table table-bordered">
+                                            <tr>
+                                                <td><input class="installment" type="checkbox" id="ins1" value="1" @(Model.Advert?.AvailableInstallments?.IndexOf('1') > -1 ? "checked=\"checked\"" : null) /> </td>
+                                                <td class="text-left">@Localization.Get("Tek Çekim", "One Mount", lang)</td>
+                                            </tr>
+                                            <tr>
+                                                <td><input class="installment" type="checkbox" id="ins2" value="2" @(Model.Advert?.AvailableInstallments?.IndexOf('2') > -1 ? "checked=\"checked\"" : null) /> </td>
+                                                <td class="text-left">2 @installment</td>
+                                            </tr>
+                                            <tr>
+                                                <td><input class="installment" type="checkbox" id="ins3" value="3" @(Model.Advert?.AvailableInstallments?.IndexOf('3') > -1 ? "checked=\"checked\"" : null) /> </td>
+                                                <td class="text-left">3 @installment</td>
+                                            </tr>
+                                            <tr>
+                                                <td><input class="installment" type="checkbox" id="ins6" value="6" @(Model.Advert?.AvailableInstallments?.IndexOf('6') > -1 ? "checked=\"checked\"" : null) /> </td>
+                                                <td class="text-left">6 @installment</td>
+                                            </tr>
+                                            <tr>
+                                                <td><input class="installment" type="checkbox" id="ins9" value="9" @(Model.Advert?.AvailableInstallments?.IndexOf('9') > -1 ? "checked=\"checked\"" : null) /> </td>
+                                                <td class="text-left">9 @installment</td>
+                                            </tr>
+                                            <tr>
+                                                <td><input class="installment" type="checkbox" id="ins12" value="12" @(Model.Advert?.AvailableInstallments?.IndexOf("12") > -1 ? "checked=\"checked\"" : null) /> </td>
+                                                <td class="text-left">12 @installment</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div id="installmentsChoices">
+                                    @if (!string.IsNullOrEmpty(Model?.Advert?.AvailableInstallments))
+                                    {
+                                        foreach (var ins in Model.Advert.AvailableInstallments.Split(','))
+                                        {
+                                            <text>
+                                                <input type="hidden" name="AvailableInstallments" value="@ins" id="installment_@ins" />
+                                            </text>
+                                        }
+                                    }
+                                </div>
+                                <div id="prices">
+                                </div>
+                            </div>
+                            @*<div class="row">
+            <div class="col-md-3">
+                <label class="field-label">@Localization.Get("Gönderim Seçeneği", "Shipment Type", lang)</label>
+                <select class="dropdown-4 select-urun urun-ozellik-select w-dropdown textfield valid" name="ShippingTypeID" id="shipmentType" required>
+                    <option value="@((int)Enums.ShipmentType.KargoIleGonderim)" selected="selected"> @Localization.Get("Kargo İle Gönderim", "I can send by Cargo", lang) </option>
+                </select>
+            </div>
+
+
+        </div>*@
+                            <div class="p-b-5">
+                                <label class="field-label">@Localization.Get("İlan Fotoğrafları", "Product Photos", lang)</label>
+                                <input type="hidden" name="SelectedPhotos" id="selectedPhotos" value="" />
+                            </div>
+                            <hr><br>
+                            @if (Model.Advert?.Photos != null && Model.Advert.Photos.Any())
+                            {
+                                <p>
+                                    @Localization.Get("Fotoğraf sıralamalarını düzenlemek için fotoğrafları sürükleyebilirsiniz.", "You can drag photos to edit the photo rankings.", lang)
+                                </p>
+                                <button onclick="saveOrder()" class="button w-button m-r-10 float-left m-b-10" type="button">@Localization.Get("Sıralamayı Kaydet", "Save Photos Order", lang)</button>
+                                @*                                 <button onclick="updateMainImage()"  class="button w-button width-auto " type="button">@Localization.Get("Ana Fotoğraf Seçimini Kaydet", "Save Main Photo", lang)</button> *@
+
+                                <ul id="sortable">
+                                    @foreach (var photo in Model.Advert.Photos.OrderBy(p => p.OrderNumber))
+                                    {
+                                        <li class="ui-state-default" id="q_@photo.ID">
+                                            <div class="card width-rem-10">
+                                                <img class="card-img-top old-image" src="@photo.Source" />
+                                                <div class="card-body">
+                                                    <h5 class="card-title">@photo.CreatedDate.ToString("g")</h5>
+                                                    <input type="radio" onclick="javascript:updateMainImage();" name="mainImage" @(Model.Advert.Thumbnail == photo.Thumbnail ? "checked" : "") value="@photo.ID" /> <span> @Localization.Get("Ana fotoğraf", "Main photo", lang)</span>
+                                                    <a href="javascript:undefited;" onclick="ask(@photo.ID, '') " style="width: 72px !important;" class="button w-button button-sil m-t-10 display-inline-grid">@Localization.Get("Sil", "Delete", lang)</a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+
+                            <h5>@Localization.Get("İşaretlediğiniz görsel ana fotoğraf olarak kullanılacak.", "Marked picture will be used as main picture", lang)</h5>
+                            <small>*@Localization.Get("Max. Dosya Boyutu: 5mb. Max. 10 dosya.", "Max. File Size: 5mb. Max. 10 file.", lang) </small>
+                            <div>
+                                <form action="/Adverts/UploadPhoto" enctype="multipart/form-data" method="POST">
+                                    <div class="dropzone" id="myDropzone">
+                                        <div class="dz-message" data-dz-message>
+                                            <span>
+                                                @Localization.Get("Fotoğraf eklemek için buraya tıklayınız veya fotoğrafları sürükleyiniz.", "Click here to add photos or drag photos", lang)
+                                            </span>
+                                        </div>
+                                    </div> <br />
+                                </form>
+                            </div>
+
+                        </div>
+
+
+
+
+                        <button type="submit" @Html.Raw(Model.Advert != null ? "" : "disabled=\"disabled\"") id="save" class="button button-main button-satn button-submit submit-center w-button disabled">@Localization.Get("Kaydet ve Devam Et", "Save and Continue", lang)</button>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+
+</div>
+
+
+<div id="preview" class="preview display-none">
+    <li>
+        <div>
+            <div class="dz-preview dz-file-preview">
+                <input type="radio" name="mainImage" class="f-l m-100-1" />
+                <img data-dz-thumbnail />
+                <div class="dz-progress">
+                    <span class="dz-upload" data-dz-uploadprogress></span>
+                </div>
+                <div class="dz-success-mark">
+                    <span>✔</span>
+                </div>
+                <div class="dz-error-mark">
+                    <span>✘</span>
+                </div>
+                <div class="dz-error-message">
+                    <span data-dz-errormessage></span>
+                </div>
+            </div>
+        </div>
+    </li>
+</div>
+
+@section Scripts{
+    <script src="~/Content/script/cropper.js"></script>
+    <script src="~/Content/script/jquerycropper.js"></script>
+    <script src="~/Content/script/jquery-ui.min.js"></script>
+    <script src="/Content/plugins/dropzone/dropzone.js"></script>
+
+    <script>
+        function ask(id, name) {
+
+            var q = ' @Localization.Get("Silmek istediğinize emin misiniz?", "Are you sure you want to delete?", lang) ';
+            var n = new Noty({
+                container: '#q_' + id,
+                text: name + ' </br>' + q,
+                style:'text-align:center',
+                buttons: [
+                    Noty.button('@Localization.Get("EVET", "YES", lang)',
+                        'button w-button button-yes m-r-10',
+                        function() {
+                            publishRequest(id);
+                            n.close();
+                        },
+                        { id: 'button1', 'data-status': 'ok' ,'type':'button'}),
+                    Noty.button('@Localization.Get("HAYIR", "NO", lang)',
+                        'button w-button button-sil display-inline',
+                        function() {
+                            n.close();
+                        }, { 'type': 'button' })
+                ]
+            });
+            n.show();
+        }
+
+        function publishRequest(id) {
+            $.ajax({
+                url: '/DeleteAdPhoto',
+                data: { id },
+                type: 'POST',
+                dataType: 'json',
+                success: function(data) {
+                    var type = '';
+                    if (data.isSuccess) {
+                        type = 'success';
+                        $('#q_' + id).remove();
+                    } else {
+                        type = 'error';
+                    }
+                    new Noty({
+                        theme: 'sunset',
+                        type: type,
+                        text: data.message,
+                        progressBar: true,
+                        timeout: 4000
+                    }).show();
+                }
+            });
+        }
+
+
+    </script>
+
+
+
+
+    <script>
+        var selectedPhotos = [];
+        Dropzone.prototype.defaultOptions.dictRemoveFile = '@Localization.Get("Resmi Kaldır", "Remove File", lang)';
+
+        Dropzone.options.myDropzone = {
+            url: '/AddListing/UploadPhoto',
+            autoProcessQueue: true,
+            uploadMultiple: false,
+            parallelUploads: 10,
+            timeout: 540000,
+            maxFiles: 10,
+            maxFilesize: 60,
+            paramName: "Files",
+            acceptedFiles: 'image/*',
+            addRemoveLinks: true,
+            transformFile: function (file, done) {
+
+
+                if (file.size < 5242880) {
+                    // Create Dropzone reference for use in confirm button click handler
+                    var myDropZone = this;
+                    // Create the image editor overlay
+                    var editor = document.createElement('div');
+                    editor.style.position = 'fixed';
+                    editor.style.left = 0;
+                    editor.style.right = 0;
+                    editor.style.top = 0;
+                    editor.style.bottom = 0;
+                    editor.style.zIndex = 9999;
+                    editor.style.backgroundColor = '#000';
+                    document.body.appendChild(editor);
+                    // Create confirm button at the top left of the viewport
+                    var buttonConfirm = document.createElement('button');
+                    buttonConfirm.classList.add("button");
+                    buttonConfirm.classList.add("w-button");
+                    buttonConfirm.style.position = 'absolute';
+                    buttonConfirm.style.width = '120px';
+                    buttonConfirm.style.left = '10px';
+                    buttonConfirm.style.top = '10px';
+                    buttonConfirm.style.zIndex = 9999;
+                    buttonConfirm.textContent = 'Tamam';
+                    editor.appendChild(buttonConfirm);
+
+                    var buttonRotate = document.createElement('button');
+                    buttonRotate.classList.add("button");
+                    buttonRotate.classList.add("w-button");
+                    buttonRotate.style.position = 'absolute';
+                    buttonRotate.style.left = '10px';
+                    buttonRotate.style.width = '120px';
+                    buttonRotate.style.top = '52px';
+                    buttonRotate.style.zIndex = 9999;
+                    buttonRotate.textContent = 'Sola Döndür';
+                    editor.appendChild(buttonRotate);
+
+                    var buttonRotateTers = document.createElement('button');
+                    buttonRotateTers.classList.add("button");
+                    buttonRotateTers.classList.add("w-button");
+                    buttonRotateTers.style.position = 'absolute';
+                    buttonRotateTers.style.left = '10px';
+                    buttonRotateTers.style.top = '94px';
+                    buttonRotateTers.style.width = '120px';
+                    buttonRotateTers.style.zIndex = 9999;
+                    buttonRotateTers.textContent = 'Sağa Döndür';
+                    editor.appendChild(buttonRotateTers);
+
+                    var buttonCancel = document.createElement('button');
+                    buttonCancel.classList.add("button");
+                    buttonCancel.classList.add("w-button");
+                    buttonCancel.style.position = 'absolute';
+                    buttonCancel.style.left = '10px';
+                    buttonCancel.style.top = '142px';
+                    buttonCancel.style.width = '120px';
+                    buttonCancel.style.zIndex = 9999;
+                    buttonCancel.textContent = 'İptal';
+                    editor.appendChild(buttonCancel);
+
+
+                    var image = new Image();
+                    image.src = URL.createObjectURL(file);
+                    editor.appendChild(image);
+                    var cropper = new Cropper(image,
+                        {
+                            viewMode:0,
+                            rotatable: true,
+                            aspectRatio: 1,
+                            ready: function() {
+                                cropper.zoom(-0.5);
+                            }
+                        });
+
+                    buttonCancel.addEventListener("click", function () {
+                        document.body.removeChild(editor);
+                        myDropZone.removeFile(file);
+                    });
+                    buttonRotate.addEventListener('click',
+                        function () {
+
+                            cropper.rotate(-90);
+                        });
+                    buttonRotateTers.addEventListener('click',
+                        function () {
+
+                            cropper.rotate(90);
+
+                        });
+
+                    buttonConfirm.addEventListener('click',
+                        function () {
+                            // Get the canvas with image data from Cropper.js
+                                var canvas = cropper.getCroppedCanvas({
+                                    maxWidth: 4096,
+                                    maxHeight: 4096,
+                                    fillColor:"#fff"
+                                });
+                            @*console.log(canvas); *@
+                            // Turn the canvas into a Blob (file object without a name)
+                            canvas.toBlob(function (blob) {
+                                // Create a new Dropzone file thumbnail
+                                myDropZone.createThumbnail(
+                                    blob,
+                                    myDropZone.options.thumbnailWidth,
+                                    myDropZone.options.thumbnailHeight,
+                                    myDropZone.options.thumbnailMethod,
+                                    false,
+                                    function (dataURL) {
+
+                                        // Update the Dropzone file thumbnail
+                                        myDropZone.emit('thumbnail', file, dataURL);
+                                        // Return the file to Dropzone
+                                        done(blob);
+                                    });
+                            });
+                            // Remove the editor from the view
+                            document.body.removeChild(editor);
+                        });
+
+                }
+
+            },
+            previewTemplate: $('#preview').html(),
+            init: function() {
+                var myDropzone = this;
+                this.on("sendingmultiple",
+                    function(data, xhr, formData) {
+                        formData.append("MainImage", $('input[name="main-image"]:checked').val());
+                    });
+                this.on("addedfile",
+                    function (file) {
+                        @*console.log(file); *@
+
+                        if (file.size > 5242880) {
+                            @*console.log("Dikkat 10 mb büyük!"); *@
+                            alert("DİKKAT 5 MB DAN BÜYÜK RESİM YÜKLEYEMEZSİNİZ.");
+                            var id = parseInt($(file.previewElement).attr("id"));
+                            @*console.log("remove it: " + id); *@
+                            $(file.previewElement).remove();
+                            removeFromSelectedPhotos(id);
+                        } else {
+                            @*console.log("Uyumlu."); *@
+                        }
+                        $(file.previewElement).find('input').val(file.name);
+                    });
+                this.on("removedfile",
+                    function(file) {
+                        var id = parseInt($(file.previewElement).attr("id"));
+                        @* console.log("remove it: " + id); *@
+                        $(file.previewElement).remove();
+                        removeFromSelectedPhotos(id);
+                    });
+                this.on("success",
+                    function (file, response) {
+                        @*//console.log("success file", file);
+                        //console.log("success response", response);*@
+
+                        if (response.isSuccess === true) {
+                            @*console.log("add: " + response.id); *@
+                            addToSelectedPhotos(response.id);
+                            $(file.previewElement).find(".dz-progress").remove();
+                            $(file.previewElement).attr("id", response.id);
+                            $($(file.previewElement).find("input")).attr("value", response.id);
+                           @* console.log($(file.previewElement).find("input"));*@
+                        } else {
+                            myDropzone.removeFile(file);
+                            notify("error", response.message);
+                        }
+                    });
+                 this.on("maxfilesexceeded", function (file) {
+                    myDropzone.removeFile(file);
+                    var message = file.name + '@Localization.Get(" isimli resim 10 adet maksimum resim sınırını geçtiği için yüklenmedi.", " image is not loaded because it exceeds the maximum image limit of 10.", lang)';
+                    notify("error", message);
+                });
+            }
+        };
+
+        function addToSelectedPhotos(id) {
+            selectedPhotos.push(id);
+            updatePhotosInput();
+        }
+
+        function removeFromSelectedPhotos(id) {
+            for (var i = 0; i < selectedPhotos.length; i++) {
+                if (selectedPhotos[i] === id) {
+                    selectedPhotos.splice(i, 1);
+                }
+            }
+            updatePhotosInput();
+        }
+
+        function updatePhotosInput() {
+            var result = "";
+            for (var i = 0; i < selectedPhotos.length; i++) {
+                result += selectedPhotos[i] + ",";
+            }
+            result = result.substring(0, result.length - 1);
+            $('#selectedPhotos').val(result);
+            $("#save").removeAttr("disabled");
+        }
+    </script>
+
+    @if (Model.Advert != null)
+    {
+        <script>
+            $( function() {
+                $( "#sortable" ).sortable();
+                $( "#sortable" ).disableSelection();
+            } );
+
+            function updateMainImage() {
+                var mainImageId = $('input[name="mainImage"]:checked').val();
+                if (mainImageId == null) {
+                    notify("error", '@Localization.Get("Mevcut fotoğraflar kısmından bir fotoğraf seçmeniz gerekiyor.",
+                                     "You need to select a photo from the existing photos.",lang)');
+                    return;
+                }
+                notify("info", '@Localization.Get("Lütfen bekleyiniz","Please wait", lang)');
+                $.ajax({
+                    url:"/UpdateMainPhoto",
+                    type: "POST",
+                    data: { id:@Model.Advert.ID, photoId: parseInt(mainImageId) },
+                    success: function(data) {
+                        if (data.isSuccess) {
+                            notify("success", data.message);
+                        } else {
+                            notify("danger", data.message);
+                        }
+                    }
+                });
+            }
+
+            function saveOrder() {
+                var items = $('#sortable li');
+                if (items.length == 0) {
+                    noitfy("danger", '@Localization.Get("Fotoğraf bulunamadı","Photo not found", lang)');
+                    return;
+                }
+                var ids=[];
+                for(var i=0;i<items.length;i++){
+                    var id = $($('#sortable li')[i]).prop("id").replace("q_","");
+                    ids.push(parseInt(id));
+                }
+                if (ids.length>0) {
+                    notify("info", '@Localization.Get("Lütfen bekleyiniz","Please wait", lang)');
+                    $.ajax({
+                        url:"/UpdatePhotosOrder",
+                        type: "POST",
+                        data: { id:@Model.Advert.ID, photos: ids },
+                        success: function(data) {
+                            if (data.isSuccess) {
+                                notify("success", data.message);
+                            } else {
+                                notify("danger", data.message);
+                            }
+                        }
+                    });
+                }
+            }
+        </script>
+
+    }
+
+
+    <script>
+        function getPrices() {
+            var price = parseFloat($('#price').val());
+            $('#prices').html('@Localization.Get("Yükleniyor...", "Loading...", lang)');
+
+            var request = $.ajax({
+                url: "/GetInstallmentPrices",
+                method: "POST",
+                data: { price }
+            });
+            request.done(function(msg) {
+                $('#prices').html(msg);
+            });
+            request.catch(function() {
+                $('#prices').html('@Localization.Get("Bir sorun oluştu ve taksitli ücretlere erişilemedi.",
+                                       "There was a problem and the installment fees could not be accessed.",
+                                       lang)');
+            });
+        }
+
+        $('#price').on('change',function() {
+           getPrices();
+        });
+    </script>
+    <script>
+        var categories = @Html.Raw(Json.Serialize(Model.AdvertCategories));
+
+        function setInstallmentChoices(id) {
+            $('#subcategories').html('');
+            categories.forEach(function(category) {
+                if (category.id === parseInt(id)) {
+                    @* console.log("selected category", category); *@
+                    $('input[type="checkbox"].installment').each(function(index, item) {
+                        if (parseInt($(item).val()) > category.maxInstallment) {
+                            $(item).prop("checked", false);
+                            $(item).parent().parent().hide();
+                            $('#selectedInstallment').html(category.maxInstallment);
+                        } else {
+                            $(item).parent().parent().show();
+                        }
+                    });
+
+                }
+            });
+        }
+    </script>
+    <script>
+        @if (Model.Advert != null)
+        {
+            <text>
+                $('#moneyType').val(@Model.Advert.MoneyTypeID);
+                const productStatus= "@Html.Raw(Model.Advert.ProductStatus)";
+                @* console.log(productStatus); *@
+                $('#productStatus').val(productStatus);
+
+                $('#pay_@Model.Advert.PaymentMethodID').attr('checked', 'checked');
+                //$('input[name="PaymentMethodID"]').val(@Model.Advert.PaymentMethodID);
+
+                setTimeout(function() {
+                    $('#categories').val(@(Model.Advert?.CategoryID));
+                    getPrices();
+                }, 200);
+            </text>
+        }
+    </script>
+    <script>
+        const installments = [1, 2, 3, 6, 9, 12];
+        $('.installment').on('change',
+            function() {
+                var elem = $(this);
+                var val = $(this).val();
+                @* console.log(val); *@
+                if (this.checked) {
+                    installments.map(item => {
+                        if (item <= parseInt(val)) {
+                            $('#installmentsChoices').append(`<input type="hidden" name="AvailableInstallments" id="installment_${item}"  value="${item}" />`);
+                            $(`#ins${item}`).prop("checked", true);
+                        }
+                    });
+                } else {
+                    installments.map(item => {
+                        $(`#installment_${item}`).remove();
+                        @* console.log(item); *@
+                        $(`#ins${item}`).prop("checked",false);
+                    });
+                }
+            }
+        );
+        $('#main-form').on("submit",
+            function(e) {
+                @* console.log("submitting"); *@
+
+                if ($('.dz-file-preview:visible').length === 0 && $('.old-image').length === 0 ) {
+                   @* console.log("stop submit"); *@
+                    e.preventDefault();
+                    notify("error",
+                        '@Localization.Get("En az 1 fotoğraf yükleyiniz.","Upload at least 1 photo.",lang)');
+                    return false;
+                }
+
+                @* console.log("submit"); *@
+            }
+        );
+    </script>
+    <script>
+        $('#shipmentType').on('change', function() {
+            shipmentChange(parseInt($(this).val()));
+        });
+
+        function shipmentChange(val) {
+            if (val !== @((int)Enums.ShipmentType.KargoIleGonderim)) {
+                $('#cargoAreaSelect').css('display', 'none');
+                $('#freeShippingArea').css('display', 'none');
+                $('#shippingPriceArea').css('display', 'none');
+            }
+            else {
+                $('#cargoAreaSelect').css('display', 'block');
+                $('#freeShippingArea').css('display', 'flex');
+                if (JSON.parse($('input[name="FreeShipping"]:checked').val()) === false) {
+                    $('#shippingPriceArea').css('display', 'block');
+                } else {
+                    $('#shippingPriceArea').css('display', 'none');
+                }
+            }
+        }
+        $('input[name="FreeShipping"]').on('change', function () {
+            @* console.log(JSON.parse($(this).val())); *@
+            if (JSON.parse($(this).val()) === false) {
+                $('#shippingPriceArea').css('display', 'block');
+            } else {
+                $('#shippingPriceArea').css('display', 'none');
+            }
+        });
+
+        @if (Model.Advert != null)
+        {
+            if (Model.Advert.FreeShipping)
+            {
+                <text>
+                    $('#freeShipping1').attr('checked', 'checked');
+                </text>
+            }
+            else
+            {
+                <text>
+                    $('#freeShipping0').attr('checked', 'checked');
+                </text>
+            }
+            if (Model.Advert.ShippingTypeID != 0)
+            {
+                <text>
+                    $('#shipmentType').val(@Model.Advert?.ShippingTypeID);
+                    shipmentChange(@Model.Advert?.ShippingTypeID);
+                </text>
+            }
+            <text> setInstallmentChoices(@Model.Advert.CategoryID) </text>
+        }
+    </script>
+    <script>
+        $("#price, #orjPrice").change(function (e) {
+            $(".priceMessage").hide();
+            var lil = parseInt($("#price").val(), 10);
+            var big = parseInt($("#orjPrice").val(), 10);
+            if (lil > big) {
+                $(".priceMessage").show();
+                $('#price').val(big);
+
+            }
+        });
+    </script>
+}
+

@@ -1,0 +1,404 @@
+@using GittiBu.Common;
+@using GittiBu.Common.Extensions;
+@model MyListingViewModel
+
+@{
+    var lang = Constants.GetLang(Context.Session.GetString("lang"));
+    ViewBag.Title = Localization.Get("İlanlarım", "My Advertisements", lang);
+    Layout = "_Layout";
+}
+
+@section style{
+    <style>
+        table tr {
+            height: 76px;
+            -webkit-transition: all .3s cubic-bezier(.47,0,.745,.715);
+            transition: all .3s cubic-bezier(.47,0,.745,.715);
+            padding-top: 17px;
+            padding-bottom: 17px;
+            padding-left: 10px;
+            cursor: pointer
+        }
+
+            table tr, table tr td {
+                height: 76px !important
+            }
+
+        table tbody tr {
+            border-top: 1px solid #ebebeb
+        }
+
+            table tbody tr:hover {
+                padding-right: 0;
+                padding-left: 10px;
+                box-shadow: 0 3px 42px -5px rgba(46,46,46,.26);
+                -webkit-transform: scale(1);
+                -ms-transform: scale(1);
+                transform: scale(1)
+            }
+
+        table tr td {
+            padding-top: 7px;
+            padding-bottom: 7px;
+            padding-left: 10px;
+            overflow: no-display
+        }
+
+        table tbody {
+            margin-top: 5px
+        }
+
+        .profil-value {
+            width: 100px;
+            float: right
+        }
+
+        .profil-value-large {
+            width: 200px;
+            float: right
+        }
+
+        .profil-key {
+            float: left;
+            width: 300px
+        }
+
+        .profil-key-large {
+            float: left;
+            width: 400px
+        }
+
+        .profil-scale {
+            padding-top: 10px;
+            padding-bottom: 30px
+        }
+
+        td {
+            vertical-align: middle !important;
+        }
+
+        .profile-box {
+            box-shadow: -1px 13px 24px -5px rgba(0, 0, 0, .13);
+        }
+
+        #statsTable tr {
+            height: unset !important;
+        }
+
+        #statsTable td {
+            padding: 2%;
+            height: unset !important;
+        }
+    </style>
+}
+    <div class="section-1 sec-altsayfa sec-hesaplar">
+        <div class="w-container">
+
+            @{
+                await Html.RenderPartialAsync("~/Views/Partials/AccountSideMenu.cshtml", 31);
+            }
+
+            <div class="content w-clearfix">
+                <div class="div-block-20 div-ilan hesap w-clearfix">
+                    <h4 class="h2 h4 h-kat h-kategori">@ViewBag.Title </h4>
+                </div>
+                <form class="form-inline my-2 my-lg-0 mr-auto mt-2 mt-lg-0 ml-3">
+                    <input class="form-control m-r-0 border-radius-10" type="search" id="queryListing" name="queryListing" required>
+                    <button class="btn search-button2 color-w" type="button" onclick="searchListing()"><i class="fa fa-search"></i> @Localization.Get("Ara", "Search", lang)</button>
+                </form>
+                <div id="question" class="btn-group" role="group"></div>
+                <div class="product product-list urulerim bannerlar">
+                    <div class="table-responsive">
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <td>
+                                        <div class="new-price pro-text">No</div>
+                                    </td>
+                                    <td>
+                                        <div class="new-price pro-text">@Localization.Get("Başlık", "Title", lang)</div>
+                                    </td>
+                                    <td>
+                                        <div class="new-price pro-text">@Localization.Get("Resim", "Image", lang) </div>
+                                    </td>
+                                    <td>
+                                        <div class="new-price pro-text">@Localization.Get("Fiyat", "Price", lang)</div>
+                                    </td>
+                                    <td>
+                                        <div class="new-price pro-text">@Localization.Get("Oluşturma Tarihi", "Created Date", lang)</div>
+                                    </td>
+                                    <td>
+                                        <div class="new-price pro-text">@Localization.Get("Durum", "Status", lang)</div>
+                                    </td>
+                                    <td>
+                                        <div class="new-price pro-text">@Localization.Get("Seçenekler", "Options", lang)</div>
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Adverts != null)
+                                {
+                                    foreach (var ad in Model.Adverts)
+                                    {
+                                        string title = @Html.TitleFormat(ad.Title);
+                                        var url = "";
+                                        if (lang == (int)Enums.Languages.tr)
+                                        {
+                                            url = "/Advert/" + ad.ParentCategorySlugEn + "/" + ad.SubCategorySlugEn + "/" + GittiBu.Common.Localization.Slug(title) + "/" + ad.ID;
+                                        }
+                                        else
+                                        {
+                                            url = "/Ilan/" + ad.ParentCategorySlugTr + "/" + ad.SubCategorySlugTr + "/" + GittiBu.Common.Localization.Slug(title) + "/" + ad.ID;
+                                        }
+                                        <tr id="row_@ad.ID">
+                                            <td><a href="@url" target="_blank">@ad.ID</a></td>
+                                            <td class="width-200">
+                                                <a href="@url" target="_blank">@title</a>
+                                            </td>
+                                            <td>
+                                                <img alt="@(title)" src="@ad.Thumbnail" onerror="this.src ='/Content/img/no-image.jpg';" class="image-9">
+                                            </td>
+                                            <td>@ad.Price @Constants.GetMoney(ad.MoneyTypeID) </td>
+                                            <td>@(ad.CreatedDate.ToString("g"))</td>
+
+                                            <td class="position-relative">
+                                                @if (ad.IsDeleted)
+                                                {
+                                                    <h4>
+                                                        <span class="badge badge-pill badge-danger" id="status_@ad.ID">  @Localization.Get("Bu İlan Kaldırıldı", "This Ad Hidden", lang) </span>
+                                                    </h4>
+                                                }
+                                                else if (!ad.IsActive && !ad.IsPendingApproval)
+                                                {
+                                                    <h4>
+                                                        <span class="badge badge-pill badge-danger" id="status_@ad.ID">  @Localization.Get("Bu İlan Kaldırıldı", "This Ad Hidden", lang) </span>
+                                                    </h4>
+                                                }
+                                                else if (!ad.IsActive && ad.IsPendingApproval)
+                                                {
+                                                    <h4>
+                                                        <span class="badge badge-pill badge-primary" id="status_@ad.ID"> @Localization.Get("Onay Bekliyor", "Waiting Approval", lang) </span>
+                                                    </h4>
+                                                }
+                                                else if (ad.IsActive)
+                                                {
+                                                    <h4>
+                                                        <span class="badge badge-pill badge-success" id="status_@ad.ID"> @Localization.Get("Yayında", "Published", lang) </span>
+                                                    </h4>
+                                                }
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group" aria-label="Basic example">
+                                                    <a href="@Constants.GetURL(Enums.Routing.IlanDuzenle, lang)/@ad.ID" class="btn btn-sm btn-primary">
+                                                        @Localization.Get("Düzenle", "Edit", lang)
+                                                    </a>
+                                                    @if (!ad.IsActive && !ad.IsPendingApproval)
+                                                    {
+                                                        <a class="btn btn-sm btn-info" onclick="ask(@ad.ID, '#@ad.ID @title')" href="javascript:;" id="publish_@ad.ID">
+                                                            @Localization.Get("Yeniden Yayınla", "Re-Publish", lang)
+                                                        </a>
+                                                    }
+                                                    <a class="btn btn-sm btn-danger" onclick="askPassive(@ad.ID, '#@ad.ID @title')" href="javascript:;" id="passive_@ad.ID">
+                                                        @Localization.Get("Kaldır", "Unpublish", lang)
+                                                    </a>
+
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div>
+        </div>
+        <div class="w-container">
+            <ul class="pagination float-right">
+                @if (Model.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-route-advertCount="30" asp-route-page="1">@Localization.Get("İlk", "First", lang)</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" asp-route-advertCount="30" asp-route-page="@(Model.CurrentPage - 1)">@Localization.Get("Önceki", "Previous", lang)</a>
+                    </li>
+                }
+
+
+                @{int startLoop = 1; }
+                @{int endLoop = Model.TotalPages;}
+                @if (Model.CurrentPage > 3 && Model.CurrentPage < (Model.TotalPages - 3))
+                {
+                    startLoop = Model.CurrentPage - 3;
+                    endLoop = Model.CurrentPage + 3;
+                }
+                else if (Model.CurrentPage > (Model.TotalPages - 3)) //last
+                {
+                    startLoop = Model.TotalPages - 6;
+                    endLoop = Model.TotalPages;
+                }
+                else //first
+                {
+                    startLoop = 1;
+                    endLoop = 7;
+                }
+
+
+                @for (int i = startLoop; i <= endLoop; i++)
+                {
+                    if (i > 0 && i <= Model.TotalPages)
+                    {
+                        <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                            <a class="page-link" asp-route-advertCount="30" asp-route-page="@i">@i</a>
+                        </li>
+                    }
+                }
+
+                @if (Model.CurrentPage < Model.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-route-advertCount="30" asp-route-page="@(Model.CurrentPage + 1)">@Localization.Get("Sonraki", "Next", lang)</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" asp-route-advertCount="30" asp-route-page="@(Model.TotalPages)">@Localization.Get("Son", "Last", lang)</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+
+@section Scripts{
+    <script>
+        function ask(id, name) {
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+            var q = ' @Localization.Get("Yeniden yayınlamak istediğinize emin misiniz?", "Are you sure you want to re-publish?", lang) ';
+            var n = new Noty({
+                container: '#question',
+                text: name + ' </br>' + q,
+                buttons: [
+                    Noty.button('@Localization.Get("EVET", "YES", lang)',
+                        'btn btn-sm btn-primary',
+                        function() {
+                            publishRequest(id);
+                            n.close();
+                        },
+                        { id: 'button1', 'data-status': 'ok' }),
+                    Noty.button('@Localization.Get("HAYIR", "NO", lang)',
+                        'btn btn-sm btn-error',
+                        function() {
+                            n.close();
+                        })
+                ]
+            });
+            n.show();
+        }
+
+        function publishRequest(id) {
+            $.ajax({
+                url: '/MyAccount/PublishRequest/',
+                data: { id },
+                type: 'POST',
+                dataType: 'json',
+                success: function(data) {
+                    var type = '';
+                    if (data.isSuccess) {
+                        type = 'success';
+                        $('#publish_' + id).remove();
+                        $('#status_' + id).html('@Localization.Get("Onay Bekliyor","Waiting Approval",lang)');
+                    } else {
+                        type = 'error';
+                    }
+                    new Noty({
+                        theme: 'sunset',
+                        type: type,
+                        text: data.message,
+                        progressBar: true,
+                        timeout: 4000
+                    }).show();
+                }
+            });
+        }
+    </script>
+
+    <script>
+
+
+        function searchListing() {
+            var query = $('#queryListing').val();
+
+            if (query === "") {
+                notify("error", "Lütfen aramak istediğiniz metni yazınız.");
+                return;
+            }
+
+            window.location = '/@Localization.Get("Hesabim/", "MyAccount/", lang)'+'@Localization.Get("Ilanlarim/", "My-Listing/", lang)'+'@Localization.Get("Arama/","Search/", lang)' + query.replace(/\+/g,"");
+
+        }
+
+        var input = document.getElementById("queryListing");
+        input.addEventListener("keyup", function (event) {
+            event.preventDefault();
+            if (event.keyCode === 13) {
+                searchListing();
+            }
+        });
+
+
+
+        function askPassive(id, name) {
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+            var q = ' @Localization.Get("Yayından kaldırmak istediğinize emin misiniz?", "Are you sure you want to unpublish?", lang) ';
+            var n = new Noty({
+                container: '#question',
+                text: name + ' </br>' + q,
+                buttons: [
+                    Noty.button('@Localization.Get("EVET", "YES", lang)',
+                        'btn btn-sm btn-primary mr-1',
+                        function() {
+                            unpublish(id);
+                            n.close();
+                        },
+                        { id: 'button1', 'data-status': 'ok' }),
+                    Noty.button('@Localization.Get("HAYIR", "NO", lang)',
+                        'btn btn-sm btn-error',
+                        function() {
+                            n.close();
+                        })
+                ]
+            });
+            n.show();
+        }
+
+        function unpublish(id) {
+            $.ajax({
+                url: '/MyAccount/Unpublish/',
+                data: { id },
+                type: 'POST',
+                dataType: 'json',
+                success: function(data) {
+                    var type = '';
+                    if (data.isSuccess) {
+                        type = 'success';
+                        $('#status_' + id).html('@Localization.Get("Yayından Kaldırıldı","Unpublished",lang)');
+                    } else {
+                        type = 'error';
+                    }
+                    new Noty({
+                        theme: 'sunset',
+                        type: type,
+                        text: data.message,
+                        progressBar: true,
+                        timeout: 4000
+                    }).show();
+                }
+            });
+        }
+    </script>
+}
+
+

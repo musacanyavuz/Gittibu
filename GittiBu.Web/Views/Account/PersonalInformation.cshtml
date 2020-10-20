@@ -1,0 +1,518 @@
+@using Microsoft.AspNetCore.Http.Extensions
+@using static GittiBu.Common.Enums;
+
+@model PersonalInformationViewModel
+@{
+    var lang = Constants.GetLang(Context.Session.GetString("lang"));
+    ViewBag.Title = Localization.Get("Üyelik Bilgilerim", "Personal Information", lang);
+    Layout = "_Layout";
+
+    //Eğer userSecurePaymentDetail bilgisi varsa satici olarak gosterilmistir. Sistem uzerinde ayirt edilecek bir kolon eklenmedigi icin boyle yapilmak zorunda kalindi.
+    var memberType = Model.UserSecurePaymentDetail != null ? true : false;
+    // Firma bilgisini ayirt edecek herhangi bir kolon olmadigi icin ayrimlar sirket ismine gore yapildigi icin boyle yapildi.
+    var isFirm = string.IsNullOrWhiteSpace(Model.UserSecurePaymentDetail?.CompanyName) ? false : true;
+}
+@section style{
+    <style>
+
+        .tabs-menu-4 {
+            width: 100%;
+        }
+
+        .tab-link-2 {
+            width: auto !important;
+            float: left !important;
+        }
+
+        .textfield {
+            margin-bottom: 0
+        }
+
+        .uyelik-bilgileri {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .uyelik-form {
+            margin-bottom: 15px;
+            padding-top: 20px;
+            width: 95%;
+            margin: auto;
+        }
+
+        .button.button-main.button-satn {
+            margin-bottom: 14px;
+            width: 100% !important;
+        }
+
+        .div-block-20.div-ilan.hesap {
+            background-color: white;
+        }
+
+        .section-1.sec-altsayfa {
+            background-color: white;
+        }
+    </style>
+    <link rel="stylesheet" href="/Content/plugins/intl/intlTelInput.min.css" />
+}
+<div class="section-1 sec-altsayfa sec-hesaplar">
+    <div class="w-container">
+        @{
+            await Html.RenderPartialAsync("~/Views/Partials/AccountSideMenu.cshtml", 0);
+        }
+        <div class="content w-clearfix">
+            <div class="div-block-20 div-ilan hesap w-clearfix">
+                <h4 class="h2 h4 h-kat h-kategori">@ViewBag.Title </h4>
+            </div>
+            <div class="product product-list urulerim bannerlar">
+                <div class="form-block-5 w-form m-0 row">
+                    @using (Html.BeginForm("PersonalInformation", "Account", FormMethod.Post, new { @class = "w-clearfix uyelik-bilgileri", enctype = "multipart/form-data", id = "frmProfile" }))
+                    {
+                        @*class="center text-center"*@
+                        <div class="col-12">
+                            <p>
+                                @Localization.Get(
+"GittiBu.com u sadece kendi adınıza kullanabilirsiniz. Başkalarının namına veya hesabına kullanamazsınız. Bu sayfadaki bilgiler, adres, telefon, TC No ve IBAN Bilgileri, şahsen tarafınıza veya firmanıza ait olmalıdır.",
+"You must use your own information for Gittibu.com. As per law, you cannot use site with someone elses behalf", lang)
+                            </p>
+                        </div>
+
+                        <div class="col-sm-6 col-xs-6 col-md-12 col-lg-12" style="    text-align: center;">
+                            <img src="@(!string.IsNullOrEmpty(Model.User.ProfilePicture) ? Model.User.ProfilePicture : "/Content/img/no-image-user.png")" width="180" height="180" id="imgpp" class="object-fit-cover" />
+                            <br />
+                            <a href="javascript:;" style="    font-size: 12px;" onclick="fileInput()">@Localization.Get("Profil Resmi Seç", "Choose Profile Picture", lang)</a>
+                            <input type="file" name="ProfilePictureFile" class="display-none" id="ppFile" />
+                        </div>
+
+                        <div class="uyelik-form">
+                            <div class="row margin_bottom">
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <label class="field-label"><span class="text-danger">*</span>  @Localization.Get("Kullanıcı Adı", "Username", lang):</label>
+                                    <input class="textfield w-input" data-val="true" maxlength="100" name="UserName" type="text" id="username" value="@Html.TitleFormat(Model.User.UserName)" required onkeydown="letterControl(this,event)">
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <label class="field-label"><span class="text-danger">*</span>  @Localization.Get("E-Posta", "E-Mail", lang):</label>
+                                    <input class="textfield w-input" data-val="true" maxlength="100" name="Email" type="email" id="email" value="@Model.User.Email" required>
+                                </div>
+                            </div>
+
+                            <div class="row margin_bottom">
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <label class="field-label"><span class="text-danger">*</span>  @Localization.Get("Ad", "Name", lang):</label>
+                                    <input class="textfield w-input" data-val="true" maxlength="100" name="Name" type="text" value="@Model.User.Name" required onkeydown="letterControl(this,event)">
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <label class="field-label"><span class="text-danger">*</span>  @Localization.Get("Soyad", "Surname", lang):</label>
+                                    <input class="textfield w-input" data-val="true" maxlength="100" name="Surname" type="text" value="@Model.User.Surname" required onkeydown="letterControl(this,event)">
+                                </div>
+                            </div>
+                            <div class="row margin_bottom">
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <label class="field-label">@Localization.Get("İş Telefonu", "Work Phone", lang):</label>
+                                    <input class="textfield w-input" data-val="true" maxlength="100" name="" value="@Model.User.WorkPhone" id="workPhone" type="text">
+                                    <input class="textfield w-input" data-val="true" maxlength="100" name="WorkPhone" value="@Model.User.WorkPhone" id="hdnWorkPhone" type="hidden">
+                                </div>
+                            </div>
+
+                            <div class="row margin_bottom">
+                                @*<div class="col-6">
+                                        <label class="field-label">@Localization.Get("Cinsiyet", "Gender", lang)*:</label>
+                                        <select class="form-control w-dropdown textfield" name="GenderID">
+                                            <option value="1" @(Model.User.GenderID= =1 ? "selected=\" selected\"" : "" )>@Localization.Get("Erkek", "Man", lang)</option>
+                                            <option value="2" @(Model.User.GenderID= =2 ? "selected=\" selected\"" : "" )>@Localization.Get("Kadın", "Woman", lang)</option>
+                                        </select>
+                                    </div>*@
+
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                    <label class="field-label">@Localization.Get("Ülke", "Country", lang):</label>
+                                    <select class="form-control w-dropdown textfield" name="CountryID" id="country">
+                                        @foreach (var country in Model.Countries)
+                                        {
+                                            <option value="@country.ID" @(Model.User.CountryID= =country.ID ? "selected=\" selected\"" : "" )>@country.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                    <label class="field-label">@Localization.Get("Şehir", "City", lang):</label>
+                                    <select class="form-control w-dropdown textfield" name="CityID" id="city">
+                                        @foreach (var city in Model.Cities.Where(x => x.CountryID == Model.Countries.First().ID))
+                                        {
+                                            <option value="@city.ID" @(Model.User.CityID= =city.ID ? "selected" : "" )>@city.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                    <label class="field-label">@Localization.Get("İlçe", "District", lang):</label>
+                                    <select class="form-control w-dropdown textfield" name="DistrictID" id="district"></select>
+                                </div>
+                            </div>
+                            <div class="row margin_bottom">
+
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <label class="field-label">@Localization.Get("Dil", "Language", lang):</label>
+                                    <select class="form-control w-dropdown textfield" name="LanguageID">
+                                        <option value="1" @(Model.User.GenderID= =1 ? "selected=\" selected\"" : "" )>Türkçe</option>
+                                        <option value="2" @(Model.User.GenderID= =2 ? "selected=\" selected\"" : "" )>English</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <label class="field-label">@Localization.Get("Kişisel Web Sitesi", "Personal Website", lang):</label>
+                                    <input class="textfield w-input" data-val="true" maxlength="100" name="WebSite" value="@Model.User.WebSite" type="url">
+                                </div>
+                            </div>
+                            <div class="row margin_bottom" style="margin-bottom:0px">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="text-align:center">
+                                    <label class="field-label">@Localization.Get("Hakkınızda", "About", lang):</label>
+                                </div>
+                            </div>
+                            <div class="row margin_bottom">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <textarea class="textfield w-input" cols="1" id="content" value="@Model.User.About" name="About" rows="10">@Html.Raw(Model.User.About)</textarea>
+
+                                    @*<input class="textfield w-input" maxlength="500" name="About" value="@Model.User.About" type="text">*@
+                                </div>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" name="MemberType" class="custom-control-input" id="MemberTypeBuyer" value="@((int)MemberType.Buyer)" onchange="getSellerFields(@((int)MemberType.Buyer))" checked="@(memberType ? null : Html.Raw("checked"))" />
+                                <label class="custom-control-label" for="MemberTypeBuyer">@Localization.Get("Alıcıyım", "Buyer", lang)</label>
+                            </div>
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" name="MemberType" class="custom-control-input" id="MemberTypeSeller" value="@((int)MemberType.Seller)" onchange="getSellerFields(@((int)MemberType.Seller))" checked="@(memberType ? Html.Raw("checked") : null)">
+                                <label class="custom-control-label" for="MemberTypeSeller">@Localization.Get("Satıcıyım", "Seller", lang)</label>
+                            </div>
+
+                            <div class="col-12 row margin_bottom flex-column sellerFields" style="@(!memberType ?  Html.Raw("display:none") : null)">
+                                <h4 class="h2 h4 h-kat h-kategori text-center mt-4 mt-md-0">@Localization.Get("Güvenli Ödeme Bilgileri", "Secure Payment Informations", lang) </h4>
+                                <div class="mb-4">
+                                    <p>
+                                        @Localization.Get("Kredi kartı ile satış yapabilmeniz için adınıza sanal POS cihazı bağlanacaktır. Aşağıdaki bilgileri doldurmanızı rica ederiz;", "Please fullfill the information below", lang)
+                                    </p>
+                                </div>
+                                <div class="row margin_bottom">
+                                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                        <label class="field-label"><span class="text-danger">*</span>  @Localization.Get("Cep Telefonu", "Mobile Phone", lang):</label>
+                                        <input class="textfield w-input" data-val="true" maxlength="100" name="" type="text" id="phone" placeholder="+90 5** *** ** **" value="@Model.User.MobilePhone" required>
+                                        <input class="textfield w-input" data-val="true" maxlength="100" name="MobilePhone" type="hidden" id="hdnPhone" placeholder="+90 5** *** ** **" value="@Model.User.MobilePhone" required>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                        <label class="field-label" id="tc-field-label"><span class="text-danger">*</span>  @Localization.Get("TC Kimlik Numaranız", "TC Identity Number", lang):</label>
+                                        <input class="textfield w-input" maxlength="11" min="11" minlength="11" name="TC" id="tc" type="text" value="@Model.UserSecurePaymentDetail?.TC">
+                                        <small>@Localization.Get("Tarafınıza ait olmalıdır. Güvenlik nedeni ile kontrol edilecektir", "Has to be your own Turkish ID Number.", lang)</small>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                        <label class="field-label"><span class="text-danger">*</span>  IBAN:</label>
+                                        <input class="textfield w-input" maxlength="35" placeholder="TR*******************" name="IBAN" id="iban" type="text" value="@Model.UserSecurePaymentDetail?.IBAN" required>
+                                        <small>@Localization.Get("Tarafınıza ait olmalıdır. Güvenlik nedeni ile kontrol edilecektir", "Has to be your own Turkish ID Number.", lang)</small>
+                                    </div>
+                                </div>
+                                <div class="row margin_bottom">
+                                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                        <label class="field-label"><span class="text-danger">*</span>  @Localization.Get("Gönderici Adresi", "Sender Address", lang):</label>
+                                        <textarea class="textfield w-input" rows="2" name="SenderAddress" maxlength="200" required>@Model.UserSecurePaymentDetail?.SenderAddress</textarea>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                        <label class="field-label"><span class="text-danger">*</span>  @Localization.Get("Fatura Adresi", "Invoice Address", lang):</label>
+                                        <textarea class="textfield w-input" rows="2" name="InvoiceAddress" maxlength="200" required>@Model.UserSecurePaymentDetail?.InvoiceAddress</textarea>
+                                    </div>
+                                </div>
+
+                                @*@if (Model.UserSecurePaymentDetail?.Type.ToString() == "PERSONAL")
+                                    {
+
+                                        <p class="badge badge-pill badge-danger" style="font-size:14px"> Şu an satıcı profili olarak gerçek şahıs kullanılmaktadır.  </p>
+                                    }
+
+                                    @if (Model.UserSecurePaymentDetail?.Type.ToString() == "PRIVATE_COMPANY")
+                                    {
+
+                                        <p class="badge badge-pill badge-success" style="font-size:20px"> Şu an satıcı profili olarak tüzel şirket kullanılmaktadır.  </p>
+                                    }
+
+                                    @if (Model.UserSecurePaymentDetail?.Type.ToString() == "LIMITED_OR_JOINT_STOCK_COMPANY")
+                                    {
+
+                                        <p class="badge badge-pill badge-danger" style="font-size:20px"> Şu an satıcı profili olarak tüzel şirket kullanılmaktadır.   </p>
+                                    }*@
+
+                                @*<p class="badge badge-pill badge-info">
+                                        @Localization.Get("Eğer tüzel şirketten şahısa dönmek isterseniz firma adını boş bırakmanız yeterli olucaktır.",
+                                            "You do not have to enter this information. If you want to make your sales as an enterprise, you can fill this information.", lang)
+                                    </p>*@
+                                @*<p>
+                                        @Localization.Get("Bu bilgileri girmek zorunda değilsiniz. Satışlarınızı kurumsal olarak yapmak istiyor iseniz bu bilgileri doldurabilirisiniz.",
+                                            "You do not have to enter this information. If you want to make your sales as an enterprise, you can fill this information.", lang)
+                                    </p>*@
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="firmInfo" name="firmInfo" checked="@(isFirm ? Html.Raw("checked") : null)">
+                                    <label class="custom-control-label" for="firmInfo">@Localization.Get("Firma Bilgilerimi eklemek istiyorum", "I want to added my company information", lang)</label>
+                                </div>
+
+
+
+                                <div class="firm-info" style="@(!isFirm ?  Html.Raw("display:none") : null)">
+                                    <h3>@Localization.Get("Firma Bilgileriniz", "Company Information", lang)</h3>
+                                    <div class="row margin_bottom">
+                                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                            <label class="field-label">@Localization.Get("Firma Türü", "Company Type", lang):</label>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" name="SubMerchantType" class="custom-control-input" id="@Iyzipay.Model.SubMerchantType.PRIVATE_COMPANY" value="@Iyzipay.Model.SubMerchantType.PRIVATE_COMPANY" checked="@(Model.UserSecurePaymentDetail?.Type == Iyzipay.Model.SubMerchantType.PRIVATE_COMPANY ? Html.Raw("checked") : null)" />
+                                                <label class="custom-control-label" for="@Iyzipay.Model.SubMerchantType.PRIVATE_COMPANY"> @Localization.Get("Şahıs Şirketi", "Private Company", lang)</label>
+                                            </div>
+                                            <div class="custom-control custom-radio custom-control-inline">
+                                                <input type="radio" name="SubMerchantType" class="custom-control-input" id="@Iyzipay.Model.SubMerchantType.LIMITED_OR_JOINT_STOCK_COMPANY" value="@Iyzipay.Model.SubMerchantType.LIMITED_OR_JOINT_STOCK_COMPANY" checked="@(Model.UserSecurePaymentDetail?.Type == Iyzipay.Model.SubMerchantType.LIMITED_OR_JOINT_STOCK_COMPANY ? Html.Raw("checked") : null)">
+                                                <label class="custom-control-label" for="@Iyzipay.Model.SubMerchantType.LIMITED_OR_JOINT_STOCK_COMPANY">    @Localization.Get("Ltd. veya Anonim", "Limited or Joint Stock Comp.", lang)</label>
+                                            </div>
+
+                                        </div>
+                                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                            <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Firma Adı", "Company Name", lang):</label>
+                                            <input class="textfield w-input" maxlength="100" name="CompanyName" type="text" value="@Model.UserSecurePaymentDetail?.CompanyName">
+                                        </div>
+                                    </div>
+                                    <div class="row margin_bottom">
+                                        <div class="col-xs-12 col-sm-12 col-md-6">
+                                            <label class="field-label"><span class="text-danger">*</span>  @Localization.Get("Vergi Dairesi", "Tax Office", lang):</label>
+                                            <input class="textfield w-input" maxlength="50" name="TaxOffice" type="text" value="@Model.UserSecurePaymentDetail?.TaxOffice">
+                                        </div>
+                                        <div class="col-xs-12 col-sm-12 col-md-6">
+                                            <label class="field-label"><span class="text-danger">*</span>  @Localization.Get("Vergi No", "Tax Number", lang):</label>
+                                            <input class="textfield w-input" maxlength="40" name="TaxNumber" type="text" value="@Model.UserSecurePaymentDetail?.TaxNumber">
+                                        </div>
+                                        <div class="col-xs-12 col-sm-12 col-md-6">
+                                            <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Firma Email", "Company Email", lang):</label>
+                                            <input class="textfield w-input" maxlength="100" name="CompanyEmail" type="text" value="@Model.UserSecurePaymentDetail?.CompanyEmail">
+                                        </div>
+                                    </div>
+                                    <div class="row margin_bottom">
+                                        <div class="col-xs-12 col-sm-12 col-md-6">
+                                            <label class="field-label">@Localization.Get("Firma Telefonu", "Company Phone", lang):</label>
+                                            <input class="textfield w-input" id="compPhone" maxlength="50" name="CompanyPhone" type="text" value="@Model.UserSecurePaymentDetail?.CompanyPhone">
+                                        </div>
+                                        <div class="col-xs-12 col-sm-12 col-md-6">
+                                            <label class="field-label">@Localization.Get("Firma Fax", "Company Fax", lang):</label>
+                                            <input class="textfield w-input" maxlength="40" name="CompanyFax" type="text" value="@Model.UserSecurePaymentDetail?.CompanyFax">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="InMailing" name="InMailing" value="@(Model.User.InMailing ? Html.Raw("true") : Html.Raw("false"))" checked="@(Model.User.InMailing ? Html.Raw("checked") : null)">
+                                    <label class="custom-control-label" for="InMailing">@Localization.Get("Haber ve Duyuruları almak istiyorum", "Send me occasional news and announcements", lang)</label>
+                                    <input type="hidden" value="false" name="InMailing" />
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row margin_bottom" style="margin-top:20px;    width: 50%;">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <input type="button" id="btnSave" value="@Localization.Get("Kaydet", "Save", lang)" class="button button-main button-satn button-submit w-button">
+                            </div>
+                        </div>
+                        @*<div class="row margin_bottom">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                    <input type="button" id="btnSave" value="@Localization.Get("Kaydet", "Save", lang)" class="button button-main button-satn button-submit w-button">
+                                </div>
+                            </div>*@
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="content w-clearfix">
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="/Content/plugins/intl/intlTelInput.min.js"></script>
+    <script src="/Content/plugins/JQueryMask/jquery.mask.js"></script>
+    <script src="/Content/plugins/jquery-validate/jquery.validate.min.js"></script>
+    <script>
+        var spinnerId = "tc-spinner";
+        var spinnerHtml = `<i class="fa fa-spin fa-spinner m-l-10" id="${spinnerId}"></i>`;
+        var input = document.querySelector("#phone");
+        var input2 = document.querySelector("#workPhone");
+        var iti = window.intlTelInput(input, {
+            dropdownContainer: document.body,
+            initialCountry: "tr",
+            preferredCountries: ['tr', 'us'],
+            utilsScript: "/Content/plugins/intl/utils.js",
+        });
+        var iti2 = window.intlTelInput(input2, {
+            dropdownContainer: document.body,
+            initialCountry: "tr",
+            preferredCountries: ['tr', 'us'],
+            utilsScript: "/Content/plugins/intl/utils.js",
+        });
+    </script>
+    <script>
+
+        $("#btnSave").click(function () {
+            if ($('input[name="MemberType"]').val() === "@((int)MemberType.Seller)"){
+            const tc = $("#tc").val();
+            const iban = $("#iban").val().split(' ').join('').toUpperCase();
+
+            if (tc.length !== 11 || isNaN(tc) !== false) {
+                notify("error", '@Localization.Get("Lütfen kimliğinizi düzgün giriniz","Please enter correctly Tc",lang)');
+                return;
+            }
+            if (iban.length !== 26 || iban.slice(0, 2) !== "TR" || isNaN(iban.slice(2, 26) !== false)) {
+                notify("error", '@Localization.Get("Lütfen iban numaranızı düzgün giriniz","Please enter correctly Iban",lang)');
+                return;
+            }
+            }
+            $("#hdnPhone").val(iti.getNumber(intlTelInputUtils.numberFormat.E164));
+            $("#hdnWorkPhone").val(iti2.getNumber(intlTelInputUtils.numberFormat.E164));
+            $("#frmProfile").submit();
+        });
+       if (@Model.User.CityID!=null){
+            $('#city').val(@Model.User.CityID);
+            // $('#district').val(@Model.User.DistrictID);
+
+        }
+        var countries = @Html.Raw(Json.Serialize(Model.Countries));
+        var cities = @Html.Raw(Json.Serialize(Model.Cities));
+        var districts = @Html.Raw(Json.Serialize(Model.Districts));
+
+        $('#country').change(function() {
+            var country = parseInt($(this).val());
+            loadCities(country);
+        });
+
+        $('#city').change(function() {
+            var city = parseInt($(this).val());
+            loadDistricts(city);
+        });
+
+        function loadCities(country) {
+            $('#city').html('');
+            $('#district').html('');
+            cities.forEach(function(item) {
+                if (item.countryID === country) {
+                    $('#city').append('<option value="' + item.id + '">' + item.name + '</option>');
+                }
+            });
+            loadDistricts(parseInt($('#city').val()));
+        }
+
+        function loadDistricts(city) {
+            $('#district').html('');
+            districts.forEach(function(item) {
+                if (item.cityID === city) {
+                    $('#district').append('<option value="' + item.id + '">' + item.name + '</option>');
+                }
+            });
+        }
+
+        $(function() {
+            //$("#birthDay").mask("99/99/9999");
+            loadDistricts(parseInt($('#city').val()));
+            $('#district').val(@Model.User.DistrictID);
+        });
+
+        function fileInput() {
+            $('#ppFile').click();
+        }
+
+        function getSellerFields(memberTypeId) {
+                if (memberTypeId === @((int)MemberType.Buyer)) {
+                    $(".sellerFields").hide();
+
+                }
+                else if (memberTypeId === @((int)MemberType.Seller)) {
+                    $(".sellerFields").show();
+                }
+        }
+
+        $("#firmInfo").change(function () {
+            if ($(this).is(':checked'))
+                $(".firm-info").show();
+
+            else {
+                $('input[name="SubMerchantType"]').val("@Html.Raw(Iyzipay.Model.SubMerchantType.PERSONAL)");
+                $('.firm-info input[type="text"]').val("");
+                $(".firm-info").hide();
+            }
+
+        });
+
+        $('#ppFile').change(function() {
+            var input = $('#ppFile')[0];
+            @*console.log(input.files); *@
+            if (true) {
+                @*console.log('reader'); *@
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                    $('#imgpp').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        });
+    </script>
+    <script src="/Content/plugins/JQueryMask/jquery.mask.js"></script>
+    <script>
+        $(function() {
+            //$("#iban").mask("TR99 9999 9999 9999 9999 9999 99");
+            //$("#comp_iban").mask("TR99 9999 9999 9999 9999 9999 99");
+            $("#compPhone").mask("+99 (999) 999-9999");
+            $("#phone").mask("+99 (999) 999-9999");
+
+            $('select[name="GenderID"]').val(@Model.User.GenderID);
+            $('select[name="LanguageID"]').val(@Model.User.LanguageID);
+            $('select[name="SubMerchantType"]').val('@Model.UserSecurePaymentDetail?.Type');
+        });
+    </script>
+    <script src="/Content/plugins/tinymce/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: '#content',
+            plugins: 'image code',
+            toolbar: 'undo redo | image code',
+            menubar: false,
+            plugins: [
+                "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+                "searchreplace wordcount visualblocks visualchars code fullscreen",
+                "insertdatetime media nonbreaking save table contextmenu directionality",
+                "emoticons template paste textcolor colorpicker textpattern"
+            ],
+            image_advtab: true,
+            toolbar: 'insert | undo redo |  formatselect | bold italic underline backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | image | help',
+            // without images_upload_url set, Upload tab won't show up
+            images_upload_url: '/Account/Blog/UploadImage',
+
+            // we override default upload handler to simulate successful upload
+            images_upload_handler: function (blobInfo, success, failure) {
+
+                var xhr, formData;
+                xhr = new XMLHttpRequest();
+                xhr.withCredentials = false;
+                xhr.open('POST', '/Account/Blog/UploadImage');
+                xhr.onload = function () {
+                    var json;
+
+                    if (xhr.status !== 200) {
+                        failure('HTTP Error: ' + xhr.status);
+                        return;
+                    }
+                    json = JSON.parse(xhr.responseText);
+
+                    if (!json || typeof json.location != 'string') {
+                        failure('Invalid JSON: ' + xhr.responseText);
+                        return;
+                    }
+                    success(json.location);
+                };
+                formData = new FormData();
+                formData.append('file', blobInfo.blob(), blobInfo.fileName);
+                xhr.send(formData);
+
+
+            },
+
+            init_instance_callback: function (ed) {
+                //ed.execCommand('mceImage');
+            }
+        });
+    </script>
+}

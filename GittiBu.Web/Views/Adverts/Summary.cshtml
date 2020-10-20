@@ -1,0 +1,85 @@
+@model Advert
+
+@{
+    var lang = Constants.GetLang(Context.Session.GetString("lang"));
+    ViewBag.Title = Localization.Get("Sonuç", "Summary", lang);
+    Layout = "_Layout";
+}
+
+
+<div class="sec-altsayfa sec-hesaplar section-1">
+    <div class="w-container">
+
+        <div class="w-clearfix">
+
+            <div class="div-block-20 div-ilan hesap urun-ekle w-clearfix">
+                <h4 class="h2 h4 h-kat h-kategori">@Localization.Get("İlan Girişi", "Add Listing", lang)</h4>
+            </div>
+
+            <div class="div-block-17 form-wrapper form-hesaplar urun-ekle w-clearfix">
+                <h3 class="heading-2 form-text">@Localization.Get("İlanınız Tamamlandı", "Ad creation completed", lang)</h3>
+
+                <h5 class="heading-2 form-text istemiyorum">
+                    <button type="button" class="link-7 onecikarma">
+                        <a href="@Constants.GetURL((int) Enums.Routing.Ilanlarim, lang)"  class="color-w">@Localization.Get("İlanlarım", "My Ads", lang)</a>
+                    </button>
+                </h5>
+
+                <div class="form-block-5 w-form text-center">
+
+                    <div class="div-block-48 w-clearfix">
+                        <img alt="Untitled-1Group-1" src="/Content/img/success.png"  class="image-16 max-width-200">
+                        <label for="name-5" class="field-label ilanim">
+                            @Localization.Get("İlanınız tamamlandı. Yönetici onayından sonra yayınlanacak.", "Ad was created. Will be published after administrator approval", lang)
+                        </label>
+                        <h4>
+                            @Localization.Get("Paylaş","Share",lang)
+                        </h4>
+                        <p class="p-info">
+                            <ul class="advert-sm-icons">
+                                <li>
+                                    <a href="https://facebook.com/sharer/sharer.php?u=https://www.gittibu.com/@Model.ID" target="_blank" title="Facebookta Paylaş">
+                                        <i class="fa fa-facebook fa-3x"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://twitter.com/share?url=https://www.gittibu.com/@Model.ID&amp;text=@Model.Title.Replace(" ","%20")%20https://www.gittibu.com/@Model.ID" target="_blank" title="Twitterda Paylaş">
+                                        <i class="fa fa-twitter fa-3x"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://pinterest.com/pin/create/bookmarklet/?&amp;url=https://www.gittibu.com/@Model.ID&amp;description=@Model.Title.Replace(" ","%20")" target="_blank" title="Pinterestte Paylaş">
+                                        <i class="fa fa-pinterest fa-3x"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://plus.google.com/share?url=https://www.gittibu.com/@Model.ID" target="_blank" title="Google Plusta Paylaş">
+                                        <i class="fa fa-google-plus fa-3x"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="whatsapp://send?text=GittiBu.com'ta%20bir%20ürün%20buldum!%20https://www.gittibu.com/@Model.ID" title="Whatsapp ile Paylaş">
+                                        <i class="fa fa-whatsapp fa-3x"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="mailto:?subject=@Model.Title&amp;body=GittiBu.com'ta bir ürün buldum!%20@(Model.Title.Replace(" ","%20"))%20https://www.gittibu.com/@Model.ID" title="E-posta ile Paylaş">
+                                        <i class="fa fa-envelope fa-3x"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </p>
+                    </div>
+
+
+                    <a href="/">
+                        @Localization.Get("Anasayfaya dön", "Go Home", lang)
+                    </a>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

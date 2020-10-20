@@ -1,0 +1,59 @@
+@model User
+
+@{
+    var lang = Constants.GetLang(Context.Session.GetString("lang"));
+    ViewBag.Title = Localization.Get("Kimlik Fotoğraflarım", "Identity Photos", lang);
+    Layout = "_Layout";
+}
+
+<div class="section-1 sec-altsayfa sec-hesaplar">
+    <div class="w-container">
+        @{
+            await Html.RenderPartialAsync("~/Views/Partials/AccountSideMenu.cshtml", 1);
+        }
+
+
+        <div class="content w-clearfix">
+            <div class="div-block-20 div-ilan hesap w-clearfix display-inline-grid">
+                <h4 class="h2 h4 h-kat h-kategori">@ViewBag.Title </h4>
+                <p>
+                    @Localization.Get(
+                       "Lütfen TC Kimlik Numaranızı gösteren nüfus cüzdanınız ın önlü arkalı bir kopyasını yükleyiniz. İlan vermeniz için bu işlem şart değildir, daha sonra da yükleyebilirsiniz. Ancak ilanınızdaki ürün satıldığında size ödeme yapabilmemiz için kimliğiniz gereklidir ve BDDK bu tarafından getirilmiş bir mecburiyettir.",
+                       "Please upload copy of your identity card front and back faces. It is a legal requirement to be paid.", lang)
+                </p>
+            </div>
+            <div class="product product-list urulerim bannerlar">
+                <div class="form-block-5 w-form m-0">
+                    @if (Model.IdentityPhotosApproved)
+                    {
+                        <p>@Localization.Get("Kimlik fotoğrafları yüklenmiş ve onaylanmış.", "Kimlik fotoğrafları yüklenmiş ve onaylanmış.", lang) </p>
+                    }
+                    else if (!string.IsNullOrEmpty(Model.IdentityPhotoFront) && !string.IsNullOrEmpty(Model.IdentityPhotoBack))
+                    {
+                        <p>@Localization.Get("Onay Bekliyor.", "Waiting.", lang) </p>
+                    }
+                    else
+                    {
+                        using (Html.BeginForm("UploadIdentityPhotos", "Account", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            <p>
+                                <span class="font-weight-bold">@Localization.Get("Kimlik Belgesi Ön Yüz", "Identity Certificate Front Side", lang): </span> <input type="file" name="front" accept="image/*" required />
+                            </p>
+                            <p>
+                                <span class="font-weight-bold">@Localization.Get("Kimlik Belgesi Arka Yüz", "Identity Certificate Back", lang) </span> <input type="file" name="back" accept="image/*" required />
+                            </p>
+                            <p>
+                                <br />
+                                <button class="btn btn-primary">@Localization.Get("Kaydet", "Save", lang)</button>
+                            </p>
+                        }
+                    }
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

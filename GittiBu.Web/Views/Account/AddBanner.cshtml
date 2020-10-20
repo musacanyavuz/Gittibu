@@ -1,0 +1,32 @@
+@model AddBannerViewModel
+
+@{
+    var lang = Constants.GetLang(Context.Session.GetString("lang"));
+    ViewBag.Title = Localization.Get("Banner Ekle", "Add Banner", lang);
+    Layout = "_Layout";
+}
+
+<div class="section-1 sec-altsayfa sec-hesaplar">
+    <div class="w-container">
+
+        @{
+            await Html.RenderPartialAsync("~/Views/Partials/AccountSideMenu.cshtml", 8);
+        }
+
+        <div class="content w-clearfix min-heigh-600">
+            <div class="div-block-20 div-ilan hesap w-clearfix display-grid m-b-0">
+                <h4 class="h2 h4 h-kat h-kategori">@ViewBag.Title </h4>
+            </div>
+            <div id="question"></div>
+            <div class="product product-list urulerim bannerlar">
+                <p>
+                    @Localization.Get("Anasayfaya logonuzu eklemek için lütfen site yönetimi ile iletişime geçiniz.",
+                        "To add your logo to the homepage, please contact the site management.", lang)
+                    <br />
+                    <a href="mailto:info@gittibu.com">@Localization.Get("Mail Gönder", "Send E-Mail", lang)</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+

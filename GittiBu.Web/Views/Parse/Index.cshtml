@@ -1,0 +1,990 @@
+﻿@model ParseViewModel
+@{
+    ViewData["Title"] = "GittiBu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section style{
+    <link href="~/Content/css/bootstrap-4-4-1.min.css" rel="stylesheet" />
+    <link href="~/Content/css/bootstrap2.min.css" rel="stylesheet" />
+    <link href="~/Content/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/css/jquery-ui-1-12-1.css" rel="stylesheet" />
+    <link href="~/Content/css/css-font.css" rel="stylesheet" />
+    <link href="~/Content/css/css-icon.css" rel="stylesheet" />
+    <link href="~/Content/css/select2-bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/css/alertify.css" rel="stylesheet" />
+
+    <style>
+        #myProgress {
+            width: 100%;
+            background-color: #ddd;
+        }
+
+        #myBar {
+            width: 1%;
+            height: 30px;
+            background-color: #4CAF50;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            /*color: #aaaaaa;*/
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: #000;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+        /* carousel */
+        .media-carousel {
+            margin-bottom: 0;
+            padding: 4px 30px;
+            padding-top: 8px;
+            padding-left: 21px;
+        }
+            /* Previous button  */
+            .media-carousel .carousel-control.left {
+                left: -12px;
+                background-image: none;
+                background: none repeat scroll 0 0 #222222;
+                border: 4px solid #FFFFFF;
+                border-radius: 23px 23px 23px 23px;
+                height: 40px;
+                width: 40px;
+                margin-top: 30px
+            }
+            /* Next button  */
+            .media-carousel .carousel-control.right {
+                right: -12px !important;
+                background-image: none;
+                background: none repeat scroll 0 0 #222222;
+                border: 4px solid #FFFFFF;
+                border-radius: 23px 23px 23px 23px;
+                height: 40px;
+                width: 40px;
+                margin-top: 30px
+            }
+            /* Changes the position of the indicators */
+            .media-carousel .carousel-indicators {
+                right: 50%;
+                top: auto;
+                bottom: 0px;
+                margin-right: -19px;
+            }
+                /* Changes the colour of the indicators */
+                .media-carousel .carousel-indicators li {
+                    background: #c0c0c0;
+                }
+
+                .media-carousel .carousel-indicators .active {
+                    background: #333333;
+                }
+
+            .media-carousel img {
+                width: 250px;
+                height: 100px
+            }
+        /* End carousel */
+
+        .trClass {
+            height: 113px;
+        }
+
+        .fieldHeaderClass {
+            background-color: lightgray;
+            margin: 0px -13px;
+            padding: 9px;
+        }
+
+        .sampleDataClass {
+            margin: 0px -13px;
+            padding: 0px 9px;
+            min-height: 38px;
+        }
+
+        .upperSeperator {
+            margin-bottom: 8px !important;
+        }
+
+        .lowerSeperator {
+            margin-top: 8px !important;
+        }
+
+        .middleSeperator {
+            margin: 8px 0px !important;
+        }
+
+        .table > tbody > tr > td {
+            border: 1px solid #ddd;
+        }
+
+        .table > tbody > tr {
+            background-color: white;
+        }
+
+        .pageButton {
+            top: 30%;
+            color: #fff !important;
+        }
+
+        hr {
+            margin-top: 13px !important;
+        }
+
+        .container {
+            height: 100%;
+            padding-top: 6%;
+        }
+
+        .fileCard {
+            height: 50px !important;
+            margin: 0rem 3.6rem;
+        }
+
+        .carousel-inner {
+            margin-bottom: -4% !important;
+        }
+
+            .carousel-inner .row {
+                margin-right: -32px;
+                margin-left: -15px;
+            }
+
+
+        #validationDiv {
+            display: none;
+        }
+
+        .navbar-collapse.collapse {
+            display: flex !important;
+        }
+
+        .border-radius-10 {
+            border-radius: 10px;
+        }
+
+        .search-button2 {
+            background-color: #3680D3;
+            font-weight: 100;
+        }
+
+        .navbar-brand {
+            display: inline-block;
+            padding-top: .3125rem;
+            padding-bottom: .3125rem;
+            margin-right: 1rem;
+            font-size: 1.25rem;
+            line-height: inherit;
+            white-space: nowrap;
+        }
+
+        #unmatchedIcon {
+            color: red;
+            display: inline;
+        }
+
+        #matchedIcon {
+            color: green;
+            display: none;
+        }
+
+        .formIcons {
+            padding: 0.7em;
+            background-color: white;
+            border: 1px solid #e2e5ec;
+            height: 34px;
+            width: 34px;
+            border-radius: 4px !important;
+        }
+
+        #discount {
+            width: 220px;
+        }
+
+        #navbarTogglerDemo01 form.m-l-100-5 {
+            margin-left: 0% !important;
+        }
+
+        .modal {
+            z-index: 2;
+        }
+
+        .input-group input {
+            border-radius: 4px !important;
+        }
+
+        .coefficientDiv {
+            width: 154px;
+            display: inline;
+        }
+
+        .childNode {
+            padding: 6px 0px !important;
+            margin: 0px -8px !important;
+            width: 19rem !important;
+        }
+
+        .bg-gittibu {
+            background-color: #0e7dd9;
+        }
+
+        body {
+            background-color: white !important;
+        }
+
+        .tableCenter {
+            margin-left: 18px;
+        }
+
+            .tableCenter label {
+                color: white;
+            }
+
+        .tableCenterCategory {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+            .tableCenterCategory label {
+                color: white;
+            }
+
+        #submitButton {
+            width: 224px !important;
+            background-color: #0e7dd9;
+        }
+
+        #addcategoryButton {
+            width: 224px !important;
+            background-color: #0e7dd9;
+        }
+
+        .fileHeader {
+            padding-top: 8px;
+        }
+
+        .iconText {
+            font-family: 'Nunito Sans', sans-serif;
+        }
+
+        .fileHeader .form-group label {
+            padding-top: 7px;
+        }
+
+        #file {
+            width: 195px;
+        }
+
+        .uploadModelContent {
+            width: 35%;
+        }
+
+        .modal-header .close {
+            margin-top: 0px;
+            padding-bottom: 0px;
+        }
+
+        .alertify-notifier {
+            color: white;
+        }
+
+        .labelColor {
+            color: black;
+        }
+
+        #visibleac {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+}
+
+@using (Html.BeginForm("Insert", "Parse", FormMethod.Post, new { @id = "parseForm", @Autocomplete = "off", enctype = "multipart/form-data" }))
+{
+<input type="hidden" id="ShippingOwner" name="ShippingOwner">
+<div class="container">
+    @{
+            string h1 = ViewBag.Baslik;
+            string span = ViewBag.Icerik;
+    }
+    <input type="button" value="Click" id="UpdateOtherParses"  />
+    <h1 class="labelColor">@h1</h1>
+    <span class="labelColor">@span</span>
+
+    <div id="validationDiv">
+        <button type="button" class="btn btn-primary">
+            Doldurulması gereken alan sayısı <span class="badge badge-light" id="validationSpan"></span>
+        </button>
+    </div>
+    <div class="bg-gittibu fileHeader">
+        <div class="card fileCard">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-5 pr-0">
+                        <button type="button" class="btn btn-primary" id="uploadFileButton">Dosya Yükle</button>
+                        <span class="pl-4" id="fileName"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label id="exampleLabel"></label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group row">
+                            <label class="col-form-label col-4">Root Name :</label>
+                            <select class="form-control col-7" id="rootName" name="RootName" required>
+                                <option value="">Seçiniz</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-md-12'>
+            <div class='bg-gittibu'>
+                <div class="carousel slide media-carousel" id="cards">
+                    <div class="carousel-inner">
+                        @{
+                                string carouselHtml = "";
+                                string commonDiv = "col-md-2 ml-4 mr-3";
+
+                                for (int i = 0; i < Model.ParseFieldMatches.Count; i++)
+                                {
+                                    bool multipleBool = false;
+                                    string s1 = (Model.ParseFieldMatches[i].DataSampleList != null) && (Model.ParseFieldMatches[i].DataSampleList?.Count > 0) ? (Model.ParseFieldMatches[i].DataSampleList[0]?.ToString() ?? "") : "";
+                                    string s2 = (Model.ParseFieldMatches[i].DataSampleList != null) && (Model.ParseFieldMatches[i].DataSampleList?.Count > 1) ? (Model.ParseFieldMatches[i].DataSampleList[1]?.ToString() ?? "") : "";
+
+                                    string multiple = @"<select class='form-control childNode' id='" + Model.ParseFieldMatches[i].FieldName +
+                                        @"' name='" + Model.ParseFieldMatches[i].FieldName + "' " + (Model.ParseFieldMatches[i].IsRequired ? "required" : "") + @">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                  </select><hr class='upperSeperator'>";
+
+                                    if (Model.ParseFieldMatches[i].FieldName == "Content" ||
+                                        Model.ParseFieldMatches[i].FieldName == "Photos" ||
+                                        Model.ParseFieldMatches[i].FieldName == "Title")
+                                    {
+                                        multipleBool = true;
+                                        multiple = @"
+                                                        <div class='select2-wrapper'>
+                                                           <select class='form-control childNode select2-multiple' multiple='multiple' id='" + Model.ParseFieldMatches[i].FieldName + @"'
+                                                            name='" + Model.ParseFieldMatches[i].FieldName + "' " + (Model.ParseFieldMatches[i].IsRequired ? "required" : "") + @" ></select>
+                                                        </div><hr class='upperSeperator' style='margin-top: 8px !important;'>";
+                                    }
+                                    else if (Model.ParseFieldMatches[i].FieldName == "StockAmount")
+                                    {
+                                        s1 = @"<div class='form-group' style='margin-bottom: -6px; margin-top: 0px;'>
+                                                                                                                                                                                                                                                                                                                                                                                                                           <label for='stockFilter'>Stok Filtresi</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                           <input type='number' class='form-control d-inline' style='width:65px' name='StockFilter' id='StockFilter' min='0' value='1'>
+                                                                                                                                                                                                                                                                                                                                                                                                                       </div>";
+                                    }
+                                    else if (Model.ParseFieldMatches[i].FieldName == "Price")
+                                    {
+                                        s1 = @"<div class='form-group coefficientDiv' style='margin-bottom: -6px; margin-top: -8px;'>
+                                                                                                                                                                                                                                                                                                                                                                                                                          <label for='stockFilter'>Fiyat Çarpanı</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                          <input type='number' class='form-control d-inline' style='width:65px' name='PriceDiscount' id='PriceDiscount' min='-100' max='100' value='0'>
+                                                                                                                                                                                                                                                                                                                                                                                                                      </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                    <span class='d-inline'>%</span>";
+
+                                        s2 = @"<div class='form-group coefficientDiv' style='margin-bottom: -6px; margin-top: -8px;'>
+                                                                                                                                                                                                                                                                                                                                                                                                                           <label for='stockFilter' style='padding-right: 7px;'>Fiyat Filtresi</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                           <input type='number' class='form-control d-inline' style='width:65px' name='PriceFilter' id='PriceFilter' min='" + Model.MinimumPrice + @"' value='20'>
+                                                                                                                                                                                                                                                                                                                                                                                                                       </div>";
+                                    }
+                                    else if (Model.ParseFieldMatches[i].FieldName == "NewProductPrice")
+                                    {
+                                        s1 = @"<div class='form-group coefficientDiv' style='margin-bottom: -6px; margin-top: -8px;'>
+                                                                                                                                                                                                                                                                                                                                                                                                                           <label for='stockFilter'>Fiyat Çarpanı</label>
+                                                                                                                                                                                                                                                                                                                                                                                                                           <input type='number' class='form-control d-inline' style='width:65px' name='NewPriceDiscount' id='NewPriceDiscount' min='-100' max='100' value='0'>
+                                                                                                                                                                                                                                                                                                                                                                                                                       </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                    <span class='d-inline'>%</span>";
+                                    }
+
+                                    string cardContext =
+                                         @"<div class='" + commonDiv + @"'>
+                                                                                                                                                                                                                                                                                                                                                                                                                      <div class='card' style='width: 20rem;'>
+                                                                                                                                                                                                                                                                                                                                                                                                                        <div class='card-body'>
+                                                                                                                                                                                                                                                                                                                                                                                                                          <div class='fieldHeaderClass text-center'><span class='align-middle'>" + Model.ParseFieldMatches[i].FieldName + @"</span></div>
+                                                                                                                                                                                                                                                                                                                                                                                                                              <h5 class='card-title'>Property</h5> "
+                                                 + multiple +
+                                                 @"
+                                                                                                                                                                                                                                                                                                                                                                                                                    <div class='fieldHeaderClass text-center validateClass' ><span class='align-middle'>
+                                                                                                                                                                                                                                                                                                                                                                                                                <i class='fa fa-check-circle' styaria-hidden='true' id='matchedIcon'> <span class='iconText'>Matched</span></i>
+                                                                                                                                                                                                                                                                                                                                                                                                                <i class='fa fa-exclamation-circle' styaria-hidden='true' id='unmatchedIcon'> <span class='iconText'>Unmatched</span></i>
+                                                                                                                                                                                                                                                                                                                                                                                                                " + (Model.ParseFieldMatches[i].IsRequired ? "" : "<span class='badge badge-pill badge-light float-right'>ignore</span>") + @"</span></div>
+                                                                                                                                                                                                                                                                                                                                                                                                                <hr class='middleSeperator'>
+                                                                                                                                                                                                                                                                                                                                                                                                                    <div class='sampleDataClass'><span class='align-baseline'>" + s1 + @"</span></div>
+                                                                                                                                                                                                                                                                                                                                                                                                                    " + (multipleBool ? "" : "<hr class='middleSeperator'><div class='sampleDataClass'><span class='align-baseline'>" + s2 + @"</span></div>") +
+                                                 @"
+                                                                                                                                                                                                                                                                                                                                                                                                                      </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                                                                                                                                  </div>";
+
+                                    if (i % 5 == 0)
+                                    {
+                                        if (i != 0)
+                                        {
+                                            carouselHtml += @"</div></div>";
+                            @Html.Raw(carouselHtml);
+                                        }
+
+                                        string activStr = i == 0 ? "active" : "";
+                                        carouselHtml =
+                                                "<div class='item " + activStr + @"'>
+                                                                                                                                                                                                                  <div class='row'>"
+                                                    + cardContext;
+                                    }
+                                    else
+                                    {
+                                        carouselHtml += cardContext;
+                                    }
+
+                                    if (i == (Model.ParseFieldMatches.Count - 1))
+                                    {
+                                        carouselHtml += @"</div></div>";
+                            @Html.Raw(carouselHtml);
+                                    }
+
+                                }
+                        }
+                    </div>
+                    <a data-slide="prev" data-target="#cards" class="left carousel-control pageButton">‹</a>
+                    <a data-slide="next" data-target="#cards" class="right carousel-control pageButton">›</a>
+                </div>
+            </div>
+            <div class="row pt-2 mb-0">
+                <div class="col-md-3"></div>
+                <div class="col-md-6 p-2 bg-gittibu d-none" id="visibleac">
+                    <table class="tableCenterCategory addtable">
+                    </table>
+                </div>
+            </div>
+            <div class="row pt-3 mb-0">
+                <div class="col-md-4"></div>
+                <div class="col-md-4 p-0 bg-gittibu">
+                    <table class="tableCenter">
+                        <tr>
+                            <td><label for="Supplier" class="col-sm-6 col-form-label">Tedarikçi</label></td>
+                            <td><input type="text" class="form-control" name="Supplier" id="Supplier" style="margin: 9px 0px;" maxlength="50" placeholder="Tedarikçiyi Giriniz..." required></td>
+                        </tr>
+                        <tr>
+                            <td><label for="MaxInstallment" class="col-sm-4 col-form-label">Taksit Sayısı</label></td>
+                            <td>
+                                <select class="form-control" name="MaxInstallment" required>
+                                    <option value="">Seçiniz</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="6">6</option>
+                                    <option value="9">9</option>
+                                    <option value="12">12</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="discount" class="col-sm-4 col-form-label">Kargo Bölgesi</label></td>
+                            <td>
+                                <select class="form-control" name="CargoAreaID" required>
+                                    <option value="">Seçiniz</option>
+                                    @foreach (var area in Model.CargoAreas)
+                                        {
+                                    <option value="@area.ID">@area.Value</option>
+                                        }
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="discount" class="col-sm-4 col-form-label">Kargo Ücreti</label></td>
+                            <td>
+                                <select class="form-control" name="FreeShipping" id="FreeShipping" required>
+                                    <option value="">Seçiniz</option>
+                                    <option value="false">Alıcıya Ait</option>
+                                    <option value="true">Satıcıya Ait</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4 pt-2">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-warning formSubmitClass float-right" id="submitButton">Gönder</button>
+                    </div>
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div id="uploadFileModal" class="modal" style="padding-left:150px;padding-right:150px;">
+    <div class="modal-content uploadModelContent">
+
+        <div class="modal-header">
+            <h4 class="modal-title">XML Dosyası Yükle</h4>
+            <button type="button" class="close" id="closeUploadModal" data-dismiss="modal">&times;</button>
+        </div>
+
+
+        <div class="row"></div>
+        <div class="row">
+            <div class="col-md-4">
+                <label class="col-form-label">Bilgisayarımdan Seç</label>
+            </div>
+            <div class="col-md-8">
+                <input class="d-inline" type="file" id="file" name="file" accept="text/xml" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <label class="col-form-label">URL Girerek</label>
+            </div>
+            <div class="col-md-7">
+                <div class="form-group row">
+                    <input class="form-control col-8" type="url" id="fileLink" name="fileLink" />
+                    <button class="form-control col-4 btn btn-primary" type="button" id="fileLinkButton"> Yükle </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+<div id="loadingModal" class="modal" style="padding-left:150px;padding-right:150px;">
+    <div class="modal-content">
+        <p>İşleminiz Gerçekleştiriliyor...</p>
+        <button class="btn btn-primary" type="button" style="background-color:orange" disabled>
+            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+            Lütfen Bekleyiniz...
+        </button>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/Content/script/Parse/jquery.validate.js"></script>
+    <script src="~/Content/script/Parse/bootstrap.js"></script>
+    <script src="~/Content/script/Parse/jquery-ui-1.12.1.min.js"></script>
+    <script src="~/Scripts/anchor.min.js"></script>
+    <script src="~/Scripts/select2.full.js"></script>
+    <script src="~/Scripts/alertify.js"></script>
+    <script>
+
+        $('#visibleac').hide();
+
+        var focusCategory = false;
+
+        $('#UpdateOtherParses').click(function () {
+            $.ajax('/Parse/UpdateOtherParses', {
+                    type: 'POST',
+                     data: {userid : 2 },
+                    success: function (data, status, xhr) {
+
+                    },
+                    error: function (jqXhr, textStatus, errorMessage) {
+                        debugger;
+                    },
+                    complete: function (data) {
+                      
+                    }
+                });
+        });
+        $('#Category').on('click', function () {
+            focusCategory = true;
+        });
+
+        $('#Category').on('focusout', function () {
+            if ($(this)[0].selectedIndex > 0) {
+            if (focusCategory) {
+                focusCategory = false;
+
+                $('#Category').attr('disabled', 'disabled');
+
+                var categoryData = [];
+                $(this).find('option:selected').each(function (index, element) {
+                    categoryData.push(element.text);
+                });
+                console.log(categoryData);
+
+
+
+                //pop-up ile kullanıcı bilgilendirilecek
+                alertify.notify('Yüklenen XML dosyasının kategorilerini, size seçtirmek üzere tarıyorum.', 'success', 15, function () { });
+                //server'a(parsecontroller)ajax isteği atılacak
+                $.ajax('/Parse/GetXMLCategoryList', {
+                    type: 'POST',
+                    data: { categoryFields: categoryData },
+                    success: function (data, status, xhr) {
+
+                        //bilgilendirme mesajı pop-up ile eklenecek
+                        alertify.notify('Yüklenen XML dosyasının kategorileri hazır.', 'success', 15, function () { });
+
+                        $('.addtable').html('');
+
+                        //buradan dönen data'lar, foreach ile dönülüp, statik olarak eklenip eşleştirme ekranına basılacak.
+
+                        var addTableHtml = "";
+                        var counter = 0;
+                        $.each(data, function (i) {
+                            counter++;
+                            var selectId = "categorySelect" + counter;
+                            addTableHtml += ` <tr>
+                                            <td><label class="col-sm-12 col-form-label">XML Kategorileri</label></td>
+                                            <td><label class="col-sm-12 ml-4 col-form-label">GittiBu Kategorileri</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="text" data-id="c0" id="xmlcategories" class="col-md-11 mr-4 form-control"
+                                                 value="`+ data[i] +`" disabled />
+                                            </td>
+                                            <td>
+                                                <select id="`+ selectId +`" class="col-md-12 ml-4 mr-4 form-control chosen-select" name="XMLCategoryMatches" required="required" aria-required="true">
+                                                    <option value="">Seçiniz</option>
+                                                    @foreach (var area in Model.AdvertCategories)
+                                                    {
+                                                    <option value="@area.ID">@area.Name</option>
+                                                    }
+                                                </select>
+                                            </td>
+                                        </tr>`;
+                        });
+                        $('.addtable').html(addTableHtml);
+
+                        $('#visibleac').css('cssText', 'display: block !important');
+
+                    },
+                    error: function (jqXhr, textStatus, errorMessage) {
+                        alertify.notify('XML Dosyasından Kategoriler Çekilemedi.', 'error', 15, function () { });
+                    },
+                    complete: function (data) {
+                        $('#Category').removeAttr('disabled');
+                    }
+                });
+                }
+            }
+        });
+
+        $('#cards').carousel({
+            pause: true,
+            interval: false
+        });
+
+        $('#uploadFileButton').on('click', function () {
+            $('#uploadFileModal').css('display', 'block');
+        });
+
+        $('#closeUploadModal').on('click', function () {
+            $('#uploadFileModal').css('display', 'none');
+        });
+
+        $('#fileLinkButton').on('click', function () {
+
+            var formData = new FormData();
+            formData.append("link", $('#fileLink').val());
+
+            ShowLoadingModal();
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/Parse/UploadFileFromLink');
+            xhr.send(formData);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    $rootNames.empty();
+                    $childNodes.empty();
+                    ResetAllMatched();
+                    $rootNames.append($("<option value=''>Seçiniz</option>"));
+                    if (data != null) {
+                        for (var i = 0; i < data.length; i++) {
+                            $rootNames.append($("<option></option>")
+                                .attr("value", data[i]).text(data[i]));
+                        }
+                        $('#uploadFileModal').css('display', 'none');
+                        ShowPopUpAfterUploadFile();
+
+                        //burada file'ın içi boşaltılacak.
+                        $('#file').val("");
+                        setFileName();
+                    }
+                }
+                loadingModal.style.display = "none";
+            };
+        });
+
+        $('#FreeShipping').on('change', function () {
+            var selectedText = $('#FreeShipping option:selected').html();
+            $('#ShippingOwner').val(selectedText);
+        });
+
+        $('#parseForm').validate({
+            ignore: [],
+            invalidHandler: function (event, validator) {
+                var errors = validator.numberOfInvalids(); // <- NUMBER OF INVALIDS
+
+                $('#validationDiv').css('display', 'block');
+                $('#validationSpan').text(errors);
+            },
+            errorPlacement: function (label, element) {
+                var elementFirst = $(element)[0];
+                var elementJq = $(element);
+
+                if (elementFirst.tagName != "input")
+                    if (elementJq.attr('type') == "number" || elementJq.attr('type') == "text") {
+                        element.addClass('is-invalid');
+                    }
+
+                if (elementFirst.tagName == "SELECT") {
+                    if (elementJq.attr('required') == "required") {
+                        element.addClass('is-invalid');
+                        //label.insertAfter(element);
+                    }
+                }
+            },
+            success: function (error, element) {
+                var elementJq = $(element);
+                var elementFirst = $(element)[0];
+
+                if (elementFirst.tagName != "input")
+                    if (elementJq.attr('type') == "number" || elementJq.attr('type') == "text") {
+                        elementJq.removeClass('is-invalid');
+                    }
+
+                if (elementFirst.tagName == "SELECT") {
+                    if (elementJq.attr('required') == "required") {
+                        if (elementFirst.selectedIndex > -1) {
+                            elementJq.removeClass('is-invalid');
+                        }
+                    }
+                }
+            },
+            submitHandler: function (form, event) {
+            var isOk = true;
+                $('select[required][name="XMLCategoryMatches"]').each(function (index, element) {
+                    var elementJq = $(element);
+                    if (!(element.selectedIndex > 0)) {
+                        isOk = false;
+                        elementJq.addClass('is-invalid');
+                }
+            });
+
+                if (!isOk) {
+                    console.log("prevent");
+                     event.preventDefault();
+                 }
+                else {
+                    console.log("submit");
+                     return true;
+                }
+        }
+
+        });
+
+        var loadingModal = document.getElementById('loadingModal');
+        var submitButton = document.getElementById('submitButton');
+        var $rootNames = $("#rootName");
+        var $childNodes = $(".childNode");
+
+        submitButton.onclick = function () {
+            if ($('#parseForm').is(':valid')) {
+                ShowLoadingModal();
+            }
+        };
+
+        $('.childNode').on('change', function () {
+            var selectedIndex = $(this)[0].selectedIndex;
+
+            var isMulti = $(this).attr('multiple') == "multiple" ? true : false;
+            if (selectedIndex != 0 || isMulti) {
+
+                if (isMulti) {
+                    var exampleData = window.firstProduct[selectedIndex];
+                }
+                else {
+                    var exampleData = window.firstProduct[selectedIndex - 1];
+                }
+
+                if (exampleData.length > 30) {
+                    exampleData = exampleData.substr(0,30)
+                }
+                $('#exampleLabel').text(exampleData);
+            }
+            else {
+                $('#exampleLabel').text('');
+            }
+
+            var parentCard = $(this).closest('.card-body');
+            var validateClass = parentCard.children('.validateClass').children('.align-middle');
+            var ok = validateClass.children('#matchedIcon');
+            var not = validateClass.children('#unmatchedIcon');
+
+            var currentCombo = $(this)[0];
+            var isMulti = false;
+            if (currentCombo.type == "select-multiple") {
+                isMulti = true;
+            }
+
+            if (currentCombo.selectedIndex > 0 || isMulti) {
+                ok.css('display', 'inline');
+                not.css('display', 'none');
+            }
+            else {
+                ok.css('display', 'none');
+                not.css('display', 'inline');
+            }
+        });
+
+        //readrootnames
+        var file = document.getElementById('file');
+        file.onchange = function () {
+            if (file.files.length != 0) {
+                var formData = new FormData();
+                for (i = 0; i < file.files.length; i++) {
+                    formData.append(file.files[i].name, file.files[i]);
+                }
+                ShowLoadingModal();
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/Parse/ReadRootName');
+                xhr.send(formData);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+                        var data = JSON.parse(xhr.responseText);
+                        $rootNames.empty();
+                        $childNodes.empty();
+                        ResetAllMatched();
+                        if (data != null) {
+                            $rootNames.append($("<option value=''>Seçiniz</option>"));
+                            for (var i = 0; i < data.length; i++) {
+                                $rootNames.append($("<option></option>")
+                                    .attr("value", data[i]).text(data[i]));
+                            }
+                            $('#uploadFileModal').css('display', 'none');
+                            ShowPopUpAfterUploadFile();
+
+                            //burada link'in içi boşaltılacak.
+                            $('#fileLink').val("");
+                            setFileName();
+                        }
+                        else {
+                            alertify.error('Dosya yüklenirken hata oluştu.');
+                        }
+                    }
+                    loadingModal.style.display = "none";
+                };
+            } else {
+                $rootNames.empty();
+                $childNodes.empty();
+                ResetAllMatched();
+            }
+
+        }
+        //select root name and get read child node
+        var rootName = document.getElementById('rootName');
+        rootName.onchange = function () {
+            if (rootName.selectedIndex != 0) {
+                $childNodes.empty();
+                ResetAllMatched();
+                var selectRootName = rootName.options[rootName.selectedIndex].value;
+                var formData = new FormData();
+                var file = document.getElementById('file');
+                for (i = 0; i < file.files.length; i++) {
+                    formData.append(file.files[i].name, file.files[i]);
+                }
+                ShowLoadingModal();
+                formData.append('rootName', selectRootName);
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '/Parse/ReadChildName');
+                xhr.send(formData);
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4 && xhr.status == 200) {
+
+                        let responseData = JSON.parse(xhr.responseText);
+                        window.firstProduct = responseData[1];
+                        let data = responseData[0];
+                        $childNodes.append("<option value=''>Seçiniz</option>");
+                        for (var i = 0; i < data.length; i++) {
+                            $childNodes.append("<option value='" + data[i] + "'>" + data[i] + "</option>");
+                        }
+
+                        loadingModal.style.display = "none";
+
+                        $childNodes.each(function (index, element) {
+                            var hasAttrMultiple = element.hasAttribute('multiple')
+                            if (hasAttrMultiple) {
+                                element.options[0].remove();
+                            }
+                        });
+                    }
+                };
+            } else {
+                $childNodes.empty();
+                ResetAllMatched();
+            }
+        };
+
+        function ResetAllMatched() {
+            $('.childNode').each(function (index, element) {
+                var parentCard = element.closest('.card-body');
+                var ok = $(parentCard).children('#matchedIcon');
+                var not = $(parentCard).children('#unmatchedIcon');
+
+                ok.css('display', 'none');
+                not.css('display', 'inline');
+                $('.addtable').html('');
+                $('#visibleac').hide();
+            });
+        }
+
+        function ShowPopUpAfterUploadFile() {
+            alertify.notify('Dosya başarıyla yüklendi.', 'success', 5, function () { });
+            alertify.notify('Root Name alanından seçim yapınız.', 'success', 10, function () { });
+        }
+
+        function ShowLoadingModal() {
+            loadingModal.style.display = "block";
+            loadingModal.style.zIndex = "100";
+        }
+
+        function setFileName() {
+            var tempFileName = $('#file').val().split("\\").pop();
+            if (tempFileName.length > 40)
+            {
+                tempFileName = tempFileName.substr(0,40);
+            }
+            $('#fileName').text(tempFileName);
+        }
+
+    </script>
+}

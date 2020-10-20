@@ -1,0 +1,361 @@
+﻿@model HomePageViewModel
+@{
+    var lang = Constants.GetLang(Context.Session.GetString("lang"));
+    ViewData["Title"] = Model.SeoValues.Title;
+    ViewBag.SeoDescription = Model.SeoValues.Description;
+    ViewBag.SeoKeywords = Model.SeoValues.Keywords;
+    Layout = "_Layout";
+}
+@section head{
+    <meta property="og:image" content="http://www.gittibu.com/Content/img/images/GittiBuLogo.jpg" />
+    <meta property="og:url" content="https://www.gittibu.com" />
+}
+@section style {
+    <link href="~/Content/css/main.css" rel="stylesheet" type="text/css" />
+    <style>
+        .modal-header:after {
+            content: none;
+        }
+
+        .modal-header:before {
+            content: none;
+        }
+
+        .slider-banner-logo-item a {
+            transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) !important;
+        }
+
+        .splitbanner {
+            width: 100%;
+        }
+
+        .link-block {
+            padding: 5px 14px 5px 0;
+        }
+
+        h3.ilan {
+            color: #fff;
+        }
+
+        h1.ilan {
+            color: #fff;
+            font-size: x-large;
+        }
+
+        .product-p-white {
+            color: white;
+            font-size: 2px;
+        }
+
+        .product-p-rgba {
+            color: rgba(255,194,0,.19);
+            font-size: 2px;
+        }
+
+        @@media (min-width: 320px) and (max-width: 767px) {
+            .allUzaklik {
+                padding-top: 0px !important;
+            }
+
+            .mobileImage {
+                height: 100% !important;
+            }
+
+            .object-fit-fill-mobile {
+                object-fit: fill;
+            }
+
+            .mobile-100-height {
+                height: 100px !important;
+            }
+        }
+    </style>
+}
+
+<div class="full-slider v2 height-auto">
+    <div class="container-7 w-container p-t-100-5">
+        @* <video playsinline autoplay muted poster="/Content/gittibu/gittibu.gif" id="gittibutanitim" class="width-100-100"> *@
+        @*     <source src="/Content/videos/gittibu.mp4" type="video/mp4"> *@
+        @*     Tarayıcınız videoyu desteklemiyor *@
+        @* </video> *@
+
+        <div class="row p-t-100-3 m-b-10 allUzaklik mobile-100-height">
+            <h1 hidden="hidden" class="heading-2 kirala font-size-2-3-em"> Letgo, Letgo Türkiye, Letgo alternatifi, Instagram da satis yap, facebook ta satis yap</h1>
+            <p hidden="hidden" class="paragraph-2 pbilgi font-size-1-25-em"> Twitter da satis yap, Whatssup da satis yap, ikinci el urun satisi, ikinci el esya internet satisi, Paypal alternatifi, shoppier, iyzilink </p>
+
+            <div class="col-12">
+                <img class="width-100-100 mobileImage object-fit-fill-mobile" id="UstResim" src="https://www.gittibu.com/Content/img/ArkaPlan.png" alt="GittiBu Güvenilir Online Satış Sistemi. Sosyal Medyada Ürün Satmanın Yeni Yöntemi">
+                @*<img class="width-100-100 mobileImage object-fit-fill-mobile" id="UstResim" src="https://www.test.gittibu.com/Content/img/ArkaPlan.png" alt="GittiBu Güvenilir Online Satış Sistemi. Sosyal Medyada Ürün Satmanın Yeni Yöntemi">*@
+            </div>
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<div id="alisveris" class="sec-altsayfa section-1">
+    <div class="w-container">
+
+        <div class="side-bar">
+            <div class="kategoriler-div">
+                <div class="kategoriler">@Html.Raw(Localization.Get("KATEGORİLER", "CATEGORIES", lang)) </div>
+
+                @foreach (var category in Model.AdvertCategories)
+                {
+                <a href="/@(Localization.Get("Kategori", "Category" , lang))/@category.Slug" class="link-block w-clearfix w-inline-block">
+                <img alt="@Html.Raw(category.Description)" src="@(string.IsNullOrEmpty(category.IconSource)?"/favicon.png":category.IconSource)" onerror="this.src = '/favicon.png';" width="19" height="19" title="@Html.Raw(category.Name)" />
+                <h2 class="home-left-item">@Html.Raw(category.Name)</h2>
+                </a>
+                if (category.Name == "Ev Eşyası, Dekor" || category.Name == "Household Appliances")
+                {
+                <a href="https://www.audiophile.org" target="_blank" class="link-block w-clearfix w-inline-block">
+                    <img alt="@Html.Raw(Localization.Get("Ev Elektroniği", "Home Electronics" , lang))" src="/Upload/Categories/ev-elektronigi.png" width="19" height="19" title="@Html.Raw(Localization.Get(" Ev Elektroniği", "Home Electronics" , lang))" />
+                    <h2 class="home-left-item">@Html.Raw(Localization.Get("Ev Elektroniği", "Home Electronics", lang))</h2>
+                </a>
+                }
+                }
+            </div>
+
+            <div class="kategoriler">@Localization.Get("DESTEK", "SUPPORT", lang) </div>
+
+            <a href="@Constants.GetURL((int) Enums.Routing.Hakkimizda, lang)" class="link-block w-inline-block w-clearfix">
+                <h4 class="home-left-item m-l-0">- @Localization.Get("Hakkımızda", "About Us", lang)</h4>
+            </a>
+
+            <a href="@Constants.GetURL((int) Enums.Routing.Videolar, lang)" class="link-block w-inline-block w-clearfix">
+                <h4 class="home-left-item m-l-0">- @Localization.Get("Videolar", "Videos", lang)</h4>
+            </a>
+            <a href="@Constants.GetURL((int) Enums.Routing.Yardim, lang)" class="link-block w-inline-block  ">
+                <h4 class="home-left-item m-l-0">- @Localization.Get("Yardım", "Help", lang)</h4>
+            </a>
+            <a href="@Constants.GetURL((int) Enums.Routing.KullanimKosullari, lang)" class="link-block w-inline-block  ">
+                <h4 class="home-left-item m-l-0">- @Localization.Get("Kullanım Koşulları", "Terms of Use", lang)</h4>
+            </a>
+            <a href="@Constants.GetURL((int)Enums.Routing.GuvenliOdemeGittiBu, lang)" class="link-block w-inline-block">
+                <h4 class="home-left-item m-l-0">- @Localization.Get("Nasıl Çalışır","How it Works", lang)</h4>
+            </a>
+            <a href="@Constants.GetURL((int) Enums.Routing.Ucretler, lang)" class="link-block w-inline-block  ">
+                <h4 class="home-left-item m-l-0">- @Localization.Get("Ücretler", "Fees", lang)</h4>
+            </a>
+            <a href="@Constants.GetURL((int) Enums.Routing.Iletisim, lang)" class="link-block w-inline-block   ">
+                <h4 class="home-left-item m-l-0">- @Localization.Get("İletişim", "Contact Us", lang)</h4>
+            </a>
+
+        </div>
+
+        <div class="div-block-36">
+            <div class="div-head w-clearfix">
+                <div class="div-block-36">
+                    <div class="products">
+                        @{
+                            var index = 0;
+                            while (index < Model.Items.Count && index < 12)
+                            {
+                                await Html.RenderPartialAsync("~/Views/Partials/HomePageItem_4Column.cshtml", Model.Items[index]);
+                                index++;
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+
+<div class="ayirackalip">
+    <div class="section-2">
+        <div class="div-ad-text p-t-0 p-b-0 ayirackalip-backcolor ayirackalip-display">
+            <h1 class="ilan ilan-style-margin">
+                @Model.SeoValues.Separator
+            </h1>
+        </div>
+    </div>
+</div>
+
+
+<div class="sec-logolar beyaz-alan p-b-50">
+    <div>
+        <div class="container-logolar w-container">
+            <div class="content cont2">
+                <div class="div-block-36">
+                    <div class="products" id="listing">
+                        @{
+                            for (; index < Model.Items.Count; index++)
+                            {
+                                await Html.RenderPartialAsync("~/Views/Partials/HomePageItem_5Column.cshtml", Model.Items[index]);
+                                if (index == 21)
+                                {
+                                    <div class="ayirackalip splitbanner">
+                                        <div class="section-2 ayirackalip-backcolor">
+                                            <div class="div-ad-text ayirackalip-padding">
+                                                <h4 class="h4-style">
+                                                    @Localization.Get("Kullanılmış Eşyanızı Sosyal Medyanızda Paylaşıp Kolayca Satış Yapıp Ödeme Alın",
+                                                        "Buy and Sell second hand stuff online in safe environment", lang)
+                                                </h4>
+                                                <h5 class="h5-style">
+                                                    @Localization.Get("Nasıl mı? GittiBu.com a ücretsiz üye olun, eski bisikletinizi kredi kartına taksit ile satın. " +
+                                                                      "Alıcıyı GittiBu.com kredilendirsin, paranız birkaç gün içinde banka hesabınıza gelsin.",
+                                                        "Buy and Sell second hand stuff online in safe environment. Sell things you don't use by credit card and find great deals", lang)
+                                                </h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                if (index == 31)
+                                {
+                                    <div class="ayirackalip splitbanner">
+                                        <div class="section-2 ayirackalip-backcolor text-center">
+                                            <div class="div-ad-text ayirackalip-padding">
+                                                <h4 class="h4-style">
+                                                    @Localization.Get("GittiBu.com ile satılması güç eşyalarınızı kredi kartına taksitlendirerek satış şansını arttırırsınız",
+                                                        "Buy & Sell your second hands in Turkey easily by credit card.", lang)
+                                                </h4>
+                                                <h5 class="h5-style">
+                                                    @Localization.Get("Nasıl mı? Ücretsiz üye olun, satılık eşyanızı kaydedin, oluşturduğunuz linki sosyal medya hesaplarınızda paylaşın. " +
+                                                                      "Alıcının tek yapması gereken şey GittiBu.com a üye olarak kredi kartı ile ödemeyi gerçekleştirmesi.",
+                                                        "Register at GittiBu, post your item, share it on facebook, twitter, instagram pages or on whatsApp or email groups that’s all. " +
+                                                        "What the buyer does it to register and pay by credit card. Full process is followed up by GittiBu", lang)
+                                                </h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+                @*<a  onclick="getAdverts()" class="button button-main button-sub w-button load-more-button">
+                        @Localization.Get("Daha Fazla...", "Load More...", lang)
+                    </a>*@
+                <a href="javascript:;" id="btnLoadMore" onclick="getAdverts()" class="button button-main w-button">
+                    @Localization.Get("Daha Fazla", "Load More", lang)
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="section-2">
+    <div class="div-ad-text p-t-20 p-b-20 background-color-0e7dd9">
+        <h3 class="ilan">
+            @Html.Raw(TextService.GetText((int)Enums.Texts.AnaSayfaAltYaziBaslik, lang))
+        </h3>
+        <div class="div-line"></div>
+        <p class="paragraph paragraf-width-100-40">
+            @Html.Raw(TextService.GetText((int)Enums.Texts.AnaSayfaAltYazi, lang))
+        </p>
+        <a href="@Constants.GetURL(Enums.Routing.IlanEkle, lang)" class="button button-main w-button">
+            @Localization.Get("İlan Ekle", "Add Listing", lang)
+        </a>
+    </div>
+</div>
+
+
+@section Scripts
+    {
+    <script>
+        function getAdverts() {
+            $("#btnLoadMore")
+                .html(
+                    '<i class="fa fa-spin fa-spinner m-r-10"></i> @(Localization.Get("Yükleniyor", "Loading", lang))...')
+                .addClass("disabled");
+
+            const offset = $('.pw4').length;
+
+            const request = $.ajax({
+                url: "/Home/GetAdverts",
+                data: { offset },
+                method: "POST",
+                success:function(data){
+
+                    if (data.trim().length === 0) {
+                        $("#btnLoadMore").remove();
+                    } else {
+                        $("#listing").append(data);
+                        $("#btnLoadMore").html('@Localization.Get("Daha Fazla...", "Load More...", lang)')
+                            .removeClass("disabled");
+                    }
+                },
+                error:function(){
+                    $("#btnLoadMore").remove();
+                }
+            });
+
+
+        }
+    </script>
+
+
+    @*<script type="text/javascript" src="~/Content/script/home.js"></script>*@
+    <script>
+        $('.owl-carousel').owlCarousel({
+            loop: true,
+            margin: 10,
+            nav: false,
+            autoplay: true,
+            autoplayHoverPause: true,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                600: {
+                    items: 3
+                },
+                1000: {
+                    items: 5
+                }
+            }
+        })
+    </script>
+
+    <script>
+        function clickBanner(id) {
+            $.ajax({
+                url: "/BannerClick",
+                data: { id },
+                method: "POST"
+            });
+        }
+    </script>
+    <script>
+       @if (ViewBag.ScrollToBottom != null && ViewBag.ScrollToBottom == true )
+       {
+           <text>
+               setTimeout(scrollToBottom, 200);
+
+                function scrollToBottom(){
+                    var divLoc = $('#advert_'+minId).offset();
+                    $('html, body').animate({scrollTop: divLoc.top - 100}, "slow");
+                };
+            </text>
+       }
+    </script>
+    <script>
+        window.addEventListener("resize", function () {
+            if (innerWidth > 310 && innerWidth < 767) {
+                $('#UstResim').attr("src", "https://www.gittibu.com/Content/img/ArkaPlanMobil.png");
+            }
+            else {
+                $('#UstResim').attr("src", "https://www.gittibu.com/Content/img/ArkaPlan.png");
+                //$('#UstResim').attr("src", "https://www.test.gittibu.com/Content/img/ArkaPlan.png");
+
+            }
+        }, false);
+        if (innerWidth > 310 && innerWidth < 767) {
+            $('#UstResim').attr("src", "https://www.gittibu.com/Content/img/ArkaPlanMobil.png");
+        }
+        else {
+            $('#UstResim').attr("src", "https://www.gittibu.com/Content/img/ArkaPlan.png");
+            //$('#UstResim').attr("src", "https://www.test.gittibu.com/Content/img/ArkaPlan.png");
+
+        }
+    </script>
+}

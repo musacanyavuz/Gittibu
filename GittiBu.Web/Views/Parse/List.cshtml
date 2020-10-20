@@ -1,0 +1,284 @@
+﻿@{
+    ViewData["Title"] = "GittiBu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section style{
+    <link href="~/Content/css/jsgrid.min.css" rel="stylesheet" />
+    <link href="~/Content/css/jsgrid-theme.min.css" rel="stylesheet" />
+    <link href="~/Content/css/jquery-ui.css" rel="stylesheet" />
+    <style>
+
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+
+        .close {
+            /*color: #aaaaaa;*/
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: #000;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+        .container {
+            height: 675px;
+            padding-top: 6%;
+        }
+
+        .jsgrid-pager {
+            color: white;
+        }
+
+            .jsgrid-pager a {
+                color: darkblue;
+            }
+
+        .labelColor {
+            color: white;
+        }
+
+        .jsgrid-cell {
+            word-wrap: break-word;
+        }
+    </style>
+}
+
+<div class="container">
+
+    <div id="loadingModal" class="modal" style="padding-left:150px;padding-right:150px;">
+        <div class="modal-content">
+            <p>İşleminiz Gerçekleştiriliyor...</p>
+            <button class="btn btn-primary" type="button" style="background-color:orange" disabled>
+                <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+                Lütfen Bekleyiniz...
+            </button>
+        </div>
+    </div>
+    @{
+        string h1 = ViewBag.Baslik;
+        string span = ViewBag.Icerik;
+    }
+    <h1 class="labelColor">@h1</h1>
+    <span class="labelColor">@span</span>
+    @if (User.Identity.IsAuthenticated && int.Parse(User.Claims.Single(x => x.Type == ClaimTypes.UserData).Value) == 2)
+    {
+        <div style="float:left; display:none">
+            <input type="text" id="parsesID" />
+        </div>
+        <div style="float:left; display:none">
+            <input type="button" value="Sil" onclick="DeleteUnnecessaryPhotos()" />
+        </div>
+    }
+        <div id="jsGrid"></div>
+    </div>
+
+
+
+    @section Scripts{
+        <script src="~/Content/script/jquery-3.4.1.js"></script>
+        <script src="~/Content/script/jquery-ui.js"></script>
+        <script src="~/Content/script/jquery.validate.min.js"></script>
+        <script>window.jQuery || document.write('<script src="/js/jquery-1.8.3.js"><\/script>')</script>
+        <script src="~/Content/script/jsgrid.min.js"></script>
+        <script>
+            function DeleteUnnecessaryPhotos() {
+
+                $('#loadingModal').css('display', 'block');
+                var id = 1;// $('#parsesID').val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Parse/DeleteUnnecessaryPhotos",
+                    data: { pareseID: id },
+                    dataType: "json",
+                    success: function (msg) {
+                        $('#loadingModal').css('display', 'none');
+                        alert('TotalFiles ' + msg.totalFiles + '\n totalFileSize ' + msg.totalFileSize);
+
+                    },
+                    error: function (req, status, error) {
+                        $('#loadingModal').css('display', 'none');
+                        alert(error);
+                    }
+                });
+
+            }
+            $(document).ready(function () {
+
+                $("#jsGrid").jsGrid({
+                    height: "auto",
+                    width: "100%",
+                    editing: true,
+                    sorting: true,
+                    paging: true,
+                    autoload: true,
+                    pageSize: 5,
+                    pageButtonCount: 5,
+                    invalidMessage: "Aralıkta olmayan bir değer girdiniz.",
+                    deleteConfirm: "Emin misiniz?",
+                    loadMessage: "Lütfen bekleyin...",
+                    pagerFormat: "Sayfalar: {first} {prev} {pages} {next} {last}    {pageCount} 'te {pageIndex}",
+                    pagePrevText: "Geri",
+                    pageNextText: "İleri",
+                    pageFirstText: "İlk",
+                    pageLastText: "Son",
+                    noDataContent: "Veri Bulunamadı.",
+                    controller: {
+                        loadData: () => {
+                            var d = $.Deferred();
+
+                            $.ajax({
+                                type: "GET",
+                                url: "/Parse/GetFileList",
+                                dataType: "json"
+                            }).done(function (response) {
+                                d.resolve(response)
+                            });
+
+                            return d.promise();
+                        },
+                        updateItem: function (item) {
+
+                            $('#loadingModal').css('display', 'block');
+                            return $.ajax({
+                                type: "POST",
+                                url: "/Parse/Edit",
+                                data: item,
+                                dataType: "json"
+                            }).done(function (response) {
+                                triggerLoadData();
+                            }).always(function (response) {
+                                $('#loadingModal').css('display', 'none');
+                            });;
+
+                        },
+                        deleteItem: function (item) {
+
+                            $('#loadingModal').css('display', 'block');
+                            return $.ajax({
+                                type: "POST",
+                                url: "/Parse/Delete",
+                                data: item
+                            }).done(function (response) {
+                                triggerLoadData();
+                            }).always(function (response) {
+                                $('#loadingModal').css('display', 'none');
+                            });
+                        }
+                    },
+                    fields: [
+                        { name: "ID", width: 0, visible: false },
+                        { name: "userFileName", title: "Dosya Adı", type: "text", width: 200, editing: false, align: "center" },
+                        {
+                            name: "advertCount", title: "Aktif İlan Sayısı", type: "number", align: "center", width: 50, editing: false,
+                            itemTemplate: function (value) {
+                                return value == null ? 0 : value;
+                            }
+                        },
+                        {
+                            name: "priceFilter", title: "Minimum Fiyat", type: "number", align: "center", width: 50,
+                            validate: {
+                                validator: "min",
+                                message: function (value, item) {
+                                    return "Fiyat değeri 0'dan büyük olmalıdır.";
+                                },
+                                param: 0
+                            }
+                        },
+                        {
+                            name: "stockFilter", title: "Minimum Stok", type: "number", align: "center", width: 50,
+                            validate: {
+                                validator: "min",
+                                message: function (value, item) {
+                                    return "Stok değeri 0'dan büyük olmalıdır.";
+                                },
+                                param: 0
+                            }
+                        },
+                        {
+                            name: "discount", title: "Satış Fiyat Çarpanı", type: "number", align: "center", width: 50,
+                            validate: {
+                                validator: "range",
+                                message: function (value, item) {
+                                    return "İskonto değeri -100 ile 100 arasında olmalıdır.";
+                                },
+                                param: [-100, 100]
+                            },
+                            itemTemplate: function (value) {
+                                return "%" + value;
+                            }
+                        },
+                        {
+                            name: "newPriceDiscount", title: "Orijinal Satış Fiyat Çarpanı", type: "number", align: "center", width: 50,
+                            validate: {
+                                validator: "range",
+                                message: function (value, item) {
+                                    return "İskonto değeri -100 ile 100 arasında olmalıdır.";
+                                },
+                                param: [-100, 100]
+                            },
+                            itemTemplate: function (value) {
+                                return "%" + value;
+                            }
+                        },
+                        { name: "maxInstallment", title: "Taksit Sayısı", type: "select", items: [{ Name: 1, Id: 1 }, { Name: 2, Id: 2 }, { Name: 3, Id: 3 }, { Name: 6, Id: 6 }, { Name: 9, Id: 9 }, { Name: 12, Id: 12 }], valueField: "Id", textField: "Name", width: 50, editing: true, align: "center" },
+                        { name: "freeShipping", title: "Kargo Ücreti", type: "select", items: [{ Name: "Satıcıya Ait", Id: true }, { Name: "Alıcıya Ait", Id: false }], valueField: "Id", textField: "Name", width: 60, editing: true, align: "center" },
+                        { name: "supplier", title: "Tedarikçi", type: "text", width: 100, editing: true, align: "center" },
+                        { name: "createDate", title: "Yükleme Tarihi", type: "date", align: "center", width: 75, editing: false },
+                        { name: "updateDate", title: "Güncelleme Tarihi", type: "date", align: "center", width: 75, editing: false },
+                        { type: "control" }
+                    ]
+                });
+            });
+
+            var MyDateField = function (config) {
+                jsGrid.Field.call(this, config);
+            };
+
+            MyDateField.prototype = new jsGrid.Field({
+
+                itemTemplate: function (value) {
+                    if (value == "" || value == null) {
+                        return "";
+                    }
+                    else {
+                        var date = new Date(value);
+                        return dateString = date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear();
+                    }
+                }
+            });
+
+            jsGrid.fields.date = MyDateField;
+
+            function triggerLoadData() {
+                $("#jsGrid").jsGrid("loadData");
+            }
+
+        </script>
+    }

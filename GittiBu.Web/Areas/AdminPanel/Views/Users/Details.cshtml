@@ -1,0 +1,198 @@
+@model User
+
+@{
+    ViewBag.Title = "Kullanıcı Detayları";
+    Layout = "AdminLayout";
+    ViewData["ActiveMenu"] = "menu-item-users";
+}
+
+<div class="m-content">
+
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="m-portlet">
+                <div class="m-portlet__head">
+                    <div class="m-portlet__head-caption">
+                        <div class="m-portlet__head-title">
+                            <span class="m-portlet__head-icon m--hide">
+                                <i class="la la-gear"></i>
+                            </span>
+                            <h3 class="m-portlet__head-text">
+                                Kullanıcıyı Düzenle
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                @using (Html.BeginForm("Edit", "Users", FormMethod.Post,
+                    new {@class="m-form"}))
+                {
+                    <input type="hidden" name="ID" value="@Model.ID"/>
+                    <div class="m-portlet__body">	
+                        <div class="m-form__section m-form__section--first">
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-4 col-form-label">Kullanıcı Adı:</label>
+                                <div class="col-lg-6">
+                                    <input type="text" name="UserName" value="@Model.UserName" class="form-control m-input">
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-4 col-form-label">Email:</label>
+                                <div class="col-lg-6">
+                                    <input type="email" name="Email" value="@Model.Email" class="form-control m-input">
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-4 col-form-label">Ad Soyad:</label>
+                                <div class="col-lg-6">
+                                    <input type="text" name="Name" value="@Model.Name" class="form-control m-input">
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-4 col-form-label">Telefon Numarası:</label>
+                                <div class="col-lg-6">
+                                    <input type="text" name="MobilePhone" value="@Model.MobilePhone" class="form-control m-input">
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-4 col-form-label">TC:</label>
+                                <div class="col-lg-6">
+                                    <input type="text" name="TC" value="@Model.TC" maxlength="11" class="form-control m-input">
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-4 col-form-label">WebSite:</label>
+                                <div class="col-lg-6">
+                                    <input type="text" name="WebSite" value="@Model.WebSite" class="form-control m-input">
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-4 col-form-label">Hakkında:</label>
+                                <div class="col-lg-6">
+                                    <input type="text" name="About" value="@Model.About" class="form-control m-input">
+                                </div>
+                            </div>
+                            <div class="form-group m-form__group row">
+                                <label class="col-lg-4 col-form-label">Rol/Yetki:</label>
+                                <div class="col-lg-6">
+                                    <select name="Role" class="form-control">
+                                        <option>User</option>
+                                        <option>Admin</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="m-portlet__foot m-portlet__foot--fit">
+                        <div class="m-form__actions m-form__actions">
+                            <div class="row">
+                                <div class="col-lg-4"></div>
+                                <div class="col-lg-6">
+                                    <button type="submit" class="btn btn-success">Kaydet</button>
+                                    <a href="/AdminPanel/Users" class="btn btn-secondary">Vazgeç</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        
+        <div class="col-xl-6">
+            <div class="row">
+                <div class="col-12">
+                    <div class="m-portlet">
+                        <div class="m-portlet__head">
+                            <div class="m-portlet__head-caption">
+                                <div class="m-portlet__head-title">
+                                    <span class="m-portlet__head-icon m--hide">
+                                        <i class="la la-gear"></i>
+                                    </span>
+                                    <h3 class="m-portlet__head-text">
+                                        Kimlik Fotoğrafları &nbsp;&nbsp;
+                                        @if (Model.IdentityPhotosApproved)
+                                        {
+                                            <label class="font-weight-bold text-success m--margin-top-5">ONAYLANMIŞ</label>
+                                        }
+                                        else
+                                        {
+                                            <label class="font-weight-bold text-danger m--margin-top-5">ONAYLANMAMIŞ</label>
+                                        }
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-portlet__body">
+                            <div class="row">
+                                @if (!Model.IdentityPhotosApproved)
+                                {
+                                    <a href="/AdminPanel/Users/ApproveIdentity/@Model.ID" class="btn btn-success btn-sm m-btn m-btn--pill m-btn--wide font-weight-bold">Onayla</a>
+                                }
+                                else
+                                {
+                                    <a href="/AdminPanel/Users/RejectIdentity/@Model.ID" class="btn btn-danger btn-sm m-btn m-btn--pill m-btn--wide font-weight-bold">Reddet</a>
+                                }
+                                <br/>
+                            </div>
+                            <div class="row m--margin-top-10">
+                                <div class="col">
+                                    <span class="font-weight-bold">Ön</span> <br/>
+                                    <a href="@Model.IdentityPhotoFront" target="_blank"><img src="@Model.IdentityPhotoFront" style="max-width: 100%"/></a>
+                                </div>
+                                <div class="col">
+                                    <span class="font-weight-bold">Arka</span> <br/>
+                                    <a href="@Model.IdentityPhotoBack" target="_blank"><img src="@Model.IdentityPhotoBack" style="max-width: 100%"/></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+             <div class="row">
+                <div class="col-12">
+                    <div class="m-portlet">
+                        <div class="m-portlet__head">
+                            <div class="m-portlet__head-caption">
+                                <div class="m-portlet__head-title">
+                                    <span class="m-portlet__head-icon m--hide">
+                                        <i class="la la-gear"></i>
+                                    </span>
+                                    <h3 class="m-portlet__head-text">
+                                        IBAN &nbsp;&nbsp;
+                                        @if (Model.IbanApproved)
+                                        {
+                                            <label class="font-weight-bold text-success m--margin-top-5">ONAYLANMIŞ</label>
+                                        }
+                                        else
+                                        {
+                                            <label class="font-weight-bold text-danger m--margin-top-5">ONAYLANMAMIŞ</label>
+                                        }
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-portlet__body">
+                            <div class="row">
+                                @if (!Model.IbanApproved)
+                                {
+                                    <a href="/AdminPanel/Users/ApproveIban/@Model.ID" class="btn btn-success btn-sm m-btn m-btn--pill m-btn--wide font-weight-bold">Onayla</a>
+                                }
+                                else
+                                {
+                                    <a href="/AdminPanel/Users/RejectIban/@Model.ID" class="btn btn-danger btn-sm m-btn m-btn--pill m-btn--wide font-weight-bold">Reddet</a>
+                                }
+                                <br/>
+                            </div>
+                            <div class="row m--margin-top-10">
+                                <div class="col">
+                                    <span class="font-weight-bold">IBAN: @ViewBag.IBAN </span> <br/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

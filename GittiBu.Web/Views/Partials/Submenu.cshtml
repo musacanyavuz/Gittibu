@@ -1,0 +1,97 @@
+@model List<AdvertCategory>
+@{
+    var lang = Constants.GetLang(Context.Session.GetString("lang"));
+}
+@section style{
+    <style>
+        #submenu .nav-link{
+            font-size: 10px;
+            color: #969696;
+            border-left: 1px solid #969696;
+            padding: 1rem 2.5rem 1rem 1.5rem !important;
+        }
+    </style>
+}
+
+
+<div id="submenu" data-collapse="none" data-animation="default" data-duration="400" class="navbar-2 w-hidden-small w-hidden-tiny w-nav">
+    <div class="w-container">
+        <nav class="nav-menu-2 w-clearfix w-nav-menu">
+            <div data-delay="0" data-hover="1" class="dropdown-3 w-dropdown nav-menu-dropdown-max-width">
+                <div class="nav-alt nav-link nav-son w-dropdown-toggle">
+                    <div class="w-icon-dropdown-toggle"></div>
+                    @Localization.Get("KATEGORİLER", "CATEGORIES", lang)
+                </div>
+                <nav data-ix="new-interaction-2" class="arsiv blog dropdown-list-2 w-dropdown-list nav-menu-dropdownList-style">
+                    <div class="div-block-6 w-clearfix">
+                        
+                        @foreach (var category in Model)
+                        {
+                            <div class="drop-list list-blog w-clearfix width-100-100">
+                                <a href="/@(Localization.Get("Kategori/", "Category/", lang) + category.Slug)" class="link-block link-list w-clearfix w-inline-block">
+                                    <div class="d-t text-block-6">
+                                        <img alt="@Html.Raw(category.Description)" src="@(!string.IsNullOrEmpty(category.IconSource) ? category.IconSource : "/favicon.png")" onerror="this.src = '/Content/img/images/favicon.jpg';" width="19" height="19"/>
+                                        @Html.Raw(category.Name)
+                                    </div>
+                                </a>
+                            </div>  
+                        }
+                    </div>
+                </nav>
+            </div>
+
+            
+            <div data-delay="0" data-hover="1" class="dropdown-3 w-dropdown nav-menu-dropdown-max-width;">
+                <div class="nav-alt nav-link nav-son w-dropdown-toggle">
+                    <div class="w-icon-dropdown-toggle"></div>
+                    @Localization.Get("DESTEK", "SUPPORT", lang)
+                </div>
+                <nav data-ix="new-interaction-2" class="arsiv blog dropdown-list-2 w-dropdown-list nav-menu-dropdownList-style">
+                    <div class="div-block-6 w-clearfix">
+                        <div class="drop-list list-blog w-clearfix width-100-100">
+                            <a href="@Constants.GetURL((int) Enums.Routing.Hakkimizda, lang)" class="link-block link-list w-clearfix w-inline-block">
+                                <div class="d-t text-block-6">@Html.Raw(Localization.Get("Hakkımızda", "About Us", lang))</div>
+                            </a>
+                        </div>
+                        <div class="drop-list list-blog w-clearfix width-100-100">
+                            <a href="@Constants.GetURL((int) Enums.Routing.Videolar, lang)" class="link-block link-doyo link-list w-clearfix w-inline-block">
+                                <div class="d-t text-block-6">@Localization.Get("Videolar", "Videos", lang)</div>
+                            </a>
+                        </div>
+                        <div class="drop-list list-blog w-clearfix width-100-100">
+                            <a href="@Constants.GetURL((int) Enums.Routing.Yardim, lang)" class="link-block link-list w-clearfix w-inline-block">
+                                <div class="d-t text-block-6">@Html.Raw(Localization.Get("Yardım", "Help", lang))</div>
+                            </a>
+                        </div>
+                        <div class="drop-list list-blog w-clearfix width-100-100">
+                            <a href="@Constants.GetURL((int) Enums.Routing.KullanimKosullari, lang)" class="link-block link-list w-clearfix w-inline-block">
+                                <div class="d-t text-block-6">@Html.Raw(Localization.Get("Kullanım Koşulları", "Terms Of Use", lang))</div>
+                            </a>
+                        </div>
+                        <div class="drop-list list-blog w-clearfix width-100-100">
+                            <a href="@Constants.GetURL((int) Enums.Routing.GuvenliOdemeGittiBu, lang)" class="link-block link-list w-clearfix w-inline-block">
+                                <div class="d-t text-block-6">@Html.Raw(Localization.Get("Güvenli Ödeme Gitti Bu", "Secure Payments", lang))</div>
+                            </a>
+                        </div>
+                        <div class="drop-list list-blog w-clearfix width-100-100"  >
+                            <a href="@Constants.GetURL((int) Enums.Routing.Ucretler, lang)" class="link-block link-list w-clearfix w-inline-block">
+                                <div class="d-t text-block-6">@Html.Raw(Localization.Get("Ücretler", "Fees", lang))</div>
+                            </a>
+                        </div>
+                        <div class="drop-list list-blog w-clearfix width-100-100">
+                            <a href="@Constants.GetURL((int) Enums.Routing.Iletisim, lang)" class="link-block link-list w-clearfix w-inline-block">
+                                <div class="d-t text-block-6">@Html.Raw(Localization.Get("İletişim", "Contact Us", lang))</div>
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+ 
+        </nav>
+        <div class="w-nav-button">
+            <div class="w-icon-nav-menu"></div>
+        </div>
+    </div>
+    <div class="w-nav-overlay" data-wf-ignore=""></div>
+    <div class="w-nav-overlay" data-wf-ignore=""></div>
+</div>

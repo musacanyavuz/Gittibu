@@ -1,0 +1,56 @@
+@*<page size="A4">
+    @Html.Raw(@ViewBag.htmlContent)
+    </page>*@
+@model PaymentRequest
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>GittiBu.com Mesafeli Satış Sözleşmesi</title>
+    <style>
+        body {
+            background: rgb(204,204,204);
+            /*-webkit-touch-callout: none;*/ /* iOS Safari */
+            /*-webkit-user-select: none; /* Safari */ */
+            /*-khtml-user-select: none;*/ /* Konqueror HTML */
+            /*-moz-user-select: none;*/ /* Firefox */
+            /*-ms-user-select: none;*/ /* Internet Explorer/Edge */
+            /*user-select: none;*/
+        }
+
+        page {
+            background: white;
+            display: block;
+            margin: 0 auto;
+            margin-bottom: 0.5cm;
+            box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+        }
+
+            page[size="A4"] {
+                width: 21cm;
+                padding: 1rem;
+            }
+
+                page[size="A4"][layout="portrait"] {
+                    width: 29.7cm;
+                }
+
+        @@media print {
+            body, page {
+                margin: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
+    <link href="~/Content/new/custom.css?v13" rel="stylesheet" />
+</head>
+<body>
+
+    @Html.Raw(@ViewBag.htmlContent)
+
+</body>
+</html>

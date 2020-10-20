@@ -1,0 +1,42 @@
+@model int
+@{
+    var lang = Constants.GetLang(Context.Session.GetString("lang"));
+}
+<div class="side-bar side-bar-width-100-15" >
+    <div class="kategoriler-div w-clearfix">
+        <div class="kategoriler">@Localization.Get("Hesap İşlemleri","Account Settings", lang)</div>
+        
+        <a href="@Constants.GetURL(Enums.Routing.UyelikBilgilerim, lang)" class="link-block w-inline-block w-clearfix sidemenu-link">
+            <div>@Localization.Get("Üyelik Bilgilerim","Personal Information", lang)</div>
+        </a>
+        <a href="@Constants.GetURL(Enums.Routing.KimlikFotograflarim, lang)" class="link-block w-inline-block w-clearfix sidemenu-link">
+            <div>@Localization.Get("Kimlik Fotoğraflarım","My Identity Photos", lang)</div>
+        </a>
+        
+        <a href="@Constants.GetURL(Enums.Routing.AdresBilgierim, lang)" class="link-block w-inline-block w-clearfix sidemenu-link">
+            <div>@Localization.Get("Adres Bilgilerim","Postage Address", lang)</div>
+        </a>
+        <a href="@Constants.GetURL(Enums.Routing.SifreDegistir, lang)" class="link-block w-inline-block sidemenu-link">
+            <div>@Localization.Get("Şifre Değiştir","Change Password", lang)</div>
+        </a>
+        <a href="@Constants.GetURL(Enums.Routing.Alislarim, lang)" class="link-block w-inline-block sidemenu-link">
+            <div>@Localization.Get("Alışlarım","My Buying", lang)</div>
+        </a>
+        <a href="@Constants.GetURL(Enums.Routing.Satislarim, lang)" class="link-block w-inline-block sidemenu-link">
+            <div>@Localization.Get("Satışlarım","My Sales", lang)</div>
+        </a>
+        <a href="@Constants.GetURL(Enums.Routing.Ilanlarim, lang)" class="link-block w-inline-block sidemenu-link">
+            <div>@Localization.Get("İlanlarım","My Advertisements", lang)</div>
+        </a>
+        <a href="@Constants.GetURL(Enums.Routing.BegendigimIlanlar, lang)" class="link-block w-inline-block sidemenu-link">
+            <div>@Localization.Get("Beğendiğim İlanlar","My Likes", lang)</div>
+        </a>
+    </div>
+</div>
+ 
+<script>
+    window.onload = function() {
+        $($('.sidemenu-link')[@Model]).addClass('w--current');
+    } 
+</script> 
+

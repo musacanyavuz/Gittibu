@@ -1,0 +1,66 @@
+@model string
+
+@{
+    var lang = Constants.GetLang(Context.Session.GetString("lang"));
+    ViewBag.Title = Localization.Get("Ücretler", "Fees", lang);
+    Layout = "_Layout";
+}
+<div class="section-1 sec-altsayfa sec-hesaplar">
+    <div class="w-container">
+
+        @{
+            await Html.RenderPartialAsync("SupportSideMenu", 5);
+        }
+
+        <div class="content w-clearfix">
+            <div class="div-block-20 div-ilan hesap w-clearfix">
+                <h4 class="h2 h4 h-kat h-kategori">@ViewBag.Title</h4>
+            </div>
+            <div class="product product-list urulerim bannerlar">
+                <div class="uruns hak box-sss">
+                    @Html.Raw(Model)
+                </div>
+            </div>
+            <br />
+            <div class="product product-list urulerim bannerlar">
+                <div class="uruns hak box-sss">
+                    <div id="prices">
+                    </div>
+                </div>
+            </div>
+            @{
+                await Html.RenderPartialAsync("~/Views/Partials/SupportForm.cshtml");
+            }
+        </div>
+
+    </div>
+</div>
+
+
+@section Scripts
+{
+
+    <script>
+        window.onload = function (e) {
+            getPrices();
+        };
+        function getPrices() {
+            var price = 100;
+            var request = $.ajax({
+                url: "/GetInstallmentPrices",
+                method: "POST",
+                data: { price }
+            });
+            request.done(function(msg) {
+                $('#prices').html(msg);
+            });
+            request.catch(function() {
+                $('#prices').html('@Localization.Get("Bir sorun oluştu ve taksitli ücretlere erişilemedi.",
+                                       "There was a problem and the installment fees could not be accessed.",
+                                       lang)');
+            });
+        }
+
+
+    </script>
+}
