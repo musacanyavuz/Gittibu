@@ -350,7 +350,7 @@ namespace GittiBu.Web.Controllers
                             var sellerInfo = uService.GetSecurePaymentDetail(seller.ID);
 
                             //mailing.SendSaleMail2Seller(seller, buyer, ad, payReq.ShippingAddress, payReq.InvoiceAddress, payReq.Amount);
-                            SendSaleMail2Seller(seller, buyer, ad, payReq.InvoiceAddress, payReq.Amount, payReq.ID);
+                            SendSaleMail2Seller(seller, buyer, ad, payReq.InvoiceAddress, payReq.Amount, payReq.ID,payReq);
                             SendSaleMail2Buyer(seller, buyer, ad, payReq.ShippingAddress, payReq.Amount, payReq.ID);
 
                             var notify = new Notification()
@@ -398,7 +398,7 @@ namespace GittiBu.Web.Controllers
             return Redirect(route);
         }
 
-        private void SendSaleMail2Seller(User seller, User buyer, Advert ad, string payReqInvoiceAddress, int payReqAmount, int id)
+        private void SendSaleMail2Seller(User seller, User buyer, Advert ad, string payReqInvoiceAddress, int payReqAmount, int id,PaymentRequest paymentRequest)
         {
             using (var mail = new MailingService())
             using (var setting = new SystemSettingService())
@@ -413,6 +413,7 @@ namespace GittiBu.Web.Controllers
                 var title = content.Name;
                 var replacedHtml = html.Replace("@saticiAdSoyad", seller.Name)
                     .Replace("@urunAdi", ad.Title)
+                    .Replace("@tutar", paymentRequest.Price.ToString())
                     .Replace("@urunAdet", payReqAmount.ToString())
                     .Replace("@siparisNo", id.ToString())
                     .Replace("@cargo", (ad.FreeShipping ? "Satıcı Öder" : "Alıcı Öder"))

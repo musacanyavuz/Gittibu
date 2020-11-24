@@ -12,7 +12,7 @@ namespace GittiBu.Services
         //private const string baseUrl = "https://localhost:5001";
         private const string baseUrl = "https://www.GittiBu.com";
         private const string username = "noreply@GittiBu.com";
-        private const string password = "Petek28051962";
+        private const string password = "Petek28051962_!!";
         private const string server = "GittiBu.com";
         private const int port = 587;
         private const bool useSsl = false;
@@ -232,11 +232,23 @@ namespace GittiBu.Services
                     Body = body,
                     IsBodyHtml = true
                 })
+                
                 smtp.Send(mail);
                 return true;
             }
             catch (Exception e)
             {
+                using (var logService = new LogServices())
+                {
+                    Log log = new Log()
+                    {
+                        Function = "MailService.Send",
+                        Message = "Mail gönderim hatası.",
+                        Detail = e.ToString(),
+                        CreatedDate = DateTime.Now
+                    };
+                    logService.Insert(log);
+                }
                 return false;
             }
         }

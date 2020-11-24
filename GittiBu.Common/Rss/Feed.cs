@@ -36,7 +36,7 @@ namespace GittiBu.Common.Rss
         {
             var defaultOption = new SerializeOption()
             {
-                Encoding = Encoding.Unicode,
+                Encoding = Encoding.UTF8,
             };
             return Serialize(defaultOption, isFeedNew);
         }

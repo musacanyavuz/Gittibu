@@ -11,7 +11,7 @@
     var lang = Constants.GetLang(Context.Session.GetString("lang"));
     ViewBag.Title = advertTitle;
     Layout = "_Layout";
-    ViewBag.SeoDescription = (Model.Advert.Content?.Length >= 500 ? Model.Advert.Content.Substring(0, 500) : Model.Advert.Content);
+    ViewBag.SeoDescription = (Model.Advert.Title?.Length >= 500 ? Model.Advert.Title.Substring(0, 500) : Model.Advert.Title);
     ViewBag.SeoKeywords = advertTitle;
 
     string userName = Html.TitleFormat(Model.Advert?.User?.UserName);
@@ -519,7 +519,7 @@ else
     <meta itemprop="brand" content="@Html.Raw(Model.Advert?.Title?.Length > 20 ? Model.Advert.Title.Substring(0,20).ToString() : Model.Advert.Title) " />
     <meta itemprop="sku" content="Kalem">
     <meta itemprop="category" content="@Model.Advert.CategoryNameTr">
-    <meta itemprop="description" content="@Html.Raw(Model.Advert.Content?.Replace(" @","[at]"))" />
+    <meta itemprop="description" content="@Html.Raw(Model.Advert?.Title)" />
     <meta itemprop="image" content="@(" https://www.GittiBu.com"+Model.Advert.Thumbnail)" />
     <meta itemprop="itemCondition" content="@Model.Advert.ProductDefects" />
     <div itemprop="offers" itemscope itemtype="http://schema.org/Offer" hidden>

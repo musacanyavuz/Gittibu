@@ -777,6 +777,17 @@ namespace GittiBu.Web.Controllers
                         IdentityNumber = registerViewModel.TC,
                         SubMerchantKey = detail.IyzicoSubMerchantKey
                     };
+                    if (request.SubMerchantKey == "" || request.SubMerchantKey == "subMerchantkey")
+                    {
+                        var result2 = IyzicoService.CreateSubMerchant(request);
+                        if (result2.IsSuccess || result2.ErrorCode == "2002")
+                        {
+
+                            request.SubMerchantKey = result2.ErrorCode == "2002" ? IyzicoService.GetSubMerchantKey(request).Replace(" ", "").Replace("/r/n", "") : result2.Data.SubMerchantKey.Replace(" ", "").Replace("/r/n", "");
+
+                        }
+                    }
+
                     var result = IyzicoService.UpdateSubMerchant(request);
                     if (result.IsSuccess)
                     {

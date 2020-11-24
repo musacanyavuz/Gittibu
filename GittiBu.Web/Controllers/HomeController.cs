@@ -146,7 +146,7 @@ namespace GittiBu.Web.Controllers
                     });
                 }
                 var rss = feed.Serialize();
-                return Content(rss, "application/rss+xml", Encoding.GetEncoding("utf-16"));
+                return Content(rss, "application/rss+xml", Encoding.UTF8);
             }
         }
 
@@ -230,7 +230,7 @@ namespace GittiBu.Web.Controllers
                     });
                 }
                 var rss = feed.Serialize();
-                return Content(rss, "application/rss+xml", Encoding.GetEncoding("utf-16"));
+                return Content(rss, "application/rss+xml", Encoding.UTF8);
             }
         }
         [Route("feed")]
@@ -268,7 +268,7 @@ namespace GittiBu.Web.Controllers
                     });
                 }
                 var rss = feed.Serialize();
-                return Content(rss, "application/rss+xml", Encoding.GetEncoding("utf-16"));
+                return Content(rss, "application/rss+xml", Encoding.UTF8);
             }
         }
 
@@ -320,7 +320,7 @@ namespace GittiBu.Web.Controllers
                     });
                 }
                 var rss = feed.Serialize();
-                return Content(rss, "application/rss+xml", Encoding.GetEncoding("utf-16"));
+                return Content(rss, "application/rss+xml", Encoding.UTF8);
             }
         }
 
