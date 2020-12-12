@@ -352,6 +352,7 @@ namespace GittiBu.Web.Controllers
                         errorMessage += file.FileName + ",";
                         if (file.Length > 0 && file.Length < 5242880) // 5 MB -5242880
                         {
+                          
                             var ext = Path.GetExtension(file.FileName);
                             path = fileService.FileUpload(GetLoginID(), file, "/Upload/Sales/", token + "_" + (index + 1) + "" + ext);
                             if (!string.IsNullOrWhiteSpace(path))
@@ -381,6 +382,34 @@ namespace GittiBu.Web.Controllers
                                         });
                                     }
                                 }
+                            }
+                            else
+                            {
+                                using (var logService = new LogServices())
+                                {
+                                    Log log = new Log()
+                                    {
+                                        Function = "AdvertsController.UploadPhoto",
+                                        Message = GetLoginID() + " id li kullanici AdvertsController.UploadPhoto işlem yaparken hata aldi. path hatası ",
+                                        Detail = " path  : " + path,
+                                        CreatedDate = DateTime.Now
+                                    };
+                                    logService.Insert(log);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            using (var logService = new LogServices())
+                            {
+                                Log log = new Log()
+                                {
+                                    Function = "AdvertsController.UploadPhoto",
+                                    Message = GetLoginID() + " id li kullanici AdvertsController.UploadPhoto işlem yaparken hata aldi. file.Length > 0 && file.Length < 5242880",
+                                    Detail = " file.Length : " + file.Length,
+                                    CreatedDate = DateTime.Now
+                                };
+                                logService.Insert(log);
                             }
                         }
 

@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace GittiBu.Common
 {
     public class Localization
@@ -7,7 +9,9 @@ namespace GittiBu.Common
             switch (lang)
             {
                 case (int)Enums.Languages.tr:
-                    return tr;
+                    byte[] bytes = Encoding.Default.GetBytes(tr);
+                    tr = Encoding.UTF8.GetString(bytes);
+                    return System.Text.Encoding.UTF8.GetString(bytes); 
                 case (int)Enums.Languages.en:
                     return en;
             }
