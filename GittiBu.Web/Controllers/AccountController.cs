@@ -1158,7 +1158,7 @@ namespace GittiBu.Web.Controllers
             using (var service = new UserService())
             {
                 registerViewModel.Name = registerViewModel.Name.Modify();
-                registerViewModel.Surname = registerViewModel.Surname.Modify();
+               // registerViewModel.Surname = registerViewModel.Surname.Modify();
                 registerViewModel.UserName = registerViewModel.UserName.Modify();
                 var u = service.Get(userId);
                 if (u == null) return Redirect(route);
