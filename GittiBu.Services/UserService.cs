@@ -459,7 +459,7 @@ namespace GittiBu.Services
         {
             try
             {
-                const string sql = "select * from \"PaymentRequests\"\n  left outer join \"Adverts\" on \"PaymentRequests\".\"AdvertID\"=\"Adverts\".\"ID\"                left outer join \"Users\" on \"PaymentRequests\".\"UserID\" = \"Users\".\"ID\" where \"PaymentRequests\".\"Type\"=@type and \"IsSuccess\"=true and \"PaymentRequests\".\"SellerID\" = @userId order by \"PaymentRequests\" desc";
+                const string sql = "select * from \"PaymentRequests\"\n  left outer join \"Adverts\" on \"PaymentRequests\".\"AdvertID\"=\"Adverts\".\"ID\"                left outer join \"Users\" on \"PaymentRequests\".\"UserID\" = \"Users\".\"ID\" where \"PaymentRequests\".\"Type\"=@type and \"IsSuccess\"=true and \"PaymentRequests\".\"SellerID\" = @userId order by \"PaymentRequests\" asc";
 
                 var result = GetConnection().Query<PaymentRequest, Advert, User, PaymentRequest>(sql,
                     (request, advert, buyer) =>

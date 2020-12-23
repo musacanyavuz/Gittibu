@@ -272,7 +272,7 @@ namespace GittiBu.Services
             {
                 Log(new Log
                 {
-                    Function = "AdvertService.Get",
+                    Function = "AdvertService.GetAdvert",
                     CreatedDate = DateTime.Now,
                     Message = e.Message,
                     Detail = e.InnerException?.Message,

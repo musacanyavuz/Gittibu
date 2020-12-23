@@ -350,7 +350,10 @@ namespace GittiBu.Web.Controllers
                         var directory = "/Upload/Sales/";
                         var file = files[index];
                         errorMessage += file.FileName + ",";
-                        if (file.Length > 0 && file.Length < 5242880) // 5 MB -5242880
+                        var imgFileSize = file.Length;
+                        
+
+                        if (imgFileSize > 0 && imgFileSize < 5242880) // 5 MB -5242880
                         {
                           
                             var ext = Path.GetExtension(file.FileName);

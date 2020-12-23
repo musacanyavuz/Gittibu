@@ -495,8 +495,7 @@
                     buttonCancel.style.zIndex = 9999;
                     buttonCancel.textContent = 'İptal';
                     editor.appendChild(buttonCancel);
-
-
+                   
                     var image = new Image();
                     image.src = URL.createObjectURL(file);
                     editor.appendChild(image);
@@ -531,13 +530,15 @@
 
                             // Get the canvas with image data from Cropper.js
                                 var canvas = cropper.getCroppedCanvas({
-                                    maxWidth: 4096,
-                                    maxHeight: 4096,
-                                    fillColor:"#fff"
+                                    maxWidth: 2048,
+                                    maxHeight: 2048,
+                                    fillColor: "#fff"
+                                   
                                 });
                             @*console.log(canvas); *@
                             // Turn the canvas into a Blob (file object without a name)
-                            canvas.toBlob(function (blob) {
+                            canvas.toBlob(function (blob) {     
+                              
                                 // Create a new Dropzone file thumbnail
                                 myDropZone.createThumbnail(
                                     blob,
@@ -546,13 +547,12 @@
                                     myDropZone.options.thumbnailMethod,
                                     false,
                                     function (dataURL) {
-
                                         // Update the Dropzone file thumbnail
-                                        myDropZone.emit('thumbnail', file, dataURL);
+                                        myDropZone.emit('thumbnail', blob, dataURL);
                                         // Return the file to Dropzone
-                                        done(file);
+                                        done(blob);
                                     });
-                            });
+                            }, 'image/jpg');
                             // Remove the editor from the view
                             document.body.removeChild(editor);
                         });
@@ -571,7 +571,7 @@
                         formData.append("MainImage", $('input[name="main-image"]:checked').val());
                     });
                 this.on("addedfile",
-                    function (file) {
+                    function (file) {                        
                         @*console.log(file); *@
                         if (file.size > 5242880) {
                             @*console.log("Dikkat 10 mb büyük!"); *@
@@ -581,7 +581,7 @@
                             @*console.log("remove it: " + id); *@
                             $(file.previewElement).remove();
                             removeFromSelectedPhotos(id);
-                        } else {
+                        } else {                            
                             addedPhotosCount++;
                             $("#save").html(bntTextWait).attr('disabled','disabled');
                         }

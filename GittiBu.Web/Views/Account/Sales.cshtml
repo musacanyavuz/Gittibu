@@ -61,7 +61,7 @@
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>@Localization.Get("İlan No", "Ad No", lang)</th>
+                                            <th>@Localization.Get("İlan No", "aAd No", lang)</th>
                                             <th width="1%">@Localization.Get("Alıcı", "Buyer", lang)</th>
                                             <th>@Localization.Get("Başlık", "Title", lang)</th>
                                             <th>@Localization.Get("Ücret", "Price", lang)</th>
@@ -265,6 +265,7 @@
 
         $(document).ready(function () {
             var table = $('.table-responsive > .table').DataTable({
+                "order": [[5, "asc"]],
                 responsive: true,
             });
 

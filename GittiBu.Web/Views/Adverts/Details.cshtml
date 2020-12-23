@@ -132,7 +132,7 @@
         }
         <div class="div-urun-foto" style="border:none">
             <div data-duration-in="300" data-duration-out="100" class="tabs w-tabs w-100">
-                <div class="tabs-content w-tab-content gallery fancybox">
+                <div class="tabs-content w-tab-content gallery fancybox" @*style="min-height:523px;max-height:523px;"*@>
                     @{ var index = 1; }
                     @foreach (var photo in Model.Advert?.Photos)
                     {

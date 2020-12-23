@@ -116,8 +116,15 @@ namespace GittiBu.Services
                 path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"+path);
                 using (var newImage = Image.Load(path))
                 {
+                    double oldW = newImage.Width;
+                    double oldH = newImage.Height;                   
+
                     var pth = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot" + directory, fileName);
-                    newImage.Mutate(o => o.Resize(305, 305));
+                    if (oldH >= oldW)
+                        newImage.Mutate(o => o.Resize(0, 305, KnownResamplers.Lanczos3));
+                    else
+                        newImage.Mutate(o => o.Resize(305,0, KnownResamplers.Lanczos3));
+
                     newImage.Save(pth);
                     return true;
                 }
