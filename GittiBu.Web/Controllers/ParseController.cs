@@ -1553,8 +1553,8 @@ namespace GittiBu.Web.Controllers
                 {
                     //urun
                     XmlNodeList innerNodes = node.ChildNodes;
-                    var innerNodesCount = node.ChildNodes.Count;
-                    if (innerNodesCount > 10)
+                    var innerNodesCount = innerNodes.Count;
+                    if (innerNodesCount >= 10)
                     {
                         //elemana ulaştık, dışarıdaki döngü kullanılacak.
                         //burada bütün itemlar aynı isimde mi ona bakılacak, hepsi aynı isimdeyse tip 2 devreye girecek. ()

@@ -203,27 +203,57 @@ namespace GittiBu.Services
         {
             try
             {
-                var sql = "select \"Adverts\".*,( SELECT count(*) AS count           FROM \"AdvertLikes\"          WHERE (\"AdvertLikes\".\"AdvertID\" = \"Adverts\".\"ID\")) AS \"LikesCount\",\n       (\"GetText\"(\"AdvertCategories\".\"SlugID\", 1)) as \"SubCategorySlugTr\",\n       (\"GetText\"(\"AdvertCategories\".\"SlugID\", 2)) as \"SubCategorySlugEn\",\n\n       \"AdvertCategories\".*,\"Users\".* from\n  \"Adverts\", \"AdvertCategories\", \"Users\"\nwhere\n      \"Adverts\".\"UserID\"=\"Users\".\"ID\"\n  and \"Adverts\".\"CategoryID\" = \"AdvertCategories\".\"ID\"\n  and \"Adverts\".\"IsActive\" = true\n  and \"Users\".\"IsActive\" = true\n  and \"Adverts\".\"ID\" = @id; " +
-                          $"select * from \"AdvertPhotos\" where \"AdvertID\" = @id;";
-                using (var multi = GetConnection().QueryMultiple(sql, new { id }))
-                {
-                    var ad = multi.Read<Advert, AdvertCategory, User, Advert>(
-                        (advert, category, user) =>
-                        {
-                            advert.Category = category;
-                            //advert.Category.ParentCategory = parentCategory;
-                            advert.User = user;
-                            return advert;
-                        }, splitOn: "ID").SingleOrDefault();
-                    if (ad == null)
-                        return null;
+                var sql = "select \"Adverts\".*,( SELECT count(*) AS count           FROM \"AdvertLikes\"       " +
+                            "   WHERE (\"AdvertLikes\".\"AdvertID\" = \"Adverts\".\"ID\")) AS \"LikesCount\",\n     " +
+                            "(\"GetText\"(\"AdvertCategories\".\"SlugID\", 1)) as \"SubCategorySlugTr\",\n  " +
+                            "     (\"GetText\"(\"AdvertCategories\".\"SlugID\", 2)) as \"SubCategorySlugEn\",\n\n   " +
+                            "    \"AdvertCategories\".*,\"Users\".* from\n  \"Adverts\", \"AdvertCategories\", \"Users\"\nwhere\n      \"Adverts\".\"UserID\"=\"Users\".\"ID\"\n  and \"Adverts\".\"CategoryID\" = \"AdvertCategories\".\"ID\"\n  and \"Adverts\".\"IsActive\" = true\n  and \"Users\".\"IsActive\" = true\n  and \"Adverts\".\"ID\" = @id; ";
+                        
 
-                    ad.Photos = multi.Read<AdvertPhoto>()?.OrderBy(p => p.OrderNumber).ToList();
-                    return ad;
-                }
+                var adv = GetConnection().Query<Advert, AdvertCategory, User, Advert>(sql,
+                   (advert, category, user) =>
+                   {
+                       advert.Category = category;
+                       //advert.Category.ParentCategory = parentCategory;
+                       advert.User = user;
+                       return advert;
+                   }, new { id }
+                   ).FirstOrDefault();
+                if (adv == null)
+                    throw new Exception("adv is NULL");
+                string photosSql = $"select * from \"AdvertPhotos\" where \"AdvertID\" = @id;";
+                var addPhotos = GetConnection().Query<AdvertPhoto>(photosSql, new { id });
+                if(addPhotos != null )
+                adv.Photos = addPhotos;
+                return adv;
+
+                //using (var multi = GetConnection().QueryMultiple(sql, new { id }))
+                //{
+                //    var ad = multi.Read<Advert, AdvertCategory, User, Advert>(
+                //        (advert, category, user) =>
+                //        {
+                //            advert.Category = category;
+                //            //advert.Category.ParentCategory = parentCategory;
+                //            advert.User = user;
+                //            return advert;
+                //        }, splitOn: "ID").SingleOrDefault();
+                //    if (ad == null)
+                //        return null;
+
+                //    ad.Photos = multi.Read<AdvertPhoto>()?.OrderBy(p => p.OrderNumber).ToList();
+                //    return ad;
+                //}
+
+
+               
             }
             catch (Exception e)
             {
+                if (e.Message == "adv is NULL")
+                    return null;
+
+                
+
                 Log(new Log
                 {
                     Function = "AdvertService.Get",

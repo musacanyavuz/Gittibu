@@ -54,7 +54,8 @@ namespace GittiBu.Web.Areas.AdminPanel.Controllers
                 }
 
                 user.IsActive = status;
-                var update = service.Update(user);
+                //  service.DeleteUser(user.ID.ToString());
+                var update = service.Update(user);              
                 if (!update)
                     return Json(new {isSuccess = false, message = "Güncelleme başarısız"});
                 

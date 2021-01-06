@@ -115,12 +115,18 @@
 
                             <div class="row margin_bottom">
 
-                                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                     <label class="field-label">@Localization.Get("Dil", "Language", lang):</label>
                                     <select class="form-control w-dropdown textfield" name="LanguageID">
                                         <option value="1">Türkçe</option>
                                         <option value="2">English</option>
                                     </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                    <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Telefon Numarası", "Phone Number", lang):</label>
+                                    <input class="textfield w-input" data-val="true" maxlength="100" type="text" id="phone" asp-for="MobilePhone" data-val-intlTelNumber="asdqwdqwdasd">
+                                    <span asp-validation-for="MobilePhone" class="text-danger"></span>
+                                    <input class="textfield w-input" maxlength="100" name="" type="hidden" id="hdnPhone">
                                 </div>
 
                             </div>
@@ -228,12 +234,12 @@
                                 <p>
                                     <span>@Localization.Get("Bu sayfadaki Email, Adres, Telefon, TC Kimlik No ve IBAN Bilgileri gibi her türlü bilginin tarafıma/firmama ait olduğunu ve siteyi sadece kendim / firmam  adına kullanacağımı, başkasının nam ve hesabına kullanmayacağımı, aksi takdirde doğabilecek aksaklıkları kabul ediyorum.", "I accept that all information on this page, such as Email, Address, Telephone, TC Identity Number and IBAN Information, belongs to me / my company and that I will use the site only for myself / my company, not for someone else's name and account, otherwise I accept problems that may arise.", lang) </span>
                                 </p>
-                                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                                @*<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                     <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Cep Telefonu", "Mobile Phone", lang):</label>
                                     <input class="textfield w-input" data-val="true" maxlength="100" type="text" id="phone" asp-for="MobilePhone" data-val-intlTelNumber="asdqwdqwdasd">
                                     <span asp-validation-for="MobilePhone" class="text-danger"></span>
                                     <input class="textfield w-input" maxlength="100" name="" type="hidden" id="hdnPhone">
-                                </div>
+                                </div>*@
                                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 margin_bottom">
                                     <label class="field-label" id="tc-field-label"><span class="text-danger">*</span> @Localization.Get("TC Kimlik Numaranız", "TC Identity Number", lang):</label>
                                     <input class="textfield w-input" maxlength="11" asp-for="TC" type="text" id="tc">

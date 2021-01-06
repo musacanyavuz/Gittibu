@@ -28,7 +28,7 @@ namespace GittiBu.Web.ViewModels
         public string Password2 { get; set; }
         [Required(ErrorMessage = "Email zorunludur"), EmailAddress(ErrorMessage = "Lütfen düzgün bir email adresi giriniz"), EmailUniqValidationAttribute]
         public string Email { get; set; }
-        //[Required(ErrorMessage = "Telefon zorunludur")]
+        [Required(ErrorMessage = "Telefon zorunludur")]
         public string MobilePhone { get; set; }
         public int GenderID { get; set; }
         public string About { get; set; }

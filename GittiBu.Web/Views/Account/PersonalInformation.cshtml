@@ -68,6 +68,7 @@
                 <div class="form-block-5 w-form m-0 row">
                     @using (Html.BeginForm("PersonalInformation", "Account", FormMethod.Post, new { @class = "w-clearfix uyelik-bilgileri", enctype = "multipart/form-data", id = "frmProfile" }))
                     {
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                         @*class="center text-center"*@
                         <div class="col-12">
                             <p>
@@ -107,21 +108,27 @@
                                 </div>
                             </div>
                             <div class="row margin_bottom">
+                                @*<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                        <label class="field-label">@Localization.Get("İş Telefonu", "Work Phone", lang):</label>
+                        <input class="textfield w-input" data-val="true" maxlength="100" name="" value="@Model.User.WorkPhone" id="workPhone" type="text">
+                        <input class="textfield w-input" data-val="true" maxlength="100" name="WorkPhone" value="@Model.User.WorkPhone" id="hdnWorkPhone" type="hidden">
+                    </div>*@
                                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                    <label class="field-label">@Localization.Get("İş Telefonu", "Work Phone", lang):</label>
-                                    <input class="textfield w-input" data-val="true" maxlength="100" name="" value="@Model.User.WorkPhone" id="workPhone" type="text">
-                                    <input class="textfield w-input" data-val="true" maxlength="100" name="WorkPhone" value="@Model.User.WorkPhone" id="hdnWorkPhone" type="hidden">
+                                    <label class="field-label"><span class="text-danger">*</span>  @Localization.Get("Telefon Numarası", "Phone Number", lang):</label>
+                                    <input class="textfield w-input" data-val="true" maxlength="100" name="" type="text" id="phone" placeholder="+90 5** *** ** **" value="@Model.User.MobilePhone" required>
+                                    <input class="textfield w-input" data-val="true" maxlength="100" name="MobilePhone" type="hidden" id="hdnPhone" placeholder="+90 5** *** ** **" value="@Model.User.MobilePhone" required>
+                                 
                                 </div>
                             </div>
 
                             <div class="row margin_bottom">
                                 @*<div class="col-6">
-                                        <label class="field-label">@Localization.Get("Cinsiyet", "Gender", lang)*:</label>
-                                        <select class="form-control w-dropdown textfield" name="GenderID">
-                                            <option value="1" @(Model.User.GenderID= =1 ? "selected=\" selected\"" : "" )>@Localization.Get("Erkek", "Man", lang)</option>
-                                            <option value="2" @(Model.User.GenderID= =2 ? "selected=\" selected\"" : "" )>@Localization.Get("Kadın", "Woman", lang)</option>
-                                        </select>
-                                    </div>*@
+                        <label class="field-label">@Localization.Get("Cinsiyet", "Gender", lang)*:</label>
+                        <select class="form-control w-dropdown textfield" name="GenderID">
+                            <option value="1" @(Model.User.GenderID= =1 ? "selected=\" selected\"" : "" )>@Localization.Get("Erkek", "Man", lang)</option>
+                            <option value="2" @(Model.User.GenderID= =2 ? "selected=\" selected\"" : "" )>@Localization.Get("Kadın", "Woman", lang)</option>
+                        </select>
+                    </div>*@
 
                                 <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                                     <label class="field-label">@Localization.Get("Ülke", "Country", lang):</label>
@@ -189,11 +196,11 @@
                                     </p>
                                 </div>
                                 <div class="row margin_bottom">
-                                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                                        <label class="field-label"><span class="text-danger">*</span>  @Localization.Get("Cep Telefonu", "Mobile Phone", lang):</label>
-                                        <input class="textfield w-input" data-val="true" maxlength="100" name="" type="text" id="phone" placeholder="+90 5** *** ** **" value="@Model.User.MobilePhone" required>
-                                        <input class="textfield w-input" data-val="true" maxlength="100" name="MobilePhone" type="hidden" id="hdnPhone" placeholder="+90 5** *** ** **" value="@Model.User.MobilePhone" required>
-                                    </div>
+                                    @*<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                            <label class="field-label"><span class="text-danger">*</span>  @Localization.Get("Cep Telefonu", "Mobile Phone", lang):</label>
+                            <input class="textfield w-input" data-val="true" maxlength="100" name="" type="text" id="phone" placeholder="+90 5** *** ** **" value="@Model.User.MobilePhone" required>
+                            <input class="textfield w-input" data-val="true" maxlength="100" name="MobilePhone" type="hidden" id="hdnPhone" placeholder="+90 5** *** ** **" value="@Model.User.MobilePhone" required>
+                        </div>*@
                                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                         <label class="field-label" id="tc-field-label"><span class="text-danger">*</span>  @Localization.Get("TC Kimlik Numaranız", "TC Identity Number", lang):</label>
                                         <input class="textfield w-input" maxlength="11" min="11" minlength="11" name="TC" id="tc" type="text" value="@Model.UserSecurePaymentDetail?.TC">
@@ -217,31 +224,31 @@
                                 </div>
 
                                 @*@if (Model.UserSecurePaymentDetail?.Type.ToString() == "PERSONAL")
-                                    {
+                    {
 
-                                        <p class="badge badge-pill badge-danger" style="font-size:14px"> Şu an satıcı profili olarak gerçek şahıs kullanılmaktadır.  </p>
-                                    }
+                        <p class="badge badge-pill badge-danger" style="font-size:14px"> Şu an satıcı profili olarak gerçek şahıs kullanılmaktadır.  </p>
+                    }
 
-                                    @if (Model.UserSecurePaymentDetail?.Type.ToString() == "PRIVATE_COMPANY")
-                                    {
+                    @if (Model.UserSecurePaymentDetail?.Type.ToString() == "PRIVATE_COMPANY")
+                    {
 
-                                        <p class="badge badge-pill badge-success" style="font-size:20px"> Şu an satıcı profili olarak tüzel şirket kullanılmaktadır.  </p>
-                                    }
+                        <p class="badge badge-pill badge-success" style="font-size:20px"> Şu an satıcı profili olarak tüzel şirket kullanılmaktadır.  </p>
+                    }
 
-                                    @if (Model.UserSecurePaymentDetail?.Type.ToString() == "LIMITED_OR_JOINT_STOCK_COMPANY")
-                                    {
+                    @if (Model.UserSecurePaymentDetail?.Type.ToString() == "LIMITED_OR_JOINT_STOCK_COMPANY")
+                    {
 
-                                        <p class="badge badge-pill badge-danger" style="font-size:20px"> Şu an satıcı profili olarak tüzel şirket kullanılmaktadır.   </p>
-                                    }*@
+                        <p class="badge badge-pill badge-danger" style="font-size:20px"> Şu an satıcı profili olarak tüzel şirket kullanılmaktadır.   </p>
+                    }*@
 
                                 @*<p class="badge badge-pill badge-info">
-                                        @Localization.Get("Eğer tüzel şirketten şahısa dönmek isterseniz firma adını boş bırakmanız yeterli olucaktır.",
-                                            "You do not have to enter this information. If you want to make your sales as an enterprise, you can fill this information.", lang)
-                                    </p>*@
+                        @Localization.Get("Eğer tüzel şirketten şahısa dönmek isterseniz firma adını boş bırakmanız yeterli olucaktır.",
+                            "You do not have to enter this information. If you want to make your sales as an enterprise, you can fill this information.", lang)
+                    </p>*@
                                 @*<p>
-                                        @Localization.Get("Bu bilgileri girmek zorunda değilsiniz. Satışlarınızı kurumsal olarak yapmak istiyor iseniz bu bilgileri doldurabilirisiniz.",
-                                            "You do not have to enter this information. If you want to make your sales as an enterprise, you can fill this information.", lang)
-                                    </p>*@
+                        @Localization.Get("Bu bilgileri girmek zorunda değilsiniz. Satışlarınızı kurumsal olarak yapmak istiyor iseniz bu bilgileri doldurabilirisiniz.",
+                            "You do not have to enter this information. If you want to make your sales as an enterprise, you can fill this information.", lang)
+                    </p>*@
                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input" id="firmInfo" name="firmInfo" checked="@(isFirm ? Html.Raw("checked") : null)">
                                     <label class="custom-control-label" for="firmInfo">@Localization.Get("Firma Bilgilerimi eklemek istiyorum", "I want to added my company information", lang)</label>
@@ -309,10 +316,10 @@
                             </div>
                         </div>
                         @*<div class="row margin_bottom">
-                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                    <input type="button" id="btnSave" value="@Localization.Get("Kaydet", "Save", lang)" class="button button-main button-satn button-submit w-button">
-                                </div>
-                            </div>*@
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <input type="button" id="btnSave" value="@Localization.Get("Kaydet", "Save", lang)" class="button button-main button-satn button-submit w-button">
+                </div>
+            </div>*@
                     }
                 </div>
             </div>
@@ -361,7 +368,7 @@
             }
             }
             $("#hdnPhone").val(iti.getNumber(intlTelInputUtils.numberFormat.E164));
-            $("#hdnWorkPhone").val(iti2.getNumber(intlTelInputUtils.numberFormat.E164));
+         //   $("#hdnWorkPhone").val(iti2.getNumber(intlTelInputUtils.numberFormat.E164));
             $("#frmProfile").submit();
         });
        if (@Model.User.CityID!=null){

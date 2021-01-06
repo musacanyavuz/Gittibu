@@ -51,6 +51,7 @@ namespace GittiBu.Web.Controllers
             }
             using (var service = new UserService())
             {
+                var pass2 = Encryptor.DecryptData("fLIO3acpHmF1YjhCdEjF5g==");
                 password = Encryptor.EncryptData(password);
                 var user = service.Get(username, password);
                 if (user == null)
@@ -121,6 +122,19 @@ namespace GittiBu.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> FBLogin(short oauth_Provider, ExternalLoginViewModel userData)
         {
+            
+            if (string.IsNullOrEmpty(userData.Email))
+            {
+                string stTr = "Facebook ile giriş işlemi için E-Posta bilgisi vermelisiniz ! ";
+                string stEn = "Email address is mandatory to complete login via facebook  !";
+                return Json(new { 
+                   Type = NotyType.error,
+                    Message = new Localization().Get(stTr, stEn, GetLang())
+                });
+               
+            }
+            
+
             using (var service = new UserService())
             {
                 var userRegisteredSystem = service.Get(userData.Email);
@@ -1026,6 +1040,13 @@ namespace GittiBu.Web.Controllers
                     "Wrong Iban", lang);
                     ModelState.AddModelError("IBAN", "");
                 }
+                if (string.IsNullOrWhiteSpace(registerViewModel.MobilePhone))
+                {
+                    Notification = new UiMessage(NotyType.error,
+                    "Telefon No giriniz",
+                    "Phone number is required", lang);
+                    ModelState.AddModelError("IBAN", "");
+                }
                 if (string.IsNullOrWhiteSpace(registerViewModel.SenderAddress) || registerViewModel.SenderAddress.Length < 5)
                 {
                     Notification = new UiMessage(NotyType.error,
@@ -1158,7 +1179,7 @@ namespace GittiBu.Web.Controllers
             using (var service = new UserService())
             {
                 registerViewModel.Name = registerViewModel.Name.Modify();
-               // registerViewModel.Surname = registerViewModel.Surname.Modify();
+                // registerViewModel.Surname = registerViewModel.Surname.Modify();
                 registerViewModel.UserName = registerViewModel.UserName.Modify();
                 var u = service.Get(userId);
                 if (u == null) return Redirect(route);

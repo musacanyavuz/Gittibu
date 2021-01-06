@@ -43,13 +43,13 @@ namespace GittiBu.Services
             return count;
         }
 
-        public void DeleteUser(string userId)
+        public bool DeleteUser(string userId)
         {
             if (string.IsNullOrEmpty(userId))
             {
-                return;
+                return false;
             }
-            GetConnection().Delete(Get(Convert.ToInt32(userId)));
+          return  GetConnection().Delete(Get(Convert.ToInt32(userId)));
         }
 
         public void DeleteSecurePaymentDetail(string userId)
@@ -459,7 +459,7 @@ namespace GittiBu.Services
         {
             try
             {
-                const string sql = "select * from \"PaymentRequests\"\n  left outer join \"Adverts\" on \"PaymentRequests\".\"AdvertID\"=\"Adverts\".\"ID\"                left outer join \"Users\" on \"PaymentRequests\".\"UserID\" = \"Users\".\"ID\" where \"PaymentRequests\".\"Type\"=@type and \"IsSuccess\"=true and \"PaymentRequests\".\"SellerID\" = @userId order by \"PaymentRequests\" asc";
+                const string sql = "select * from \"PaymentRequests\"\n  left outer join \"Adverts\" on \"PaymentRequests\".\"AdvertID\"=\"Adverts\".\"ID\"                left outer join \"Users\" on \"PaymentRequests\".\"UserID\" = \"Users\".\"ID\" where \"PaymentRequests\".\"Type\"=@type and \"IsSuccess\"=true and \"PaymentRequests\".\"SellerID\" = @userId order by \"PaymentRequests\" desc";
 
                 var result = GetConnection().Query<PaymentRequest, Advert, User, PaymentRequest>(sql,
                     (request, advert, buyer) =>

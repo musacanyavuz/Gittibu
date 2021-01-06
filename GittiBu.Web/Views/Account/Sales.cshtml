@@ -68,8 +68,8 @@
                                             <th>@Localization.Get("Tarih", "Date", lang) </th>
                                             <th>@Localization.Get("Teslim Tarih", "Delivery Date", lang) </th>
                                             <th>@Localization.Get("Durum", "Status", lang) </th>
-                                            <th width="20%">@Localization.Get("Ödeme Durumu", "Payment Status", lang)</th>
-                                            <th width="10%">@Localization.Get("Teslimat Detayları", "Cargo Details", lang)</th>
+                                            <th>@Localization.Get("Ödeme Durumu", "Payment Status", lang)</th>
+                                            <th>@Localization.Get("Teslimat Detayları", "Cargo Details", lang)</th>
                                             <th>@Localization.Get("MSS*", "DSC*", lang)</th>
                                         </tr>
                                     </thead>
@@ -264,12 +264,12 @@
         }
 
         $(document).ready(function () {
-            var table = $('.table-responsive > .table').DataTable({
-                "order": [[5, "asc"]],
+            var table = $('.table-responsive > .table').DataTable({              
                 responsive: true,
+                ordering: false
             });
 
-            new $.fn.dataTable.FixedHeader(table);
+        //   new $.fn.dataTable.FixedHeader(table);
         });
     </script>
 }
