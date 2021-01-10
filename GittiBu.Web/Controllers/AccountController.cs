@@ -27,13 +27,16 @@ namespace GittiBu.Web.Controllers
 {
     public class AccountController : BaseController
     {
+        string stTr = "Facebook ile giriş işlemi için e-posta erişim izni vermelisiniz ! ";
+        string stEn = "Email address is mandatory to complete login via facebook  !";
         #region Login
 
         [Route("GirisYap")]
         [Route("Login")]
         public IActionResult Login()
-        {
-            GetLang();
+        {          
+          
+           ViewBag.FacebookLoginError = new Localization().Get(stTr, stEn, GetLang());
             return View();
         }
 
@@ -125,8 +128,7 @@ namespace GittiBu.Web.Controllers
             
             if (string.IsNullOrEmpty(userData.Email))
             {
-                string stTr = "Facebook ile giriş işlemi için E-Posta bilgisi vermelisiniz ! ";
-                string stEn = "Email address is mandatory to complete login via facebook  !";
+               
                 return Json(new { 
                    Type = NotyType.error,
                     Message = new Localization().Get(stTr, stEn, GetLang())
@@ -1150,11 +1152,13 @@ namespace GittiBu.Web.Controllers
                                 CompanyPhone = registerViewModel.CompanyPhone,
                                 CompanyFax = registerViewModel.CompanyFax,
                                 CompanyEmail = registerViewModel.CompanyEmail,
-                                Type = registerViewModel.SubMerchantType
+                                Type = registerViewModel.SubMerchantType,
+                                MobilePhone = registerViewModel.MobilePhone
                             };
                     }
                     else
                     {
+                        model.User.MobilePhone = registerViewModel.MobilePhone;
                         model.UserSecurePaymentDetail.TC = registerViewModel.TC;
                         model.UserSecurePaymentDetail.IBAN = registerViewModel.IBAN;
                         model.UserSecurePaymentDetail.SenderAddress = registerViewModel.SenderAddress;
