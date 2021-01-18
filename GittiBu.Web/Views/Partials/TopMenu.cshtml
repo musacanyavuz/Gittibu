@@ -3,9 +3,13 @@
 @{
     int lang = Constants.GetLang(Context.Session.GetString("lang"));
     var translateUrl = ViewBag.TranslateUrl;
+    var navMenuCss = string.Empty;
+    var logoImg = "logo.gif";
     if (translateUrl == "/")
     {
+        navMenuCss = "navbar-no-bg";
         translateUrl = null;
+        logoImg="logo_mavi.gif";
     }
 }
 
@@ -17,14 +21,14 @@
     }
 </style>
 
-<nav class="top-menu navbar navbar-expand-lg navbar-light m-t-5 p-t-0 p-b-0">
+<nav id="topMenuNav" class="top-menu navbar navbar-expand-lg navbar-light p-t-0 p-b-0 @navMenuCss">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01"
             aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse heigh-100-100" id="navbarTogglerDemo01">
         <a class="navbar-brand" href="/">
-            <img src="~/Content/img/images/logo.gif" width="175" alt="Gittibu Güvenilir Online Satış Sistemi">
+            <img src="~/Content/img/images/@logoImg" width="175" alt="Gittibu Güvenilir Online Satış Sistemi">
         </a>
         <form class="form-inline my-2 my-lg-0 mr-auto mt-2 mt-lg-0 m-l-100-5">
             <input class="form-control m-r-0 border-radius-10" type="search" id="query" name="query" required>
@@ -412,5 +416,5 @@
             alertify.notify(message, 'success', 10, function () { });
         }
     });
-
+   
 </script>

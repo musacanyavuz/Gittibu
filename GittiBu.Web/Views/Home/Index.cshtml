@@ -105,17 +105,17 @@
 
                 @foreach (var category in Model.AdvertCategories)
                 {
-                <a href="/@(Localization.Get("Kategori", "Category" , lang))/@category.Slug" class="link-block w-clearfix w-inline-block">
-                <img alt="@Html.Raw(category.Description)" src="@(string.IsNullOrEmpty(category.IconSource)?"/favicon.png":category.IconSource)" onerror="this.src = '/favicon.png';" width="19" height="19" title="@Html.Raw(category.Name)" />
-                <h2 class="home-left-item">@Html.Raw(category.Name)</h2>
-                </a>
-                if (category.Name == "Ev Eşyası, Dekor" || category.Name == "Household Appliances")
-                {
-                <a href="https://www.audiophile.org" target="_blank" class="link-block w-clearfix w-inline-block">
-                    <img alt="@Html.Raw(Localization.Get("Ev Elektroniği", "Home Electronics" , lang))" src="/Upload/Categories/ev-elektronigi.png" width="19" height="19" title="@Html.Raw(Localization.Get(" Ev Elektroniği", "Home Electronics" , lang))" />
-                    <h2 class="home-left-item">@Html.Raw(Localization.Get("Ev Elektroniği", "Home Electronics", lang))</h2>
-                </a>
-                }
+                    <a href="/@(Localization.Get("Kategori", "Category" , lang))/@category.Slug" class="link-block w-clearfix w-inline-block">
+                        <img alt="@Html.Raw(category.Description)" src="@(string.IsNullOrEmpty(category.IconSource)?"/favicon.png":category.IconSource)" onerror="this.src = '/favicon.png';" width="19" height="19" title="@Html.Raw(category.Name)" />
+                        <h2 class="home-left-item">@Html.Raw(category.Name)</h2>
+                    </a>
+                    if (category.Name == "Ev Eşyası, Dekor" || category.Name == "Household Appliances")
+                    {
+                        <a href="https://www.audiophile.org" target="_blank" class="link-block w-clearfix w-inline-block">
+                            <img alt="@Html.Raw(Localization.Get("Ev Elektroniği", "Home Electronics" , lang))" src="/Upload/Categories/ev-elektronigi.png" width="19" height="19" title="@Html.Raw(Localization.Get(" Ev Elektroniği", "Home Electronics" , lang))" />
+                            <h2 class="home-left-item">@Html.Raw(Localization.Get("Ev Elektroniği", "Home Electronics", lang))</h2>
+                        </a>
+                    }
                 }
             </div>
 
@@ -135,7 +135,7 @@
                 <h4 class="home-left-item m-l-0">- @Localization.Get("Kullanım Koşulları", "Terms of Use", lang)</h4>
             </a>
             <a href="@Constants.GetURL((int)Enums.Routing.GuvenliOdemeGittiBu, lang)" class="link-block w-inline-block">
-                <h4 class="home-left-item m-l-0">- @Localization.Get("Nasıl Çalışır","How it Works", lang)</h4>
+                <h4 class="home-left-item m-l-0">- @Localization.Get("Nasıl Çalışır", "How it Works", lang)</h4>
             </a>
             <a href="@Constants.GetURL((int) Enums.Routing.Ucretler, lang)" class="link-block w-inline-block  ">
                 <h4 class="home-left-item m-l-0">- @Localization.Get("Ücretler", "Fees", lang)</h4>
@@ -357,5 +357,26 @@
             //$('#UstResim').attr("src", "https://www.test.gittibu.com/Content/img/ArkaPlan.png");
 
         }
+
+        $(function () {
+            var logomavi = '/Content/img/images/logo_mavi.gif';
+            var logo = '/Content/img/images/logo.gif';
+            var $win = $(window);
+
+            var logoimg = $(".navbar-brand > img");
+
+            var navbarel = $('#topMenuNav');
+            navbarel.addClass('navbar-no-bg');
+            $win.scroll(function () {
+                if ($win.scrollTop() < 5) {
+                    navbarel.addClass('navbar-no-bg');
+                    logoimg.attr("src", logomavi);
+                }
+                else {
+                    navbarel.removeClass('navbar-no-bg');
+                    logoimg.attr("src", logo);
+                }
+            });
+        });
     </script>
 }

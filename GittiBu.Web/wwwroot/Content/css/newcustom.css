@@ -131,7 +131,7 @@
 }
 
 .p-t-100-3 {
-    padding-top: 3%;
+    padding-top: 0%;
 }
 
 .p-t-rem-05 {
@@ -847,7 +847,7 @@ span.hidden-text {
     .top-menu .nav-item, .top-menu .nav-link {
         align-self: center;
         height: 100%;
-        border-left: 1px solid #136cc7;
+        border-left: 0px solid #136cc7;
     }
 
     .app-logo-width {

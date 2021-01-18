@@ -105,7 +105,7 @@
 <body class="body">
     <button onclick="topFunction()" id="scrollTop"> <i class="fa fa-arrow-circle-o-up"></i> @Localization.Get("Başa Dön", "Scroll Top", lang)</button>
 
-    <div data-collapse="all" data-animation="over-left" data-duration="400" class="navbar w-nav">
+    <div data-collapse="all" data-animation="over-left" data-duration="400" id="topmenuContainer" class="w-nav">
         @{ await Html.RenderPartialAsync("~/Views/Partials/TopMenu.cshtml"); }
     </div>
 

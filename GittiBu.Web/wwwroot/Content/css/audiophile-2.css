@@ -44,7 +44,7 @@ h2 {
 
 .body {
     padding: 0;
-    background-color: #0e7dd9;
+    /*background-color: #0e7dd9;*/
     font-family: 'Nunito Sans', sans-serif
 }
 
@@ -59,8 +59,11 @@ h2 {
     margin-right: 0;
     margin-left: 0;
     padding-top: 0;
-    border-bottom: 1px solid #1172d3;
-    background-color: #1172d3
+    border-bottom: 0px solid #1172d3;
+    background: rgba(17, 114, 211,1);
+}
+.navbar-no-bg {
+    background: rgba(17, 114, 211,0) !important;
 }
 
 .search-button,
