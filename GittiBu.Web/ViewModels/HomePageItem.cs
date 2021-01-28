@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using GittiBu.Common;
 
 namespace GittiBu.Web.ViewModels
@@ -33,5 +34,10 @@ namespace GittiBu.Web.ViewModels
         public string NewProductPrice { get; set; }
 
         public string DecPrice { get; set; }
+    }
+
+    public class FisterResultViewModel {
+        public List<HomePageItem> dataset { get; set; }
+        public int TotalAdvertCount { get; set; }
     }
 }

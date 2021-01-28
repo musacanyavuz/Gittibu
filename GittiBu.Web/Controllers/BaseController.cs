@@ -194,7 +194,18 @@ namespace GittiBu.Web.Controllers
                 ViewBag.OtherUrl = Constants.GetURL(routing, 1);
         }
         */
-
+        public FisterResultViewModel Ads2HomePageItems(List<Advert> ads, int totalAdvertCount,int lang)
+        {
+            var result = new FisterResultViewModel();
+            var list = new List<HomePageItem>();
+            foreach (var ad in ads)
+            {
+                list.Add(Ad2HomePageItem(ad, lang));
+            }
+            result.dataset = list;
+            result.TotalAdvertCount = totalAdvertCount;
+            return result;
+        }
         public List<HomePageItem> Ads2HomePageItems(List<Advert> ads, int lang)
         {
             var result = new List<HomePageItem>();

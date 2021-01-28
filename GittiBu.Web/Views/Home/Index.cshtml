@@ -169,22 +169,23 @@
 
 
 
-<div class="ayirackalip">
-    <div class="section-2">
-        <div class="div-ad-text p-t-0 p-b-0 ayirackalip-backcolor ayirackalip-display">
-            <h1 class="ilan ilan-style-margin">
-                @Model.SeoValues.Separator
-            </h1>
-        </div>
-    </div>
-</div>
 
 
-<div class="sec-logolar beyaz-alan p-b-50">
+
+<div class="sec-logolar beyaz-alan p-b-50" style="border-top:0px">
     <div>
         <div class="container-logolar w-container">
             <div class="content cont2">
                 <div class="div-block-36">
+                    <div class="ayirackalip">
+                        <div class="section-2">
+                            <div class="div-ad-text p-t-0 p-b-0 ayirackalip-backcolor ayirackalip-display">
+                                <h1 class="ilan ilan-style-margin">
+                                    @Model.SeoValues.Separator
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
                     <div class="products" id="listing">
                         @{
                             for (; index < Model.Items.Count; index++)
@@ -359,8 +360,8 @@
         }
 
         $(function () {
-            var logomavi = '/Content/img/images/logo_mavi.gif';
-            var logo = '/Content/img/images/logo.gif';
+            var logomavi = '/Content/img/images/logo_mavi.gif?v=2a';
+            var logo = '/Content/img/images/logo.gif?v=1a';
             var $win = $(window);
 
             var logoimg = $(".navbar-brand > img");

@@ -44,7 +44,7 @@ h2 {
 
 .body {
     padding: 0;
-    /*background-color: #0e7dd9;*/
+    background-color: #0000D5;
     font-family: 'Nunito Sans', sans-serif
 }
 
@@ -59,11 +59,11 @@ h2 {
     margin-right: 0;
     margin-left: 0;
     padding-top: 0;
-    border-bottom: 0px solid #1172d3;
-    background: rgba(17, 114, 211,1);
+    border-bottom: 0px solid #3f50ea;
+    background: rgba(63, 80, 234,1);
 }
 .navbar-no-bg {
-    background: rgba(17, 114, 211,0) !important;
+    background: rgba(63, 80, 234,0) !important;
 }
 
 .search-button,
@@ -419,7 +419,7 @@ h2 {
 }
 
 .link-block.w--current {
-    color: #1172d3;
+    color: #3f50ea;
     font-weight: 700
 }
 
@@ -453,8 +453,8 @@ h2 {
     -ms-flex-pack: center;
     justify-content: center;
     background-color: transparent;
-    background-image: -webkit-linear-gradient(41deg, #920523, #0e7dd9);
-    background-image: linear-gradient(49deg, #920523, #0e7dd9);
+    background-image: -webkit-linear-gradient(41deg, #920523, #3f50ea);
+    background-image: linear-gradient(49deg, #920523, #3f50ea);
     font-weight: 200
 }
 
@@ -1033,7 +1033,7 @@ h2 {
 
 .new-price {
     float: left;
-    color: #0e7dd9;
+    color: #3f50ea;
     font-size: 16px;
     font-weight: 700;
     margin-left: 5px
@@ -1057,7 +1057,7 @@ h2 {
 }
 
 .yeni {
-    color: #0e7dd9
+    color: #3f50ea
 }
 
 .button-div {
@@ -1222,8 +1222,8 @@ h2 {
     }
 
     .tab-link.w--current {
-        border-bottom: 8px none #0e7dd9;
-        box-shadow: inset 0 -7px 0 0 #0e7dd9;
+        border-bottom: 8px none #3f50ea;
+        box-shadow: inset 0 -7px 0 0 #3f50ea;
         transition: all .4s ease
     }
 
@@ -1387,9 +1387,9 @@ h2 {
     width: 196px;
     margin-bottom: 0;
     float: left;
-    border: 1px solid #0e7dd9;
+    border: 1px solid #3f50ea;
     border-radius: 25px;
-    color: #0e7dd9;
+    color: #3f50ea;
     font-size: 11px
 }
 
@@ -2047,7 +2047,7 @@ h2 {
 }
 
     .t1.w--current {
-        border: 1px solid #0e7dd9
+        border: 1px solid #3f50ea
     }
 
     .t1 img {
@@ -2210,8 +2210,8 @@ h2 {
         height: auto;
         border-radius: 12px;
         background-color: #f8f8f8;
-        background-image: -webkit-linear-gradient(270deg, #0e7dd9, #0e7dd9);
-        background-image: linear-gradient(180deg, #0e7dd9, #0e7dd9)
+        background-image: -webkit-linear-gradient(270deg, #3f50ea, #3f50ea);
+        background-image: linear-gradient(180deg, #3f50ea, #3f50ea);
     }
 
         .div-block-9.div-ozet.div-adres {
@@ -2437,7 +2437,7 @@ h2 {
             align-items: center;
             border-style: none;
             border-width: 3px;
-            background-color: #0e7dd9;
+            background-color: #3f50ea;
             box-shadow: 0 13px 25px 0 rgba(0, 0, 0, .47)
         }
 
@@ -3643,7 +3643,7 @@ h2 {
     right: 10px;
     bottom: 11px;
     padding: 5px 17px;
-    background-color: #0e7dd9
+    background-color: #3f50ea;
 }
 
 .form-3 {
@@ -4525,7 +4525,7 @@ h2 {
 
 .link-7.onecikarma {
     padding: 11px;
-    background-color: #0e7dd9;
+    background-color: #3f50ea;
     color: #fff
 }
 
@@ -4693,7 +4693,7 @@ h2 {
     -webkit-justify-content: flex-end;
     -ms-flex-pack: end;
     justify-content: flex-end;
-    background-color: #0e7dd9;
+    background-color: #3f50ea;
     background-image: none;
     background-position: 0 0;
     background-size: auto;
@@ -5430,9 +5430,9 @@ h2 {
 }
 
     .tab-link-5.w--current {
-        border-color: #0e7dd9;
+        border-color: #3f50ea;
         background-color: #fff;
-        color: #0e7dd9
+        color: #3f50ea
     }
 
 .image-20 {

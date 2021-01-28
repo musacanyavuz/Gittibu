@@ -49,7 +49,7 @@ namespace GittiBu.Web.Controllers
                         Separator = textService.GetText(Enums.Texts.Ayrac, lang)
                     }
                 };
-
+                ViewBag.IsMainPage = true;
                 return View(model);
             }
         }

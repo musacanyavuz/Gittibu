@@ -10,5 +10,6 @@ namespace GittiBu.Web.ViewModels
         public int AdvertID { get; set; }
         public int PriceMin { get; set; }
         public int PriceMax { get; set; }
+        public int ResultCount { get; set; }
     }
 }

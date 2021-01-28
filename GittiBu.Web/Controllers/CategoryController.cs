@@ -77,15 +77,19 @@ namespace GittiBu.Web.Controllers
         [Route("Category/Filter")]
         public PartialViewResult Filter(FilterViewModel filterViewModel)
         {
+            using (var advertCategoryService = new AdvertCategoryService())
             using (var service = new AdvertService())
             {
                 try
                 {
                     var lang = GetLang();
+
                     var list = service.FilterAdverts(filterViewModel.ParentCategoryID,
                     filterViewModel.Content, filterViewModel.Brand, filterViewModel.Model, filterViewModel.AdvertID,
                     filterViewModel.PriceMin, filterViewModel.PriceMax, GetLang(), GetLoginID());
-                    return PartialView("~/Views/Shared/AdvertItem_4ColumnList.cshtml", Ads2HomePageItems(list, lang));
+
+                    int totalCount = advertCategoryService.GetAdvertsCount(new Models.AdvertCategory { ID=filterViewModel.ParentCategoryID });
+                    return PartialView("~/Views/Shared/AdvertItem_4ColumnList.cshtml",  Ads2HomePageItems(list, totalCount, lang));
                 }
                 catch (System.Exception ex)
                 {
@@ -101,10 +105,12 @@ namespace GittiBu.Web.Controllers
         public PartialViewResult GetAdverts(int offset, int categoryId)
         {
             var lang = GetLang();
+            using (var advertCategoryService = new AdvertCategoryService())
             using (var service = new AdvertService())
             {
+                int totalCount = advertCategoryService.GetAdvertsCount(new Models.AdvertCategory { ID = categoryId });
                 var list = service.GetCategoryPageAdverts(categoryId, lang, offset, GetLoginID());
-                return PartialView("~/Views/Shared/AdvertItem_4ColumnList.cshtml", Ads2HomePageItems(list, lang));
+                return PartialView("~/Views/Shared/AdvertItem_4ColumnList.cshtml", Ads2HomePageItems(list, totalCount, lang));
             }
         }
         [HttpPost]

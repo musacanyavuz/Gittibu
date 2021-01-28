@@ -166,7 +166,8 @@
     <script>
         var categories = @Html.Raw(Json.Serialize(Model.AdvertCategories));
         var filtered = false;
-        $('#filtre_form').submit(function(e) {
+        $(function () {
+ $('#filtre_form').submit(function(e) {
             e.preventDefault();
             $("#btnFilter")
                 .html(
@@ -213,17 +214,20 @@
                 data: parameters,
                 type: 'POST'
             });
-            request.done(function(data) {
+
+            request.done(function (data) {              
                 filtered = true;
-                $("#btnLoadMore").remove();
+               // $("#btnLoadMore").remove();
                 $("#loadhere").html(data);
-                var count = $('.product-wrapper').length;
+                var count =  $('.product-wrapper').length;
                 $('#adCounts').html('' + count);
                 notify('success', '@Localization.Get("İlanlar listelendi", "Ads listed", lang)');
                 $("#btnFilter").html('@Localization.Get("FİLTRELE", "FILTER", lang)').removeClass("disabled");
             });
 
         });
+        })
+
 
 
     </script>

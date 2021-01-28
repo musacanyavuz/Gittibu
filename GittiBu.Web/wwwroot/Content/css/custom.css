@@ -330,7 +330,7 @@
 }
 
 .ayirackalip-backcolor {
-    background-color: #0E62A2;
+    background-color: #3F50EA;
 }
 
 .ayirackalip-padding {
@@ -342,7 +342,7 @@
 }
 
 .search-button2 {
-    background-color: #3680D3;
+    background-color: #3f50ea;
     font-weight: 100;
 }
 
@@ -553,8 +553,8 @@
     font-family: Calibri Light, sans-serif;
 }
 
-.background-color-0e7dd9 {
-    background-color: #0e7dd9
+.background-color-0000B0 {
+    background-color: #0000B0
 }
 
 .background-color-red {
@@ -691,7 +691,7 @@ span.hidden-text {
 }
 
 .slicknav_btn {
-    background-color: #0e7dd9 !important;
+    background-color: #0000B0 !important;
 }
 
 .slicknav_nav {
@@ -734,7 +734,7 @@ span.hidden-text {
 }
 
 .slicknav_nav a:hover {
-    background: #0e7dd9;
+    background: #0000B0;
     color: #fff;
 }
 
@@ -746,7 +746,7 @@ span.hidden-text {
     top: 0;
     position: sticky;
     z-index: 1000;
-    background-color: #1076bb;
+    background-color: #3f50ea;
     color: black;
 }
 
@@ -799,7 +799,7 @@ span.hidden-text {
 }
 
 .top-menu .dropdown-menu {
-    background-color: #0e7dd9;
+    background-color: #0000B0;
     transition: all 0.6s ease 0s !important;
 }
 
@@ -821,7 +821,7 @@ span.hidden-text {
 
 .top-menu .dropdown-menu a.dropdown-item:hover {
     background: none !important;
-    background-color: #0e7dd9 !important;
+    background-color: #0000B0 !important;
 }
 
 .top-menu .navbar-nav {
@@ -836,12 +836,7 @@ span.hidden-text {
     .app-logo-width-ios {
         width: 15vh;
     }
-
-    .visa-logo-width {
-        max-width: 12vh;
-    }
 }
-
 
 @media screen and (min-width: 900px) {
     .top-menu .nav-item, .top-menu .nav-link {
@@ -849,19 +844,17 @@ span.hidden-text {
         height: 100%;
         border-left: 1px solid #136cc7;
     }
+    .visa-logo-width{
+     width: 10vh;
+    }
 
     .app-logo-width {
-        width: 15vh;
+        width: 14vh;
     }
 
     .app-logo-width-ios {
-        width: 15vh;
+        width: 14vh;
     }
-
-    .visa-logo-width {
-        max-width: 11vh;
-    }
-}
 }
 
 .top-menu .nav-link {
@@ -898,11 +891,11 @@ span.hidden-text {
 }
 
 .notify-readed {
-    color: #0e7dd9;
+    color: #0000B0;
 }
 
 #query {
-    width: 240px;
+    width: 300px;
 }
 
 .notify-drop {
@@ -991,7 +984,7 @@ span.hidden-text {
     top: 55px !important;
 }
 
-.col-cente#0e7dd9 {
+.col-cente#0000B0 {
     float: none;
     margin: 0 auto;
 }
@@ -1001,7 +994,7 @@ span.hidden-text {
     position: absolute;
     right: 10px;
     top: 10px;
-    background: #4D95DE;
+    background: #3F50EA;
     color: #fff;
     text-align: center;
     font-size: 10px;
@@ -1023,7 +1016,7 @@ span.hidden-text {
 .ayirackalip {
     padding-left: 10%;
     padding-right: 10%;
-    background: #fff;
+    background: #3F50EA;
     padding-bottom: 20px;
 }
 
@@ -1309,7 +1302,7 @@ i.fa.fa-dot-circle-o.text_kirmizi {
 }
 
 .dropdown-toggle:focus {
-    background-color: #1172d3;
+    background-color: #0000B0;
 }
 
 a.link2.links.uye.w-inline-block.dilbutonlari {
@@ -1351,7 +1344,7 @@ a.link2.links.uye.w-inline-block {
 }
 
     .BildirimTusu .dropdown-menu.notify-drop .notify-drop-title {
-        border-bottom: 1px solid #1172d3 !important;
+        border-bottom: 1px solid #0000B0 !important;
         padding: 5px 15px 10px 15px !important;
     }
 
@@ -1484,11 +1477,11 @@ ul#BildirimIcerik {
 }
 
 .altcizgi {
-    background: #1172d3;
+    background: #0000B0;
 }
 
 .text_kirmizi {
-    color: #1172d3 !important;
+    color: #0000B0 !important;
 }
 
 .load-more-button {
@@ -1509,11 +1502,11 @@ ul#BildirimIcerik {
 
 .link-block-9 {
     border: none !important;
-    padding-left: 1rem;
+    padding-left: 0;
 }
 
     .link-block-9 i {
-        color: #0e7dd9;
+        color: #0000B0;
     }
 
 .footer-link {
@@ -1585,7 +1578,7 @@ div.panel {
 }
 
 .sum-row {
-    background-color: #0e7dd9;
+    background-color: #0000B0;
     color: #fff;
     font-size: large;
     font-weight: 900;
@@ -1604,7 +1597,7 @@ div.panel {
 }
 
     .advert-sm-icons a {
-        color: #0e7dd9;
+        color: #0000B0;
     }
 
     .advert-sm-icons .fa-2x {
@@ -1620,7 +1613,7 @@ div.panel {
     font-size: 16px;
     border: none;
     outline: none;
-    background-color: #0a88dd;
+    background-color: #3F50EA;
     color: white;
     cursor: pointer;
     padding: 10px;
@@ -1632,35 +1625,20 @@ div.panel {
     }
 
 .notify-readed > i {
-    color: #0e7dd9;
+    color: #0000B0;
 }
 
 .notify-msg {
     font-size: 15px;
 }
+.filtre-aralik, .urun-ozellik-select{
+	font-size: 14px;
+}
+.div-cizgi .custom-control-label.font-weight-normal{
+	padding-top:2px;
+}
 
 button:disabled {
     cursor: not-allowed;
     opacity: .65 !important;
-}
-#scrollTop {
-    bottom: 30px;
-}
-
-.profile_pic {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-}
-
-@media (max-width: 767px) {
-    .profile_pic {
-        position: relative;
-        right: 0px;
-        top: 0px;
-        margin: 0px auto;
-        left: 50%;
-        margin-left: -75px;
-        margin-bottom: 25px;
-    }
 }

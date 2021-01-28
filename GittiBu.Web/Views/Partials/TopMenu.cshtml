@@ -4,12 +4,16 @@
     int lang = Constants.GetLang(Context.Session.GetString("lang"));
     var translateUrl = ViewBag.TranslateUrl;
     var navMenuCss = string.Empty;
-    var logoImg = "logo.gif";
+    var logoImg = "logo.gif?v=1a";
     if (translateUrl == "/")
     {
         navMenuCss = "navbar-no-bg";
         translateUrl = null;
-        logoImg="logo_mavi.gif";
+
+    }
+    if(ViewBag.IsMainPage == true)
+    {
+        logoImg = "logo_mavi.gif?v2a=";
     }
 }
 
@@ -30,7 +34,7 @@
         <a class="navbar-brand" href="/">
             <img src="~/Content/img/images/@logoImg" width="175" alt="Gittibu Güvenilir Online Satış Sistemi">
         </a>
-        <form class="form-inline my-2 my-lg-0 mr-auto mt-2 mt-lg-0 m-l-100-5">
+        <form class="form-inline my-2 my-lg-0 mr-auto mt-2 mt-lg-0">
             <input class="form-control m-r-0 border-radius-10" type="search" id="query" name="query" required>
 
             <button class="btn search-button2 color-w" type="button" onclick="search()"><i class="fa fa-search"></i> @Localization.Get("Ara", "Search", lang)</button>
@@ -154,7 +158,8 @@
                     </div>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href='@Constants.GetURL(Enums.Routing.IlanEkle, lang)'>@Localization.Get("İlan Ver", "Advertise", lang) &nbsp; <img src="~/Content/img/images/coins.png" alt="@Localization.Get("İlan Ver", "Advertise", lang)" class="img1" width="20"> </a>
+                    <a class="nav-link" href='@Constants.GetURL(Enums.Routing.IlanEkle, lang)'>@Localization.Get("İlan Ver", "Advertise", lang) &nbsp; 
+                    <img src="~/Content/img/images/coins.png" alt="@Localization.Get("İlan Ver", "Advertise", lang)" class="img1" height="20" width="20" style="vertical-align:text-bottom; margin-top:-10px" /> </a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"

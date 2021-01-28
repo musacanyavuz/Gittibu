@@ -330,7 +330,7 @@
 }
 
 .ayirackalip-backcolor {
-    background-color: #0E62A2;
+    background-color: #3F50EA;
 }
 
 .ayirackalip-padding {
@@ -342,7 +342,7 @@
 }
 
 .search-button2 {
-    background-color: #3680D3;
+    background-color: transparent;
     font-weight: 100;
 }
 
@@ -553,8 +553,8 @@
     font-family: Calibri Light, sans-serif;
 }
 
-.background-color-0e7dd9 {
-    background-color: #0e7dd9
+.background-color-#0000D5 {
+    background-color: #0000D5
 }
 
 .background-color-red {
@@ -691,7 +691,7 @@ span.hidden-text {
 }
 
 .slicknav_btn {
-    background-color: #0e7dd9 !important;
+    background-color: #0000D5 !important;
 }
 
 .slicknav_nav {
@@ -734,7 +734,7 @@ span.hidden-text {
 }
 
 .slicknav_nav a:hover {
-    background: #0e7dd9;
+    background: #0000D5;
     color: #fff;
 }
 
@@ -746,7 +746,7 @@ span.hidden-text {
     top: 0;
     position: sticky;
     z-index: 1000;
-    background-color: #1076bb;
+    background-color: #0000D5;
     color: black;
 }
 
@@ -799,13 +799,13 @@ span.hidden-text {
 }
 
 .top-menu .dropdown-menu {
-    background-color: #0e7dd9;
+    background-color: #0000D5;
     transition: all 0.6s ease 0s !important;
 }
 
 .top-menu .nav-link {
     transition: all 0.6s ease 0s !important;
-    font-weight: 100;
+    font-weight: bold;
     padding-left: 20px !important;
     padding-right: 20px !important;
 }
@@ -821,7 +821,7 @@ span.hidden-text {
 
 .top-menu .dropdown-menu a.dropdown-item:hover {
     background: none !important;
-    background-color: #0e7dd9 !important;
+    background-color: #0000D5 !important;
 }
 
 .top-menu .navbar-nav {
@@ -898,11 +898,12 @@ span.hidden-text {
 }
 
 .notify-readed {
-    color: #0e7dd9;
+    color: #0000D5;
 }
 
 #query {
-    width: 240px;
+    width: 300px;
+    height:30px;
 }
 
 .notify-drop {
@@ -991,7 +992,7 @@ span.hidden-text {
     top: 55px !important;
 }
 
-.col-cente#0e7dd9 {
+.col-cente#0000D5 {
     float: none;
     margin: 0 auto;
 }
@@ -1001,7 +1002,7 @@ span.hidden-text {
     position: absolute;
     right: 10px;
     top: 10px;
-    background: #4D95DE;
+    background: #3F50EA;
     color: #fff;
     text-align: center;
     font-size: 10px;
@@ -1019,11 +1020,18 @@ span.hidden-text {
     left: 0;
 }
 
-
+.ayirackalip-first {
+    width:60%;
+    margin-left:20%;
+    padding-left: 10%;
+    padding-right: 10%;
+    background: #3F50EA;
+    padding-bottom: 20px;
+}
 .ayirackalip {
     padding-left: 10%;
     padding-right: 10%;
-    background: #fff;
+    background: #3F50EA;
     padding-bottom: 20px;
 }
 
@@ -1309,7 +1317,7 @@ i.fa.fa-dot-circle-o.text_kirmizi {
 }
 
 .dropdown-toggle:focus {
-    background-color: #1172d3;
+    background-color: #0000D5;
 }
 
 a.link2.links.uye.w-inline-block.dilbutonlari {
@@ -1351,7 +1359,7 @@ a.link2.links.uye.w-inline-block {
 }
 
     .BildirimTusu .dropdown-menu.notify-drop .notify-drop-title {
-        border-bottom: 1px solid #1172d3 !important;
+        border-bottom: 1px solid #0000D5 !important;
         padding: 5px 15px 10px 15px !important;
     }
 
@@ -1484,11 +1492,11 @@ ul#BildirimIcerik {
 }
 
 .altcizgi {
-    background: #1172d3;
+    background: #0000D5;
 }
 
 .text_kirmizi {
-    color: #1172d3 !important;
+    color: #0000D5 !important;
 }
 
 .load-more-button {
@@ -1513,7 +1521,7 @@ ul#BildirimIcerik {
 }
 
     .link-block-9 i {
-        color: #0e7dd9;
+        color: #0000D5;
     }
 
 .footer-link {
@@ -1585,7 +1593,7 @@ div.panel {
 }
 
 .sum-row {
-    background-color: #0e7dd9;
+    background-color: #0000D5;
     color: #fff;
     font-size: large;
     font-weight: 900;
@@ -1604,7 +1612,7 @@ div.panel {
 }
 
     .advert-sm-icons a {
-        color: #0e7dd9;
+        color: #0000D5;
     }
 
     .advert-sm-icons .fa-2x {
@@ -1620,7 +1628,7 @@ div.panel {
     font-size: 16px;
     border: none;
     outline: none;
-    background-color: #0a88dd;
+    background-color: #3F50EA;
     color: white;
     cursor: pointer;
     padding: 10px;
@@ -1632,7 +1640,7 @@ div.panel {
     }
 
 .notify-readed > i {
-    color: #0e7dd9;
+    color: #0000D5;
 }
 
 .notify-msg {
