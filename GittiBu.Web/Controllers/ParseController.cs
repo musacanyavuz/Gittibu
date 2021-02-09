@@ -324,41 +324,41 @@ namespace GittiBu.Web.Controllers
             return Json(null);
         }
 
-       
+
         public void DeleteOtherPArses(int userid)
         {
             using (var newService = new ParseService())
             {
-                var listOfUserParses = newService.GetUserFilesById(userid).OrderByDescending(x => x.ID);                
+                var listOfUserParses = newService.GetUserFilesById(userid).OrderByDescending(x => x.ID);
                 var userFileName = listOfUserParses.First().UserFileName;
-                
+
                 int c = 0;
-                foreach (var item in listOfUserParses.Where(x=>x.UserFileName.Contains(userFileName)))
+                foreach (var item in listOfUserParses.Where(x => x.UserFileName.Contains(userFileName)))
                 {
                     c++;
                     if (c == 1)
                         continue;
                     item.IsDeleted = true;
                     newService.Update(item);
-                   
+
                 }
 
             }
-           
+
         }
 
         [HttpPost]
         //[RequestFormLimits(MultipartBodyLengthLimit = int.MaxValue)]
         //[RequestSizeLimit(100000000)]
-        public async Task<ActionResult> Insert(ParseModel model)
+        public async Task<ActionResult> Insert(ParseModel parseModel)
         {
             try
-            {              
+            {
 
                 int userId = 0;
                 string XMLFileName = "";
                 string filePath = "";
-                if (model.FileStream == null)
+                if (parseModel.FileStream == null)
                 {
                     XMLFileName = HttpContext.Session.GetString("XMLFileName");
                     filePath = HttpContext.Session.GetString("UploadedFilePath");
@@ -367,20 +367,20 @@ namespace GittiBu.Web.Controllers
 
 
                 Stream formFileStream;
-                if (model.file != null) //file ile insert
+                if (parseModel.file != null) //file ile insert
                 {
-                    formFileStream = model.file.OpenReadStream();
+                    formFileStream = parseModel.file.OpenReadStream();
                 }
-                else if (model.fileLink != null) //link ile insert
+                else if (parseModel.fileLink != null) //link ile insert
                 {
                     formFileStream = await DownloadFile(filePath);
                 }
-                else if (model.FileStream != null) //update
+                else if (parseModel.FileStream != null) //update
                 {
-                    XMLFileName = model.FileName;
-                    filePath = model.FilePath;
-                    formFileStream = model.FileStream;
-                    userId = model.UserID;
+                    XMLFileName = parseModel.FileName;
+                    filePath = parseModel.FilePath;
+                    formFileStream = parseModel.FileStream;
+                    userId = parseModel.UserID;
                     int xd = GetLoginID();
                 }
                 else
@@ -396,17 +396,17 @@ namespace GittiBu.Web.Controllers
 
                 #region File Process
                 List<string> xmlElementsFromFile = new List<string>();
-                if (model.FileStream == null)
+                if (parseModel.FileStream == null)
                 {
                     xmlElementsFromFile = HttpContext.Session.GetObject<List<string>>("ChildNames");
                 }
-                if ((model.ChildNames?.Length ?? -1) > 0 && model.FileStream != null)
+                if ((parseModel.ChildNames?.Length ?? -1) > 0 && parseModel.FileStream != null)
                 {
-                    xmlElementsFromFile = model.ChildNames.Split("_._").ToList();
+                    xmlElementsFromFile = parseModel.ChildNames.Split("_._").ToList();
                 }
                 if (xmlElementsFromFile != null)
                 {
-                    advertsFromXML = parseXMLFile(doc, model.RootName, xmlElementsFromFile);
+                    advertsFromXML = parseXMLFile(doc, parseModel.RootName, xmlElementsFromFile);
                 }
                 else
                 {
@@ -433,6 +433,7 @@ namespace GittiBu.Web.Controllers
                     userAdverts = services.GetUserAdverts(userId);
                 }
                 #endregion
+
                 #region All Payment Requests for Sell AdvertIds
                 //Kullanıcının ilanlarını getirir
                 List<PaymentRequest> paymentRequests;
@@ -472,9 +473,9 @@ namespace GittiBu.Web.Controllers
                                 //}
                                 //indekslere göre eşleştirme yapılacak
                                 List<string> xmlCategoryNames = HttpContext.Session.GetObject<List<string>>("XMLCategoryNames");
-                                List<int> matchedGittibuCategories = model.XMLCategoryMatches.ToList();
+                                List<int> matchedGittibuCategories = parseModel.XMLCategoryMatches.ToList();
 
-                                string categoryValue = advertObjInXML[model.Category]?.ToString();
+                                string categoryValue = advertObjInXML[parseModel.Category]?.ToString();
                                 int categoryIndex = xmlCategoryNames.IndexOf(categoryValue);
 
                                 int gittibuCategoryID = matchedGittibuCategories[categoryIndex];
@@ -482,7 +483,7 @@ namespace GittiBu.Web.Controllers
                                 AdvertCategory advertCategories = categories.FirstOrDefault(s => s.ID == gittibuCategoryID);
 
                                 int categoryMaxInst = advertCategories?.MaxInstallment ?? 1;
-                                int maxInst = (categoryMaxInst > model.MaxInstallment) ? (model.MaxInstallment) : categoryMaxInst;
+                                int maxInst = (categoryMaxInst > parseModel.MaxInstallment) ? (parseModel.MaxInstallment) : categoryMaxInst;
                                 installment = AllInstallments(maxInst);
                                 categoryID = advertCategories.ID;
                             }
@@ -502,16 +503,16 @@ namespace GittiBu.Web.Controllers
                             }
                             #endregion
                             #region Filter Configuration
-                            double price = Convert.ToDouble(advertObjInXML[model.Price].ToString().Replace('.', ','));
-                            double addPrice = (model.PriceDiscount * price) / 100;
-                            price = Math.Round((price + addPrice), MidpointRounding.AwayFromZero);
+                            double priceInXml = Convert.ToDouble(advertObjInXML[parseModel.Price].ToString().Replace('.', ','));
+                            double addPrice = (parseModel.PriceDiscount * priceInXml) / 100;
+                            priceInXml = Math.Round((priceInXml + addPrice), MidpointRounding.AwayFromZero);
 
-                            double stockAmount = Convert.ToDouble(advertObjInXML[model.StockAmount].ToString().Replace('.', ','));
+                            double stockAmount = Convert.ToDouble(advertObjInXML[parseModel.StockAmount].ToString().Replace('.', ','));
 
                             bool isActive = false;
-                            if (!string.IsNullOrEmpty(model.IsActive))
+                            if (!string.IsNullOrEmpty(parseModel.IsActive))
                             {
-                                object isActiveObj = advertObjInXML[model.IsActive];
+                                object isActiveObj = advertObjInXML[parseModel.IsActive];
                                 if (isActiveObj != null)
                                 {
                                     if (bool.TryParse(isActiveObj.ToString(), out bool result))
@@ -537,13 +538,13 @@ namespace GittiBu.Web.Controllers
                             #endregion
                             #region Filtering
 
-                            string productId = advertObjInXML[model.ProductID]?.ToString();
+                            string productId = advertObjInXML[parseModel.ProductID]?.ToString();
                             int advertId = userAdverts.FirstOrDefault(s => s.XMLProductID == (productId ?? ".."))?.ID ?? -1;
 
                             //filtrelere uygun değilse, ürün aktif değilse yükleme.
-                            if ((model.PriceFilter >= price || model.StockFilter > stockAmount) || (!isActive))
+                            if ((parseModel.PriceFilter >= priceInXml || parseModel.StockFilter > stockAmount) || (!isActive))
                             {
-                                if (model.FileStream != null && advertId != -1) //update işlemi esnasında
+                                if (parseModel.FileStream != null && advertId != -1) //update işlemi esnasında
                                 {
                                     bool isOk = parseService.DeleteOrUpdateAdvert(paymentRequests, advertId);
                                     if (isOk)
@@ -572,8 +573,8 @@ namespace GittiBu.Web.Controllers
                             advertEntity.AvailableInstallments = installment;
                             advertEntity.CategoryID = categoryID;
                             advertEntity.XMLProductID = productId;
-                            advertEntity.CargoAreaID = Convert.ToInt32(model.CargoAreaID);
-                            advertEntity.Price = price;
+                            advertEntity.CargoAreaID = Convert.ToInt32(parseModel.CargoAreaID);
+                            advertEntity.Price = priceInXml;
                             advertEntity.StockAmount = stockAmount;
                             advertEntity.ProductStatus = "Yeni"; //model.ProductStatus;
                             advertEntity.MoneyTypeID = (int)Enums.MoneyType.tl;
@@ -582,13 +583,13 @@ namespace GittiBu.Web.Controllers
                             advertEntity.IpAddress = GetIpAddress();
                             advertEntity.IsActive = true; //onaysız
                             advertEntity.IsDeleted = false; //onaysız
-                            advertEntity.ProductDefects = "Yeni <span style='padding-left: 5em !important'>" + model.Supplier + "</span>";
-                            advertEntity.FreeShipping = model.FreeShipping;
+                            advertEntity.ProductDefects = "Yeni <span style='padding-left: 5em !important'>" + parseModel.Supplier + "</span>";
+                            advertEntity.FreeShipping = parseModel.FreeShipping;
 
                             #region Price Arrangement
-                            if (!string.IsNullOrEmpty(model.ShippingPrice))
+                            if (!string.IsNullOrEmpty(parseModel.ShippingPrice))
                             {
-                                string shippingPrice = advertObjInXML[model.ShippingPrice]?.ToString()?.Replace('.', ',');
+                                string shippingPrice = advertObjInXML[parseModel.ShippingPrice]?.ToString()?.Replace('.', ',');
                                 if (double.TryParse(shippingPrice, out double shpPrice))
                                 {
                                     advertEntity.ShippingPrice = Math.Round(shpPrice, MidpointRounding.AwayFromZero);
@@ -596,12 +597,12 @@ namespace GittiBu.Web.Controllers
                                 }
                             }
 
-                            if (!string.IsNullOrEmpty(model.NewProductPrice))
+                            if (!string.IsNullOrEmpty(parseModel.NewProductPrice))
                             {
-                                string newProductPrice = advertObjInXML[model.NewProductPrice]?.ToString()?.Replace('.', ',');
+                                string newProductPrice = advertObjInXML[parseModel.NewProductPrice]?.ToString()?.Replace('.', ',');
                                 if (double.TryParse(newProductPrice, out double newPrice))
                                 {
-                                    double addNewPrice = (model.NewPriceDiscount * newPrice) / 100;
+                                    double addNewPrice = (parseModel.NewPriceDiscount * newPrice) / 100;
                                     newPrice = Math.Round((newPrice + addNewPrice), MidpointRounding.AwayFromZero);
                                     advertEntity.NewProductPrice = newPrice;
                                 }
@@ -609,21 +610,21 @@ namespace GittiBu.Web.Controllers
                             #endregion
                             #region Photo Link Arrangement
                             advertEntity.CoverPhoto = "";
-                            for (int i = 0; i < model.Photos.Length; i++)
+                            for (int i = 0; i < parseModel.Photos.Length; i++)
                             {
-                                advertEntity.CoverPhoto += advertObjInXML[model.Photos[i]];
+                                advertEntity.CoverPhoto += advertObjInXML[parseModel.Photos[i]];
                             }
                             #endregion
                             #region Content Arrangement
                             string contentTemp = "";
-                            for (int i = 0; i < model.Content.Length; i++)
+                            for (int i = 0; i < parseModel.Content.Length; i++)
                             {
                                 string br = "";
                                 if (i != 0)
                                 {
                                     br = "<br/>";
                                 }
-                                string data = advertObjInXML[model.Content[i]]?.ToString() ?? String.Empty;
+                                string data = advertObjInXML[parseModel.Content[i]]?.ToString() ?? String.Empty;
                                 data = data?.Replace("&amp;", "&")?.Replace("&quot;", "\"")?.Replace("&#39;", "'")?.Replace("&lt;", "<")?.Replace("&gt;", ">");
                                 contentTemp += br + (Regex.Replace(data, @"<[^>]+>|&nbsp;", "")?.Trim() ?? String.Empty);
                             }
@@ -636,10 +637,10 @@ namespace GittiBu.Web.Controllers
                             #endregion
                             #region Title Arrangement
                             string titleTemp = "";
-                            for (int i = 0; i < model.Title.Length; i++)
+                            for (int i = 0; i < parseModel.Title.Length; i++)
                             {
-                                var data = advertObjInXML[model.Title[i]]?.ToString() ?? String.Empty;
-                                titleTemp += data + (i == (model.Title.Length - 1) ? String.Empty : " ");
+                                var data = advertObjInXML[parseModel.Title[i]]?.ToString() ?? String.Empty;
+                                titleTemp += data + (i == (parseModel.Title.Length - 1) ? String.Empty : " ");
                             }
                             //boyutu 100den büyükse ilk 100ü al.
                             if (titleTemp.Length >= 500)
@@ -689,7 +690,7 @@ namespace GittiBu.Web.Controllers
                 int increaseCount = 50;
                 bool isFirstUpdate = true;
                 int insertCounter = 0;
-                foreach (var advert in advertList)
+                foreach (var advert in advertList)// advertList => yüklenen  XML parse etme sonucu alınan ürünler.
                 {
                     List<string> photoIdList = new List<string>();
                     using (var advertService = new AdvertService())
@@ -840,7 +841,7 @@ namespace GittiBu.Web.Controllers
                                 if (isExistAdvert)
                                 {
                                     var photos = advertService.GetPhotos(advert.ID);
-                                   
+
                                     foreach (var photo in photos)
                                     {
                                         using (var srv = new AdvertPhotoService())
@@ -851,7 +852,7 @@ namespace GittiBu.Web.Controllers
                                         advertService.DeletePhoto(photo);
                                     }
 
-                                  
+
                                 }
 
                                 var imageIds = UpdateNewPhotos(advert.ID, SelectedPhotos);
@@ -870,7 +871,7 @@ namespace GittiBu.Web.Controllers
                         }
                         if ((insertCounter % increaseCount == 0) && (insertCounter != 0))
                         {
-                            await AddParseFile(model, insertCounter, filePath, productIds, userId, XMLFileName, xmlElementsFromFile, deletedAdvertList, increaseCount, false, isFirstUpdate);
+                            await AddParseFile(parseModel, insertCounter, filePath, productIds, userId, XMLFileName, xmlElementsFromFile, deletedAdvertList, increaseCount, false, isFirstUpdate);
                             isFirstUpdate = false;
                         }
 
@@ -879,9 +880,29 @@ namespace GittiBu.Web.Controllers
                     }
                 }
 
+                #region Eski XML  olan ,  yüklenen yeni XML olmayan ürünleri  siliyoruz.               
+
+                var itemsToDelete = from p in userAdverts
+                                    join advl in advertList on p.XMLProductID equals advl.XMLProductID into pp
+                                    from advl in pp.DefaultIfEmpty()
+                                    where advl == null
+                                    select p;
+
+                using (var advertService = new AdvertService())
+                using (var paymentRequestSrv = new PaymentRequestService())
+                {
+                    foreach (var itemToDelete in itemsToDelete)
+                    {
+
+                        advertService.Delete(itemToDelete);
+                    }
+                }
+                #endregion
                 //Add User Parse File Info To Parse File Table
-                await AddParseFile(model, insertCounter, filePath, productIds, userId, XMLFileName, xmlElementsFromFile, deletedAdvertList, increaseCount, true, isFirstUpdate);
+                await AddParseFile(parseModel, insertCounter, filePath, productIds, userId, XMLFileName, xmlElementsFromFile, deletedAdvertList, increaseCount, true, isFirstUpdate);
                 DeleteOtherPArses(userId);
+
+
 
             }
             catch (Exception e)
@@ -1390,7 +1411,7 @@ namespace GittiBu.Web.Controllers
 
         private async Task AddParseFile(ParseModel model, int insertCounter, string filePath, string productIds, int userId, string XMLFileName, List<string> contextChildNames, List<string> deletedAdvertList, int increaseCount, bool isLastUpdate, bool isFirstUpdate)
         {
-           
+
             #region Add User Parse File Info To Parse File Table
             if (insertCounter > 0 || model.FileStream != null)
             {
@@ -1541,7 +1562,7 @@ namespace GittiBu.Web.Controllers
                 }
             }
             #endregion
-          
+
         }
 
         private List<Dictionary<string, object>> parseXMLFile(XmlDocument doc, string rootName, List<string> contextChildNames)

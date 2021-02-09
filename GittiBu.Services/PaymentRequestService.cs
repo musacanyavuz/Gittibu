@@ -169,5 +169,28 @@ namespace GittiBu.Services
              }).ToList();
             return query;
         }
+        public IList<PaymentRequest> GetPaymentRequestsOfAdvertToDelete(int advertID)
+        {
+            string inValues = String.Format("{0},{1},{2},{3},{4}", 
+                (int)Enums.PaymentRequestStatus.Bekleniyor
+                ,(int)Enums.PaymentRequestStatus.KargoyaVerildi,
+                (int)Enums.PaymentRequestStatus.Onaylandi,
+                (int)Enums.PaymentRequestStatus.OnlineOdemeYapildi,
+                (int)Enums.PaymentRequestStatus.Reddedildi
+                );
+            var sql = "";
+            // $"select * from \"PaymentRequests\", \"Users\", \"Adverts\" where \"Type\" = {(int)Enums.PaymentType.Ilan}\n and (\"Status\"   IN  ({inValues})  AND \"AdvertID\"= {advertID}";
+
+            sql = $"select * from \"PaymentRequests\" as pr left join  \"Users\" as us on pr.\"UserID\" = us.\"ID\"  left join  \"Adverts\"  as  ad on pr.\"AdvertID\" = ad.\"ID\" where pr.\"Type\" =  {(int)Enums.PaymentType.Ilan}\n  and pr.\"Status\"   IN   ({inValues})  AND pr.\"AdvertID\"= {advertID}";
+
+            var query = GetConnection().Query<PaymentRequest, User, Advert, PaymentRequest>(sql, (request, user, advert) =>
+            {
+                request.Seller = user;
+                request.Advert = advert;
+                return request;
+            }).ToList();
+            return query;
+        }
+
     }
 }

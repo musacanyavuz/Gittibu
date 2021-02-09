@@ -208,7 +208,7 @@ namespace GittiBu.Services
                             "(\"GetText\"(\"AdvertCategories\".\"SlugID\", 1)) as \"SubCategorySlugTr\",\n  " +
                             "     (\"GetText\"(\"AdvertCategories\".\"SlugID\", 2)) as \"SubCategorySlugEn\",\n\n   " +
                             "    \"AdvertCategories\".*,\"Users\".* from\n  \"Adverts\", \"AdvertCategories\", \"Users\"\nwhere\n      \"Adverts\".\"UserID\"=\"Users\".\"ID\"\n  and \"Adverts\".\"CategoryID\" = \"AdvertCategories\".\"ID\"\n  and \"Adverts\".\"IsActive\" = true\n  and \"Users\".\"IsActive\" = true\n  and \"Adverts\".\"ID\" = @id; ";
-                        
+
 
                 var adv = GetConnection().Query<Advert, AdvertCategory, User, Advert>(sql,
                    (advert, category, user) =>
@@ -223,8 +223,8 @@ namespace GittiBu.Services
                     throw new Exception("adv is NULL");
                 string photosSql = $"select * from \"AdvertPhotos\" where \"AdvertID\" = @id;";
                 var addPhotos = GetConnection().Query<AdvertPhoto>(photosSql, new { id });
-                if(addPhotos != null )
-                adv.Photos = addPhotos;
+                if (addPhotos != null)
+                    adv.Photos = addPhotos;
                 return adv;
 
                 //using (var multi = GetConnection().QueryMultiple(sql, new { id }))
@@ -245,14 +245,14 @@ namespace GittiBu.Services
                 //}
 
 
-               
+
             }
             catch (Exception e)
             {
                 if (e.Message == "adv is NULL")
                     return null;
 
-                
+
 
                 Log(new Log
                 {
@@ -328,7 +328,7 @@ namespace GittiBu.Services
                         Function = "AdvertService.Insert",
                         CreatedDate = DateTime.Now,
                         Message = e.Message,
-                        Detail =e.ToString(),
+                        Detail = e.ToString(),
                         IsError = true
                     });
                 }
@@ -362,11 +362,36 @@ namespace GittiBu.Services
         public bool Delete(int id)
         {
             using (var service = new AdvertPhotoService())
-            { 
+            {
                 service.DeleteAdvertPhotosByAdvertId(id);
             }
-                return GetConnection().Delete(new Advert() { ID = id });
+            return GetConnection().Delete(new Advert() { ID = id });
         }
+        /// <summary>
+        /// Silmeden Önce  PaymentRequest Kontrolü Papar .
+        /// </summary>
+        /// <param name="advert"></param>
+        /// <returns></returns>
+        public bool Delete(Advert advert)
+        {          
+            IList<PaymentRequest> blackList = new List<PaymentRequest>();
+            using (var paymentRequestSrv = new PaymentRequestService())
+            using (var service = new AdvertPhotoService())
+            {
+                blackList = paymentRequestSrv.GetPaymentRequestsOfAdvertToDelete(advert.ID);
+                if (blackList == null || blackList.Count == 0)
+                {
+                    service.DeleteAdvertPhotosByAdvertId(advert.ID);
+                    return GetConnection().Delete(new Advert() { ID = advert.ID });
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+        }
+
 
         public Advert GetMyAdvert(int id, int userId)
         {
@@ -989,7 +1014,7 @@ namespace GittiBu.Services
             }
             return null;
         }
-        
+
         public Advert GetAdvertByXMLProductId(int userId, int XMLProductId)
         {
             try
@@ -1008,7 +1033,7 @@ namespace GittiBu.Services
                     Message = e.Message,
                     Detail = e.InnerException?.Message,
                     IsError = true,
-                    Params = userId.ToString() + " " + XMLProductId.ToString() 
+                    Params = userId.ToString() + " " + XMLProductId.ToString()
                 });
 
                 return null;

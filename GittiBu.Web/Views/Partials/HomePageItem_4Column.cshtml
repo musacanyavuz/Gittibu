@@ -18,8 +18,8 @@
         <meta itemprop="sku" content="@Model.StockAmount" /><meta itemprop="productID" content="isbn:@Model.ID" /><meta itemprop="mpn" content="@Model.ID" />
         <div class="product product-ana @itemClass">
             <a href="@Model.Url" class="w-inline-block w-full w-clearfix" title="@title" itemprop="url" target="_blank">
-                <div class="urun-imaj">
-                    <img alt="@title" src="@(!string.IsNullOrEmpty(Model.ImageSource) ? Model.ImageSource : "/Content/img/no-image.jpg")" onerror="this.src = '/Content/img/no-image.jpg';" itemprop="image" />
+                <div class="urun-imaj">                  
+                    <img alt="@title" src="https://www.gittibu.com/@(!string.IsNullOrEmpty(Model.ImageSource) ? Model.ImageSource : "/Content/img/no-image.jpg")" onerror="this.src = '/Content/img/no-image.jpg';" itemprop="image" />
                 </div>
                 <div class="kategoriler urun-text">
                     <h4 itemprop="name">@Html.Raw(title)</h4>
@@ -111,6 +111,7 @@ else
         <div class="product product-ana ">
             <a href="@Model.Url" class="w-inline-block w-full w-clearfix" title="@title" target="_blank">
                 <div class="urun-imaj">
+                
                     <img alt="@title" src="@(!string.IsNullOrEmpty(Model.ImageSource)?Model.ImageSource:"/Content/img/no-image.jpg")" onerror="this.src = '/Content/img/no-image.jpg';">
                 </div>
                 <div class="kategoriler urun-text">
