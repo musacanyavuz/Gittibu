@@ -54,7 +54,7 @@ namespace GittiBu.Web.Controllers
             }
             using (var service = new UserService())
             {
-                var pass2 = Encryptor.DecryptData("fLIO3acpHmF1YjhCdEjF5g==");
+               // var pass2 = Encryptor.DecryptData("fLIO3acpHmF1YjhCdEjF5g==");
                 password = Encryptor.EncryptData(password);
                 var user = service.Get(username, password);
                 if (user == null)
@@ -94,7 +94,8 @@ namespace GittiBu.Web.Controllers
             var authProperties = new AuthenticationProperties
             {
                 ExpiresUtc = DateTimeOffset.UtcNow.AddDays(30),
-                IsPersistent = rememberMe,
+                IsPersistent = rememberMe                
+                
             };
 
             await HttpContext.SignInAsync(

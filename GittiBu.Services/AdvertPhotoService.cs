@@ -17,6 +17,13 @@ namespace GittiBu.Services
             var result = GetConnection().Query<AdvertPhoto>(sql);
             return result.ToList();
         }
+        public List<AdvertPhoto> GetAllAdvertPhotosExistInAdverts()
+        {
+            string sql = @"select * from ""Adverts"" a join ""AdvertPhotos"" ap on a.""ID"" = ap.""AdvertID"" ";
+            var result = GetConnection().Query<AdvertPhoto>(sql);
+          
+          return result.ToList();
+        }
         public List<AdvertPhoto> GetAdvertPhotosByAdvertID(int advertId)
         {
             return GetConnection().Find<AdvertPhoto>(s => s
@@ -42,6 +49,29 @@ namespace GittiBu.Services
 
             }
 
+        
+        }
+        public void UpdateAdvertPhotosByAdvertId(int advertId)
+        {
+            var listOfPhotos = GetAdvertPhotosByAdvertID(advertId);
+            try
+            {
+                foreach (var item in listOfPhotos)
+                {
+                    item.Source = "deleted_" + item.Source;
+                    item.Thumbnail = "deleted_" + item.Thumbnail;
+                    GetConnection().Update(item);
+
+
+                }
+            }
+            catch (Exception)
+            {
+
+               
+            }
+            
+
         }
         public void DeleteAdvertOnlyPhysicalPhotos(AdvertPhoto photo)
         {
@@ -60,6 +90,10 @@ namespace GittiBu.Services
             
 
         }
+        /// <summary>
+        /// AdvertPhotos da olup  Adverts da olmayan resimleri bulur.
+        /// </summary>
+        /// <returns></returns>
         public List<AdvertPhoto> GetAdvertPhotosNotInAdverts()
         {
             string sql = @" select ""AdvertPhotos"".* from ""AdvertPhotos"" left join ""Adverts"" on ""AdvertPhotos"".""AdvertID"" = ""Adverts"".""ID""  where ""Adverts"".""ID"" is NULL ";

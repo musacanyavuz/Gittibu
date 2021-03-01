@@ -367,6 +367,7 @@ namespace GittiBu.Services
             }
             return GetConnection().Delete(new Advert() { ID = id });
         }
+        
         /// <summary>
         /// Silmeden Önce  PaymentRequest Kontrolü Papar .
         /// </summary>
@@ -421,6 +422,27 @@ namespace GittiBu.Services
         }
 
         public List<Advert> GetUserAdverts(int userId)
+        {
+            try
+            {
+                var sql = "select \"Adverts\".*, " +
+                          "\"GetIsPendingApproval\"(\"Adverts\".\"ID\") as \"IsPendingApproval\", \"Users\".* " +
+                          "from \"Adverts\", \"Users\" where \"Adverts\".\"UserID\"=@userId and \"Adverts\".\"UserID\"=\"Users\".\"ID\" " +
+                          " " +
+                          " " +
+                          " ";
+                return GetConnection().Query<Advert, User, Advert>(sql, (advert, user) =>
+                {
+                    advert.User = user;
+                    return advert;
+                }, new { userId }, splitOn: "ID").ToList();
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+        public List<Advert> GetUserAdvertsByXml(int userId)
         {
             try
             {

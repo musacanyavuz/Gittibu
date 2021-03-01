@@ -631,7 +631,7 @@ namespace GittiBu.Web.Controllers
                 {
                     ViewBag.TranslateUrl = "/Ilan/" + Common.Localization.Slug(advert.Title) + "/" + advert.ID;
                 }
-                service.UpdateViewCount(id);
+                service.UpdateViewCount(id);               
                 return View(model);
             }
         }

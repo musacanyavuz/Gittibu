@@ -92,7 +92,7 @@
             <input type="text" id="parsesID" />
         </div>
         <div style="float:left; display:none">
-            <input type="button" value="Sil" onclick="DeleteUnnecessaryPhotos()" />
+            <input type="button" value="Tıklmayın !!!" onclick="DeleteUnnecessaryPhotos()" />
         </div>
     }
         <div id="jsGrid"></div>
@@ -114,8 +114,8 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "/Parse/DeleteUnnecessaryPhotos",
-                    data: { pareseID: id },
+                    url: "/Parse/DeleteUnnecessaryPhotosInDirecory",
+                    data: {},
                     dataType: "json",
                     success: function (msg) {
                         $('#loadingModal').css('display', 'none');

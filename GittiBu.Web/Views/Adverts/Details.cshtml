@@ -478,7 +478,8 @@ else
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="https://twitter.com/share?url=@(Context.Request.Host + Context.Request.Path)&text=@(WebUtility.UrlEncode(Model.Advert.Title))%20https://@(Context.Request.Host + Context.Request.Path)" target="_blank" title="@Html.Raw(Localization.Get(" Twitterda Paylaş", "Share on Twitter" , lang))">
+
+                                            <a href="https://twitter.com/share?url=@(Context.Request.Host + Context.Request.Path)&text=@(WebUtility.UrlEncode(Model.Advert.Title))" target="_blank" title="@Html.Raw(Localization.Get(" Twitterda Paylaş", "Share on Twitter" , lang))">
                                                 <i class="fa fa-twitter fa-3x"></i>
                                             </a>
                                         </li>
@@ -488,13 +489,14 @@ else
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="whatsapp://send?text=GittiBu.com'ta%20bir%20ürün%20buldum!%20@(Context.Request.Host + Context.Request.Path)" title='@Html.Raw(Localization.Get("Whatsapp ile Paylaş", "Share with Whatsapp", lang))'>
+                                            
+                                            <a href="https://api.whatsapp.com/send?text=GittiBu.com'ta%20bir%20ürün%20buldum!%20@(Context.Request.Host + Context.Request.Path)" title='@Html.Raw(Localization.Get("Whatsapp ile Paylaş", "Share with Whatsapp", lang))'>
                                                 <i class="fa fa-whatsapp fa-3x"></i>
                                             </a>
                                         </li>
                                         <li>
-                                            @{string mailBody = "GittiBu.com'ta bir ürün buldum!" + Html.Raw(Model.Advert.Content?.Replace("\n", " ")?.Replace("\t", " ")?.Replace(" ", "%20")) + "\n" + "https://" + Context.Request.Host + Context.Request.Path; }
-                                            <a href="mailto:?subject=@WebUtility.UrlEncode(Model.Advert.Title)&body=@WebUtility.UrlEncode(mailBody)" title="@Html.Raw(Localization.Get(" E-posta ile Paylaş", "Share with Email" , lang))">
+                                            @{string mailBody = "GittiBu.com'ta bir ürün buldum!" + (Model.Advert.Content?.Replace("\n", " ")?.Replace("\t", " ")?.Replace(" ", "%20")) + "\n" + "https://" + Context.Request.Host + Context.Request.Path; }
+                                            <a href="mailto:?subject=@(Model.Advert.Title)&body=@(mailBody)" title="@Html.Raw(Localization.Get("E-posta ile Paylaş", "Share with Email" , lang))">
                                                 <i class="fa fa-envelope fa-3x"></i>
                                             </a>
                                         </li>

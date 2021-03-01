@@ -360,8 +360,8 @@ namespace GittiBu.Web.Controllers
                 string filePath = "";
                 if (parseModel.FileStream == null)
                 {
-                    XMLFileName = HttpContext.Session.GetString("XMLFileName");
-                    filePath = HttpContext.Session.GetString("UploadedFilePath");
+                    XMLFileName = HttpContext.Session.GetString("XMLFileName"); // s_bayiayakkabi.xml gibi
+                    filePath = HttpContext.Session.GetString("UploadedFilePath"); //C:\Projects\GittiBu\GittiBu.Web\wwwroot\Upload\Parses\IbIjKmD480ar2Xq3LvkrQF4hSM56twkaFHC07wyGWw_2.xml gibi
                     userId = GetLoginID();
                 }
 
@@ -538,8 +538,8 @@ namespace GittiBu.Web.Controllers
                             #endregion
                             #region Filtering
 
-                            string productId = advertObjInXML[parseModel.ProductID]?.ToString();
-                            int advertId = userAdverts.FirstOrDefault(s => s.XMLProductID == (productId ?? ".."))?.ID ?? -1;
+                            string productIdInXml = advertObjInXML[parseModel.ProductID]?.ToString();
+                            int advertId = userAdverts.FirstOrDefault(s => s.XMLProductID == (productIdInXml ?? ".."))?.ID ?? -1;
 
                             //filtrelere uygun değilse, ürün aktif değilse yükleme.
                             if ((parseModel.PriceFilter >= priceInXml || parseModel.StockFilter > stockAmount) || (!isActive))
@@ -572,7 +572,7 @@ namespace GittiBu.Web.Controllers
                             if (advertEntity == null) { advertEntity = new Advert(); }
                             advertEntity.AvailableInstallments = installment;
                             advertEntity.CategoryID = categoryID;
-                            advertEntity.XMLProductID = productId;
+                            advertEntity.XMLProductID = productIdInXml;
                             advertEntity.CargoAreaID = Convert.ToInt32(parseModel.CargoAreaID);
                             advertEntity.Price = priceInXml;
                             advertEntity.StockAmount = stockAmount;
@@ -880,26 +880,45 @@ namespace GittiBu.Web.Controllers
                     }
                 }
 
-                #region Eski XML  olan ,  yüklenen yeni XML olmayan ürünleri  siliyoruz.               
-
-                var itemsToDelete = from p in userAdverts
-                                    join advl in advertList on p.XMLProductID equals advl.XMLProductID into pp
-                                    from advl in pp.DefaultIfEmpty()
-                                    where advl == null
-                                    select p;
-
-                using (var advertService = new AdvertService())
-                using (var paymentRequestSrv = new PaymentRequestService())
+                #region Eski XML de olan ,  yüklenen yeni XML olmayan ürünleri  siliyoruz. 
+                using (var parseSrv = new ParseService())
                 {
-                    foreach (var itemToDelete in itemsToDelete)
+                    var prevParses=  parseSrv.GetAllParsesByUserFileName(userId, XMLFileName);
+                    if (prevParses.FirstOrDefault() != null)
                     {
+                        string[] separator = { ",,," };
+                        string[] prevProductIDs = prevParses.FirstOrDefault().ProductIDs.Split(new[] { ",,," }, StringSplitOptions.RemoveEmptyEntries);
+                        string[] newIds = productIds.Split(new[] { ",,," }, StringSplitOptions.RemoveEmptyEntries);
+                        var diff  =  prevProductIDs.Except(newIds);
+                        foreach (var IdToDelete in diff)
+                        {
 
-                        advertService.Delete(itemToDelete);
+                            using (var advSrv = new AdvertService())
+                            using (var advPhotoSrv = new AdvertPhotoService())
+                            {
+                                var advToDelete = advSrv.Get(Convert.ToInt32(IdToDelete));
+                                if(advToDelete != null)
+                                {
+                                    advToDelete.IsDeleted = true;
+                                    advToDelete.IsActive = false;
+                                    advSrv.Update(advToDelete);
+                                    advPhotoSrv.UpdateAdvertPhotosByAdvertId(advToDelete.ID);
+                                }
+                               
+                            }
+                        }
                     }
+                    
                 }
-                #endregion
-                //Add User Parse File Info To Parse File Table
-                await AddParseFile(parseModel, insertCounter, filePath, productIds, userId, XMLFileName, xmlElementsFromFile, deletedAdvertList, increaseCount, true, isFirstUpdate);
+
+                    #endregion
+
+                    //Add User Parse File Info To Parse File Table
+                    await AddParseFile(parseModel, insertCounter, filePath, productIds, userId, XMLFileName, xmlElementsFromFile, deletedAdvertList, increaseCount, true, isFirstUpdate);
+               
+               
+
+
                 DeleteOtherPArses(userId);
 
 
@@ -1790,5 +1809,148 @@ namespace GittiBu.Web.Controllers
             return Json(new { TotalFiles = filesInFolder.Length, TotalFileSize = totalFileSize });
         }
 
+
+        /// <summary>
+        /// Sales klasöründe olan ama DB de olmayan resimleri siler.
+        /// </summary>
+        /// <param name="pareseID"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult DeleteUnnecessaryPhotosInDirecory()
+        {
+            float totalFileSize = 0;
+            try
+            {
+
+
+                List<AdvertPhoto> DbPhotos = new List<AdvertPhoto>();
+                using (var srv = new AdvertPhotoService())
+                {
+                    
+                    DbPhotos = srv.GetAllAdvertPhotosExistInAdverts();
+
+                }
+             
+                var filesInFolder = Directory.GetFiles(@"wwwroot\Upload\Sales\");
+                using (var service = new BaseService())
+                {
+                    service.Log(new Log
+                    {
+                        Function = "line 0 ParseController.DeleteUnnecessaryPhotosInDirecory()",
+                        CreatedDate = DateTime.Now,
+                        Message = "Klasörlerden dosylar filesInFolder a yüklendi.",
+                        Detail = "Klasörlerden dosylar filesInFolder a yüklendi.",
+                        IsError = false
+                    });
+                }
+                // System.IO.File.WriteAllText("WriteLines.txt", String.Empty);
+                string tempFilename;
+                List<string> unmatchedFilesNames = new List<string>();
+                int counter = 1;
+                foreach (var fileName in filesInFolder)
+                {
+                    if (string.IsNullOrEmpty(fileName))
+                        continue;
+
+                    tempFilename = fileName.Replace(@"\", "/");
+                    if (!string.IsNullOrEmpty(tempFilename))
+                        tempFilename = tempFilename.Trim().Replace("wwwroot", string.Empty).Replace("_thumb.", ".");
+
+                    int indexx = DbPhotos.FindIndex(x => x.Source?.ToLower() == tempFilename.ToLower());
+
+                    if (indexx == -1)
+                    {
+                        this.Log("Bir Dosya Taşınacak : ", fileName);
+                        if (!System.IO.File.Exists(fileName)) {
+                            continue;
+                        }
+                            FileInfo fi = new FileInfo(fileName);
+                        if (fi != null)
+                        {
+                            totalFileSize += (fi.Length / 1024f) / 1024f;// byte ı MB a çevirdik.
+                                                                         // unmatchedFilesNames.Add(item);
+                                                                                                  
+
+                            try
+                            {
+                                string desFile = fileName.Replace(@"\Sales\", @"\TempSales\");
+                                if (!System.IO.File.Exists(desFile))
+                                {
+                                    System.IO.File.Move(fileName, desFile);
+                                    using (StreamWriter outputFile = new StreamWriter("WriteLines.txt", true))
+                                    {
+                                        outputFile.WriteLine(counter + " - " + fileName);
+                                        counter++;
+
+                                    }
+
+                                }
+
+
+                            }
+                            catch (Exception e)
+                            {
+                                using (var service = new BaseService())
+                                {
+                                    service.Log(new Log
+                                    {
+                                        Function = "line 1 ParseController.DeleteUnnecessaryPhotosInDirecory()",
+                                        CreatedDate = DateTime.Now,
+                                        Message = e.Message,
+                                        Detail = e.ToString(),
+                                        IsError = true
+                                    });
+                                }
+
+                            }
+                            if (counter > 5000)
+                                break;
+
+                        }
+
+
+                    }
+
+                }
+
+
+
+                System.IO.File.WriteAllText(@"Totals.txt", "Total Files : " + filesInFolder.Length + " TotalFileSize =" + totalFileSize);
+                return Json(new { TotalFiles = filesInFolder.Length, TotalFileSize = totalFileSize });
+            }
+            catch (Exception e)
+            {
+                using (var service = new BaseService())
+                {
+                    service.Log(new Log
+                    {
+                        Function = "ParseController.DeleteUnnecessaryPhotosInDirecory(CategoryMatch)",
+                        CreatedDate = DateTime.Now,
+                        Message = e.Message,
+                        Detail = e.ToString(),
+                        IsError = true
+                    });
+                }
+                return null;
+
+            }
+        }
+
+        private void Log(string message,string detail) {
+            using (var service = new BaseService())
+            {
+                service.Log(new Log
+                {
+                    Function = "Generic ParseController.DeleteUnnecessaryPhotosInDirecory()",
+                    CreatedDate = DateTime.Now,
+                    Message = message,
+                    Detail = detail,
+                    IsError = true
+                });
+            }
+        }
     }
+
+
+
 }
