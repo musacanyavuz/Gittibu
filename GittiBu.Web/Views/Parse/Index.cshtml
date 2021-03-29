@@ -339,7 +339,7 @@
             string h1 = ViewBag.Baslik;
             string span = ViewBag.Icerik;
     }
-    <input type="button" value="Click" id="UpdateOtherParses"  />
+    <input type="button" value="Click" id="UpdateOtherParses"  style="display:none" />
     <h1 class="labelColor">@h1</h1>
     <span class="labelColor">@span</span>
 
@@ -659,17 +659,20 @@
 
                         var addTableHtml = "";
                         var counter = 0;
-                        $.each(data, function (i) {
+                        $.each(data.categoryNames, function (i) {                            
                             counter++;
-                            var selectId = "categorySelect" + counter;
+                            var selectId = "categorySelect";
+                            if (data.matches.length > 0)
+                            selectId += data.matches[i].gittibuCategory;// Buradan devam
+                            var xmlCatNameid = "xmlCatName" + counter;
                             addTableHtml += ` <tr>
                                             <td><label class="col-sm-12 col-form-label">XML Kategorileri</label></td>
                                             <td><label class="col-sm-12 ml-4 col-form-label">GittiBu Kategorileri</label></td>
                                         </tr>
                                         <tr>
                                             <td>
-                                                <input type="text" data-id="c0" id="xmlcategories" class="col-md-11 mr-4 form-control"
-                                                 value="`+ data[i] +`" disabled />
+                                                <input type="text" data-id="c0" id="xmlcategories" class="col-md-11 mr-4 form-control xmlCatName"  value="`+ data.categoryNames[i] +`" disabled />
+                                                <input type="hidden"  value="`+ data.categoryNames[i] +`" name="XMLCategoryNames" />                    
                                             </td>
                                             <td>
                                                 <select id="`+ selectId +`" class="col-md-12 ml-4 mr-4 form-control chosen-select" name="XMLCategoryMatches" required="required" aria-required="true">
@@ -684,7 +687,21 @@
                         });
                         $('.addtable').html(addTableHtml);
 
-                        $('#visibleac').css('cssText', 'display: block !important');
+                        $('#visibleac').css('cssText', 'display: block !important');                       
+                      
+                       
+                        $(".xmlCatName").each(function (index) {                            
+                            var myVal = $(this).val();
+                            let obj = data.matches.find(o => o.xmlCategory === myVal);
+                            if (obj) {                               
+                                var gitCatId = obj.gittibuCategory;
+                                var xmlCatName = obj.xmlCategory;
+                                $(this).parent().next().find('select').val(gitCatId);
+                            }
+                        });
+                        //$.each(data.matches, function (i) {
+                        //    data.matches[i].gittibuCategory
+                        //});
 
                     },
                     error: function (jqXhr, textStatus, errorMessage) {

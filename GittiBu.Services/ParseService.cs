@@ -32,11 +32,34 @@ namespace GittiBu.Services
                 return false;
             }
         }
-       
+        public int InsertAndSetNewID(Parse parse)
+        {
+            try
+            {
+                GetConnection().Insert(parse);
+                return parse.ID;
+            }
+            catch (Exception e)
+            {
+                string jsonString;
+                jsonString = JsonConvert.SerializeObject(parse);
+                Log(new Log
+                {
+                    Function = "ParseService.Insert",
+                    CreatedDate = DateTime.Now,
+                    Message = e.Message,
+                    Detail = e.ToString() + " \n \n" + jsonString,
+                    IsError = true
+                });
+                return -1;
+            }
+        }
+
         public bool Update(Parse parse)
         {
             try
             {
+                parse.UpdateDate = DateTime.Now;
                 return GetConnection().Update(parse);
             }
             catch (Exception e)

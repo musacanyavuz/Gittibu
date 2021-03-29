@@ -6,6 +6,7 @@ namespace GittiBu.Web.ViewModels.Parse
 {
     public class ParseModel
     {
+        public int ID { get; set; }
         public IFormFile file { get; set; }
         public Stream FileStream { get; set; }
         public string fileLink { get; set; }
@@ -36,5 +37,6 @@ namespace GittiBu.Web.ViewModels.Parse
         public string FilePath { get; set; }
         public string ChildNames { get; set; }
         public int[] XMLCategoryMatches { get; set; }
+        public string[] XMLCategoryNames { get; set; }
     }
 }

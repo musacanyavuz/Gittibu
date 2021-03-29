@@ -55,7 +55,7 @@ namespace GittiBu.Web
             services.AddMemoryCache();
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(120);//set time   
+                options.IdleTimeout = TimeSpan.FromMinutes(180);//set time   
             });
             services.AddSession();
            

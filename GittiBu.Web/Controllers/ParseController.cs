@@ -156,7 +156,7 @@ namespace GittiBu.Web.Controllers
                 List<string> contextChildNames = HttpContext.Session.GetObject<List<string>>("ChildNames");
                 string selectedRootName = HttpContext.Session.GetString("SelectedRootName");
                 string filePath = HttpContext.Session.GetString("UploadedFilePath");
-
+                string xmlFileName = HttpContext.Session.GetString("XMLFileName");
                 Stream formFileStream = await DownloadFile(filePath);
                 XmlDocument doc = GetXmlDoc(formFileStream);
 
@@ -177,9 +177,22 @@ namespace GittiBu.Web.Controllers
                         }
                     }
                 }
+                List<ParsesCategoryMatch> matches = new List<ParsesCategoryMatch>();
+                using (var catMatchService = new ParsesCategoryMatchService())
+                using (var service = new ParseService())
+                {                    
+                    var lastUpdatedXmlFile = service.GetAllParsesByUserFileName(GetLoginID(), xmlFileName).FirstOrDefault();
+                    if(lastUpdatedXmlFile != null)
+                    {
+                        int parseID = lastUpdatedXmlFile.ID;
+                         matches = catMatchService.GetList(parseID);
+                    }
+
+                   
+                }
 
                 HttpContext.Session.SetObject("XMLCategoryNames", CategoryNames);
-                return Json(CategoryNames);
+                return Json(new { matches, CategoryNames });
             }
             catch (Exception ex)
             {
@@ -325,21 +338,25 @@ namespace GittiBu.Web.Controllers
         }
 
 
-        public void DeleteOtherPArses(int userid)
+        public void DeleteOtherParses(int userid)
         {
+            using (var parseMatches = new ParsesCategoryMatchService()) 
             using (var newService = new ParseService())
             {
                 var listOfUserParses = newService.GetUserFilesById(userid).OrderByDescending(x => x.ID);
                 var userFileName = listOfUserParses.First().UserFileName;
-
+                int totalFiles = listOfUserParses.Where(x => x.UserFileName.Contains(userFileName)).Count();
+                if (totalFiles < 2)
+                    return;
                 int c = 0;
-                foreach (var item in listOfUserParses.Where(x => x.UserFileName.Contains(userFileName)))
+                foreach (var item in listOfUserParses.Where(x => x.UserFileName.Contains(userFileName)).OrderByDescending(x=>x.ID))
                 {
                     c++;
                     if (c == 1)
                         continue;
                     item.IsDeleted = true;
                     newService.Update(item);
+                    parseMatches.DeleteByParsesID(item.ID);
 
                 }
 
@@ -915,12 +932,26 @@ namespace GittiBu.Web.Controllers
 
                     //Add User Parse File Info To Parse File Table
                     await AddParseFile(parseModel, insertCounter, filePath, productIds, userId, XMLFileName, xmlElementsFromFile, deletedAdvertList, increaseCount, true, isFirstUpdate);
-               
-               
+                             
 
 
-                DeleteOtherPArses(userId);
+                DeleteOtherParses(userId);
 
+                #region Kategorilerin eşlşmeleri eklerin.
+                using (var parsesCategoryMatchSrv = new ParsesCategoryMatchService())
+                {
+                    for (int i = 0; i < parseModel.XMLCategoryMatches.Length; i++)
+                    {
+                        ParsesCategoryMatch tempData = new ParsesCategoryMatch {
+                        GittibuCategory = parseModel.XMLCategoryMatches[i],
+                        XmlCategory = parseModel.XMLCategoryNames[i],
+                        ParsesID = parseModel.ID
+                        };
+                        parsesCategoryMatchSrv.Insert(tempData);
+                    }
+                   
+                }
+                #endregion
 
 
             }
@@ -1496,10 +1527,11 @@ namespace GittiBu.Web.Controllers
                                         ChildNames = string.Join("_._", contextChildNames),
                                         AdvertCount = isLastUpdate ? (insertCounter % increaseCount) : increaseCount,
                                         CategoryMatches = String.Join(",", model.XMLCategoryMatches),
-                                        IsDeleted = false
+                                        IsDeleted = false,
+                                       
                                     };
                                     //for timeout
-                                    bool isInserted = parseService.Insert(parse);
+                                    bool isInserted = parseService.InsertAndSetNewID(parse) > -1;
                                     if (!isInserted)
                                     {
                                         await Task.Delay(3000);
@@ -1512,6 +1544,13 @@ namespace GittiBu.Web.Controllers
                                             await Task.Delay(3000);
                                             parseService.Insert(parse);
                                         }
+                                        else {
+                                            model.ID = parse.ID;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        model.ID = parse.ID;
                                     }
                                 }
                             }

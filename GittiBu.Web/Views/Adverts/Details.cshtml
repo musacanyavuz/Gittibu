@@ -495,8 +495,8 @@ else
                                             </a>
                                         </li>
                                         <li>
-                                            @{string mailBody = "GittiBu.com'ta bir ürün buldum!" + (Model.Advert.Content?.Replace("\n", " ")?.Replace("\t", " ")?.Replace(" ", "%20")) + "\n" + "https://" + Context.Request.Host + Context.Request.Path; }
-                                            <a href="mailto:?subject=@(Model.Advert.Title)&body=@(mailBody)" title="@Html.Raw(Localization.Get("E-posta ile Paylaş", "Share with Email" , lang))">
+                                            @{string mailBody = "GittiBu.com %27da bir ürün buldum! %0A %0A " +  (Model.Advert.Content.Replace("<br>", "%0A").Replace("<br />", "%0A")) + " %0A%0A https://" + Context.Request.Host + Context.Request.Path + " %20 "; }
+                                            <a href='mailto:?subject=@(Model.Advert.Title)&body=@( Html.Raw(HtmlHelperExtensions.StripHTML((mailBody))))' title="@Html.Raw(Localization.Get("E-posta ile Paylaş", "Share with Email" , lang))">
                                                 <i class="fa fa-envelope fa-3x"></i>
                                             </a>
                                         </li>
