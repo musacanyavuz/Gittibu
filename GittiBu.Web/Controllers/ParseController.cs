@@ -490,15 +490,37 @@ namespace GittiBu.Web.Controllers
                                 //}
                                 //indekslere göre eşleştirme yapılacak
                                 List<string> xmlCategoryNames = HttpContext.Session.GetObject<List<string>>("XMLCategoryNames");
-                                List<int> matchedGittibuCategories = parseModel.XMLCategoryMatches.ToList();
+                                int[] matchedGittibuCategories = parseModel.XMLCategoryMatches;
 
                                 string categoryValue = advertObjInXML[parseModel.Category]?.ToString();
-                                int categoryIndex = xmlCategoryNames.IndexOf(categoryValue);
-
-                                int gittibuCategoryID = matchedGittibuCategories[categoryIndex];
+                              
+                                int gittibuCategoryID = -1;
+                                int categoryIndex = -1;
+                                try
+                                {
+                                     categoryIndex = xmlCategoryNames.IndexOf(categoryValue);
+                                    if(categoryIndex != -1)
+                                    gittibuCategoryID = matchedGittibuCategories[categoryIndex];
+                                }
+                                catch (Exception e)
+                                {
+                                    using (var service = new BaseService())
+                                    {
+                                        service.Log(new Log
+                                        {
+                                            Function = "AdvertService.Insert(CategoryMatch) matchedGittibuCategories categoryIndex : " +categoryIndex + " categoryValue: " + categoryValue,
+                                            CreatedDate = DateTime.Now,
+                                            Message = e.Message ,
+                                            Detail = e.ToString(),
+                                            IsError = true
+                                        });
+                                    }
+                                    throw;
+                                }
+                                
 
                                 AdvertCategory advertCategories = categories.FirstOrDefault(s => s.ID == gittibuCategoryID);
-
+                               
                                 int categoryMaxInst = advertCategories?.MaxInstallment ?? 1;
                                 int maxInst = (categoryMaxInst > parseModel.MaxInstallment) ? (parseModel.MaxInstallment) : categoryMaxInst;
                                 installment = AllInstallments(maxInst);
@@ -510,9 +532,9 @@ namespace GittiBu.Web.Controllers
                                 {
                                     service.Log(new Log
                                     {
-                                        Function = "AdvertService.Insert(CategoryMatch)",
+                                        Function = "AdvertService.Insert(CategoryMatch) 532 Line",
                                         CreatedDate = DateTime.Now,
-                                        Message = e.Message,
+                                        Message = e.Message ,
                                         Detail = e.ToString(),
                                         IsError = true
                                     });
