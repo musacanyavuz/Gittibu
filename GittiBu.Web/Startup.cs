@@ -66,6 +66,7 @@ namespace GittiBu.Web
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
                 {
+                    options.Cookie.Expiration = TimeSpan.FromHours(2);
                     options.LoginPath = new PathString("/GirisYap");
                 });
             services.Configure<RequestLocalizationOptions>(options =>

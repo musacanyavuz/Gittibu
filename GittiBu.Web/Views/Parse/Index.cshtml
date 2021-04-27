@@ -615,8 +615,7 @@
                     success: function (data, status, xhr) {
 
                     },
-                    error: function (jqXhr, textStatus, errorMessage) {
-                        debugger;
+                    error: function (jqXhr, textStatus, errorMessage) {                       
                     },
                     complete: function (data) {
                       
@@ -626,7 +625,7 @@
         $('#Category').on('click', function () {
             focusCategory = true;
         });
-
+        
         $('#Category').on('focusout', function () {
             if ($(this)[0].selectedIndex > 0) {
             if (focusCategory) {
@@ -663,7 +662,7 @@
                             counter++;
                             var selectId = "categorySelect";
                             if (data.matches.length > 0)
-                            selectId += data.matches[i].gittibuCategory;// Buradan devam
+                            selectId += data.matches[i].gittibuCategory;
                             var xmlCatNameid = "xmlCatName" + counter;
                             addTableHtml += ` <tr>
                                             <td><label class="col-sm-12 col-form-label">XML Kategorileri</label></td>
@@ -692,29 +691,53 @@
                        
                         $(".xmlCatName").each(function (index) {                            
                             var myVal = $(this).val();
+                           
                             let obj = data.matches.find(o => o.xmlCategory === myVal);
-                            if (obj) {                               
+                            if (obj) /*Server Side MAtch*/ {
                                 var gitCatId = obj.gittibuCategory;
                                 var xmlCatName = obj.xmlCategory;
                                 $(this).parent().next().find('select').val(gitCatId);
+                            } else  /*   // Client Side MAtch */{
+                                var obj2 = XmlObj.SelectedItemsArr.find((e) => e.XmlCategory === myVal)
+                                if (obj2) {
+                                    var gitCatId = obj2.GittibuCategory;
+                                    var xmlCatName = obj2.XmlCategory;
+                                    $(this).parent().next().find('select').val(gitCatId);
+                                }
+
                             }
                         });
-                        //$.each(data.matches, function (i) {
-                        //    data.matches[i].gittibuCategory
-                        //});
+                       
 
                     },
                     error: function (jqXhr, textStatus, errorMessage) {
                         alertify.notify('XML Dosyasından Kategoriler Çekilemedi.', 'error', 15, function () { });
                     },
                     complete: function (data) {
-                        $('#Category').removeAttr('disabled');
+                        $('#Category').removeAttr('disabled');                       
+                        $('.chosen-select').on('change', function (chnVal) {                            
+                            var xmlCatName = $(this).parent().prev().find('input:text').val();                           
+                            pushToArray({ XmlCategory: xmlCatName, GittibuCategory: this.value });
+                            
+                        })
                     }
                 });
                 }
             }
         });
-
+        var XmlObj = {
+            FileName: '',
+            SelectedItemsArr:[]
+        };     
+        function pushToArray(obj) {
+            const index = XmlObj.SelectedItemsArr.findIndex((e) => e.XmlCategory === obj.XmlCategory);
+            if (index === -1) {
+                XmlObj.SelectedItemsArr.push(obj);
+            } else {
+                XmlObj.SelectedItemsArr[index] = obj;
+            }
+            localStorage.setItem(XmlObj.FileName, JSON.stringify(XmlObj));
+        }
         $('#cards').carousel({
             pause: true,
             interval: false
@@ -731,8 +754,12 @@
         $('#fileLinkButton').on('click', function () {
 
             var formData = new FormData();
-            formData.append("link", $('#fileLink').val());
-
+            formData.append("link", $('#fileLink').val());                       
+            var dataInStorage = localStorage.getItem($('#fileLink').val());
+            if (dataInStorage)
+                XmlObj = JSON.parse(dataInStorage);
+            else 
+            XmlObj.FileName = $('#fileLink').val();
             ShowLoadingModal();
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '/Parse/UploadFileFromLink');
@@ -1002,6 +1029,6 @@
             }
             $('#fileName').text(tempFileName);
         }
-
+       
     </script>
 }
