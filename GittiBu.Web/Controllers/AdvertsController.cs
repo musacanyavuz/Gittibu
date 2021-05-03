@@ -69,6 +69,11 @@ namespace GittiBu.Web.Controllers
 
                 AvailableInstallments = AvailableInstallments?.Distinct().ToArray();
                 var lang = GetLang();
+                if(advert.StockAmount > 10000)
+                {
+                    Notification = new UiMessage(NotyType.error, "Stok en fazla 10.000 adet olabilir.", "The maximum stock quantity can be 10.000", lang);
+                    return Redirect(Constants.GetURL(Enums.Routing.IlanEkle, lang));
+                }
                 using (var mailing = new MailingService())
                 using (var settingService = new SystemSettingService())
                 using (var catService = new AdvertCategoryService())

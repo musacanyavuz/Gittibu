@@ -660,9 +660,15 @@
                         var counter = 0;
                         $.each(data.categoryNames, function (i) {                            
                             counter++;
-                            var selectId = "categorySelect";
-                            if (data.matches.length > 0)
-                            selectId += data.matches[i].gittibuCategory;
+                            var selectId = "categorySelect";                           
+                            if (data.matches.length > 0) {
+                                if (data.matches[i])
+                                    selectId += data.matches[i].gittibuCategory;
+                                else
+                                    selectId += i;
+                            }
+                                
+
                             var xmlCatNameid = "xmlCatName" + counter;
                             addTableHtml += ` <tr>
                                             <td><label class="col-sm-12 col-form-label">XML Kategorileri</label></td>

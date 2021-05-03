@@ -524,7 +524,8 @@ namespace GittiBu.Web.Controllers
                                 int categoryMaxInst = advertCategories?.MaxInstallment ?? 1;
                                 int maxInst = (categoryMaxInst > parseModel.MaxInstallment) ? (parseModel.MaxInstallment) : categoryMaxInst;
                                 installment = AllInstallments(maxInst);
-                                categoryID = advertCategories.ID;
+                                if(advertCategories!=null)
+                                categoryID =   advertCategories.ID;
                             }
                             catch (Exception e)
                             {
