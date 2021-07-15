@@ -128,7 +128,7 @@ namespace GittiBu.Services
             try
             {
                 return GetConnection().Find<Parse>(s => s
-                    .Where($"{nameof(Parse.UserID):C}=@userId and {nameof(Parse.UserFileName):C} LIKE @userFileNameLike  and \"IsDeleted\" = false ORDER BY \"ID\" desc ")                   
+                    .Where($"{nameof(Parse.UserID):C}=@userId and {nameof(Parse.UserFileName):C} LIKE @userFileNameLike  and IsDeleted = false ORDER BY ID desc ")                   
                     .WithParameters(new { userId, userFileNameLike = "%" + userFileName + "%" })).ToList();
                    
             }

@@ -53,7 +53,7 @@ namespace GittiBu.Services
         public int DeleteByParsesID(int ParsesID)
         {
             //  var listToDelete = GetList(id);
-            var sql = "delete from \"ParsesCategoryMatches\" where \"ParsesID\"=@ParsesID ";
+            var sql = "delete from ParsesCategoryMatches where ParsesID=@ParsesID ";
             return GetConnection().Execute(sql, new { ParsesID });
            // int rval=  GetConnection().BulkDelete<ParsesCategoryMatch>(statement => statement.Where($"ParsesID=@ParsesID").WithParameters(ParsesID));
            

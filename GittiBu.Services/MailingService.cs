@@ -86,9 +86,9 @@ namespace GittiBu.Services
             var cargoInfo = baseUrl + Constants.GetURL((int) Enums.Routing.Satislarim, 1);
             
             var mTr = "www.GittiBu.com da ilana çıkmış olduğunuz ürününüz satılmıştır. <br/>" +
-                      "<a href=\""+urlTr+"\">"+urlTr+"</a> <br/>" +
+                      "<a href="+urlTr+">"+urlTr+"</a> <br/>" +
                       "Öncelikle ürünü kargolayıp kargo bilgilerini girmeniz gerekmektedir. <br/>" +
-                      "Kargo Bilgisi Girişi: <a href=\""+cargoInfo+"\">"+cargoInfo+"</a> <br/>" +
+                      "Kargo Bilgisi Girişi: <a href="+cargoInfo+">"+cargoInfo+"</a> <br/>" +
                       "Satılan Ürün: "+ad.Title+ " "+amount+" adet <br/> " +
                       "Alıcı Bilgileri: <br/> " +
                       "Kullanıcı: #"+buyer.ID+" "+buyer.Name+" <br/>" +
@@ -98,9 +98,9 @@ namespace GittiBu.Services
             
             cargoInfo = baseUrl + Constants.GetURL((int) Enums.Routing.Satislarim, 2);
             var mEn = "Your product on the website www.GittiBu.com has been sold. <br/>" +
-                      "<a href=\""+urlEn+"\">"+urlEn+"</a> <br/>" +
+                      "<a href="+urlEn+">"+urlEn+"</a> <br/>" +
                       "First, you must enter shipping information after shipping the product. <br/>" +
-                      "Entry Cargo Info: <a href=\""+cargoInfo+"\">"+cargoInfo+"</a> <br/>" +
+                      "Entry Cargo Info: <a href="+cargoInfo+">"+cargoInfo+"</a> <br/>" +
                       "Product: "+ad.Title+" "+amount+" pieces <br/> " +
                       "Buyer Information: <br/> " +
                       "User: #"+buyer.ID+" "+buyer.Name+" <br/>" +
@@ -132,7 +132,7 @@ namespace GittiBu.Services
             var cargoInfo = baseUrl + Constants.GetURL((int) Enums.Routing.Satislarim, 1);
 
             var mTr = "www.GittiBu.com dan bir ürün satın aldınız. <br/>" +
-                      "<a href=\"" + urlTr + "\">" + urlTr + "</a> <br/>" +
+                      "<a href=" + urlTr + ">" + urlTr + "</a> <br/>" +
 
                       "Alınan Ürün: " + ad.Title + " " + amount + " adet <br/> " +
                       "Satıcı Bilgileri: <br/> " +
@@ -142,7 +142,7 @@ namespace GittiBu.Services
             
             cargoInfo = baseUrl + Constants.GetURL((int) Enums.Routing.Satislarim, 2);
             var mEn = "You have purchased a product from www.GittiBu.com. <br/>" +
-                      "<a href=\"" + urlEn + "\">" + urlEn + "</a> <br/>" +
+                      "<a href=" + urlEn + ">" + urlEn + "</a> <br/>" +
 
                       "Product: " + ad.Title + " " + amount + " pieces <br/> " +
                       "Seller Information: <br/> " +

@@ -20,7 +20,7 @@ namespace GittiBu.Services
             try
             {
               //  var sql = @"select * from ""PaymentRequests"" left outer join ""Adverts"" on ""PaymentRequests"".""AdvertID""=""Adverts"".""ID""\nleft outer join  ""Users"" as ""Buyer"" on ""PaymentRequests"".""UserID""=""Buyer"".""ID""\nleft outer join ""Users"" as ""Seller"" on ""PaymentRequests"".""SellerID""=""Seller"".""ID""\nwhere ""PaymentRequests"".""ID"" = " + id;
-                var sql = $"select * from \"PaymentRequests\"\nleft outer join \"Adverts\" on \"PaymentRequests\".\"AdvertID\"=\"Adverts\".\"ID\"\nleft outer join  \"Users\" as \"Buyer\" on \"PaymentRequests\".\"UserID\"=\"Buyer\".\"ID\"\nleft outer join \"Users\" as \"Seller\" on \"PaymentRequests\".\"SellerID\"=\"Seller\".\"ID\"\nwhere \"PaymentRequests\".\"ID\" = @id";
+                var sql = $"select * from PaymentRequests\nleft outer join Adverts on PaymentRequests.AdvertID=Adverts.ID\nleft outer join  Users as Buyer on PaymentRequests.UserID=Buyer.ID\nleft outer join Users as Seller on PaymentRequests.SellerID=Seller.ID\nwhere PaymentRequests.ID = @id";
                 var paymentRequest= GetConnection().Query<PaymentRequest, Advert, User, User, PaymentRequest>(sql,
                     (pr, ad, buyer, seller) =>
                     {
@@ -56,7 +56,7 @@ namespace GittiBu.Services
         {
             try
             {
-                var sql = $"select * from \"PaymentRequests\"\nleft outer join \"Adverts\" on \"PaymentRequests\".\"AdvertID\"=\"Adverts\".\"ID\"\nleft outer join  \"Users\" as \"Buyer\" on \"PaymentRequests\".\"UserID\"=\"Buyer\".\"ID\"\nleft outer join \"Users\" as \"Seller\" on \"PaymentRequests\".\"SellerID\"=\"Seller\".\"ID\"";
+                var sql = $"select * from PaymentRequests\nleft outer join Adverts on PaymentRequests.AdvertID=Adverts.ID\nleft outer join  Users as Buyer on PaymentRequests.UserID=Buyer.ID\nleft outer join Users as Seller on PaymentRequests.SellerID=Seller.ID";
                 return GetConnection().Query<PaymentRequest, Advert, User, User, PaymentRequest>(sql,
                         (pr, ad, buyer, seller) =>
                         {
@@ -102,16 +102,16 @@ namespace GittiBu.Services
         {
             try
             {
-                var sql = "select * from \"PaymentRequests\"\nLEFT OUTER JOIN \"Users\" as \"user\" on \"user\".\"ID\"=\"PaymentRequests\".\"UserID\"\nLEFT OUTER JOIN \"Users\" as \"seller\" on \"seller\".\"ID\"=\"PaymentRequests\".\"SellerID\"\n" +
+                var sql = "select * from PaymentRequests\nLEFT OUTER JOIN Users as user on user.ID=PaymentRequests.UserID\nLEFT OUTER JOIN Users as seller on seller.ID=PaymentRequests.SellerID\n" +
                           "where " +
-                          "\"PaymentRequests\".\"Status\"=" + (int)Enums.PaymentRequestStatus.Bekleniyor + " or " +
-                          "\"PaymentRequests\".\"Status\"=" + (int)Enums.PaymentRequestStatus.OnlineOdemeYapildi + " or " +
-                          "\"PaymentRequests\".\"Status\"=" + (int)Enums.PaymentRequestStatus.AliciIptalTalebiOlusturdu + " or " +
-                          "\"PaymentRequests\".\"Status\"=" + (int)Enums.PaymentRequestStatus.KargoyaVerildi + " or " +
-                          "\"PaymentRequests\".\"Status\"=" + (int)Enums.PaymentRequestStatus.Reddedildi + " or " +
-                          "\"PaymentRequests\".\"Status\"=" + (int)Enums.PaymentRequestStatus.Onaylandi + " or " +
-                          "\"PaymentRequests\".\"Status\"=" + (int)Enums.PaymentRequestStatus.AliciIptalEtti + " " +
-                          "order by \"PaymentRequests\".\"CreatedDate\" desc";
+                          "PaymentRequests.Status=" + (int)Enums.PaymentRequestStatus.Bekleniyor + " or " +
+                          "PaymentRequests.Status=" + (int)Enums.PaymentRequestStatus.OnlineOdemeYapildi + " or " +
+                          "PaymentRequests.Status=" + (int)Enums.PaymentRequestStatus.AliciIptalTalebiOlusturdu + " or " +
+                          "PaymentRequests.Status=" + (int)Enums.PaymentRequestStatus.KargoyaVerildi + " or " +
+                          "PaymentRequests.Status=" + (int)Enums.PaymentRequestStatus.Reddedildi + " or " +
+                          "PaymentRequests.Status=" + (int)Enums.PaymentRequestStatus.Onaylandi + " or " +
+                          "PaymentRequests.Status=" + (int)Enums.PaymentRequestStatus.AliciIptalEtti + " " +
+                          "order by PaymentRequests.CreatedDate desc";
 
                 var query = GetConnection().Query<PaymentRequest, User, User, PaymentRequest>
                 (sql, (request, user, seller) =>
@@ -140,7 +140,7 @@ namespace GittiBu.Services
             //Enums.PaymentRequestStatus.KargoyaVerildi
 
             var sql =
-                $"select * from \"PaymentRequests\"\nwhere\n\"Status\"= {(int)Enums.PaymentRequestStatus.KargoyaVerildi}\nAND DATE_PART('day', now() - \"CargoDate\") = {days}\nAND \"IsSuccess\" = true";
+                $"select * from PaymentRequests\nwhere\nStatus= {(int)Enums.PaymentRequestStatus.KargoyaVerildi}\nAND DATE_PART('day', now() - CargoDate) = {days}\nAND IsSuccess = true";
             var query = GetConnection().Query<PaymentRequest>(sql).ToList();
             return query;
         }
@@ -148,7 +148,7 @@ namespace GittiBu.Services
         public List<PaymentRequest> GetNotificationAutoTransferOrders(int days)
         {
             var sql =
-                $"select * from \"PaymentRequests\", \"Users\" where  \"Status\"= {(int)Enums.PaymentRequestStatus.KargoyaVerildi}\nAND DATE_PART('day', now() - \"CargoDate\") = {days}\n AND \"PaymentRequests\".\"UserID\"=\"Users\".\"ID\" AND \"IsSuccess\" = true";
+                $"select * from PaymentRequests, Users where  Status= {(int)Enums.PaymentRequestStatus.KargoyaVerildi}\nAND DATE_PART('day', now() - CargoDate) = {days}\n AND PaymentRequests.UserID=Users.ID AND IsSuccess = true";
             var query = GetConnection().Query<PaymentRequest, User, PaymentRequest>(sql, (request, user) =>
             {
                 request.Buyer = user;
@@ -160,7 +160,7 @@ namespace GittiBu.Services
         public IList<PaymentRequest> GetPayoutTransactionOrders()
         {
             var sql =
-            $"select * from \"PaymentRequests\", \"Users\", \"Adverts\" where \"Type\" = {(int)Enums.PaymentType.Ilan}\n and (\"Status\"= {(int)Enums.PaymentRequestStatus.Onaylandi}\n or \"Status\"= {(int)Enums.PaymentRequestStatus.OtomatikOnaylandi})   AND \"PaymentRequests\".\"SellerID\"=\"Users\".\"ID\" AND \"PaymentRequests\".\"AdvertID\"=\"Adverts\".\"ID\" AND \"IsSuccess\" = true";
+            $"select * from PaymentRequests, Users, Adverts where Type = {(int)Enums.PaymentType.Ilan}\n and (Status= {(int)Enums.PaymentRequestStatus.Onaylandi}\n or Status= {(int)Enums.PaymentRequestStatus.OtomatikOnaylandi})   AND PaymentRequests.SellerID=Users.ID AND PaymentRequests.AdvertID=Adverts.ID AND IsSuccess = true";
             var query = GetConnection().Query<PaymentRequest, User, Advert, PaymentRequest>(sql, (request, user, advert) =>
              {
                  request.Seller = user;
@@ -179,9 +179,9 @@ namespace GittiBu.Services
                 (int)Enums.PaymentRequestStatus.Reddedildi
                 );
             var sql = "";
-            // $"select * from \"PaymentRequests\", \"Users\", \"Adverts\" where \"Type\" = {(int)Enums.PaymentType.Ilan}\n and (\"Status\"   IN  ({inValues})  AND \"AdvertID\"= {advertID}";
+            // $"select * from PaymentRequests, Users, Adverts where Type = {(int)Enums.PaymentType.Ilan}\n and (Status   IN  ({inValues})  AND AdvertID= {advertID}";
 
-            sql = $"select * from \"PaymentRequests\" as pr left join  \"Users\" as us on pr.\"UserID\" = us.\"ID\"  left join  \"Adverts\"  as  ad on pr.\"AdvertID\" = ad.\"ID\" where pr.\"Type\" =  {(int)Enums.PaymentType.Ilan}\n  and pr.\"Status\"   IN   ({inValues})  AND pr.\"AdvertID\"= {advertID}";
+            sql = $"select * from PaymentRequests as pr left join  Users as us on pr.UserID = us.ID  left join  Adverts  as  ad on pr.AdvertID = ad.ID where pr.Type =  {(int)Enums.PaymentType.Ilan}\n  and pr.Status   IN   ({inValues})  AND pr.AdvertID= {advertID}";
 
             var query = GetConnection().Query<PaymentRequest, User, Advert, PaymentRequest>(sql, (request, user, advert) =>
             {

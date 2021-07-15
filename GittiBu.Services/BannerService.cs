@@ -107,7 +107,7 @@ namespace GittiBu.Services
         {
             try
             {
-                var sql = "update \"Banners\" set \"ClickCount\" = \"ClickCount\" + 1 where \"ID\"=@id";
+                var sql = "update Banners set ClickCount = ClickCount + 1 where ID=@id";
                 GetConnection().Execute(sql, new {id});
             }
             catch (Exception e)

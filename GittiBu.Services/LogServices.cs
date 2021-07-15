@@ -25,7 +25,7 @@ namespace GittiBu.Services
 
         public List<Log> GetLog500()
         {
-             string sql = "Select * from \"Logs\" WHERE \"CreatedDate\" is not null  ORDER BY \"CreatedDate\" desc limit 500 ";
+             string sql = "Select * from Logs WHERE CreatedDate is not null  ORDER BY CreatedDate desc limit 500 ";
              return GetConnection().Query<Log>(sql).ToList();
         }
     }

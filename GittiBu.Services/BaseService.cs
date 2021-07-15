@@ -1,15 +1,13 @@
-﻿using System;
+﻿using Dapper.FastCrud;
 using GittiBu.Models;
-using Dapper.FastCrud;
-using Npgsql;
-using System.Configuration;
-using Microsoft.Extensions.Configuration;
+using MySql.Data.MySqlClient;
+using System;
 
 namespace GittiBu.Services
 {
     public class BaseService : IDisposable
     {
-        private NpgsqlConnection _connection;
+        private MySqlConnection _connection;
         // private const string ConnectionString = "Server=109.232.220.87;Database=GittiBu;User Id=postgres;Password=wQb3jbFJ9meRdJ46"; // prod
         private string ConnectionString = ""; //"Server=localhost;Database=GittiBu;User Id=postgres;Password=postgres"; // local
        //   private const string ConnectionString = "Server=109.232.220.87;Database=test2_gittibu;User Id=postgres;Password=wQb3jbFJ9meRdJ46"; // test
@@ -17,15 +15,15 @@ namespace GittiBu.Services
         {
             
             ConnectionString = AppConfiguration.GetConnectionString();
-            _connection = new NpgsqlConnection(ConnectionString);
+            _connection = new MySqlConnection(ConnectionString);
         }
 
-        public NpgsqlConnection GetConnection()
+        public MySqlConnection GetConnection()
         {
-            OrmConfiguration.DefaultDialect = SqlDialect.PostgreSql;
+            OrmConfiguration.DefaultDialect = SqlDialect.MySql;
             if (_connection != null)
                 return _connection;
-            _connection = new NpgsqlConnection(ConnectionString);
+            _connection = new MySqlConnection(ConnectionString);
             return _connection;
         }
 
