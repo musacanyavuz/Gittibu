@@ -96,7 +96,24 @@ namespace GittiBu.Web.Areas.AdminPanel.Controllers
 
                 var securePaymentInfo = service.GetSecurePaymentDetail(id);
                 ViewBag.IBAN = securePaymentInfo?.IBAN;
+               // SendActivationMail(user);
                 return View(user);
+            }
+        }
+        private bool SendActivationMail(User user)
+        {
+            var lang = 1;
+            var tran = new Localization();
+            using (var mailing = new MailingService())
+            using (var content = new TextService())
+            {
+                var link = Constants.GetURL((int)Enums.Routing.HesabimiAktiflestir, user.LanguageID) + "/" + user.Token;
+                var mailHtml = content.GetText(Enums.Texts.MailAktivasyon, lang);
+                mailHtml = mailHtml
+                    .Replace("@adSoyad", $"{user.Name}{user.Surname}")
+                    .Replace("@link", link);
+                var title = $"GittiBu.com | {tran.Get("Hesabınızı Aktifleştirin", "Account Activation", lang)}";
+                return mailing.Send(mailHtml, user.Email, user.Name, title);
             }
         }
 

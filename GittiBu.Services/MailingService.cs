@@ -13,7 +13,7 @@ namespace GittiBu.Services
         private const string baseUrl = "https://www.GittiBu.com";
         private const string username = "noreply@GittiBu.com";
         private const string password = "Petek28051962_!!";
-        private const string server = "GittiBu.com";
+        private const string server = "srvm09.trwww.com";
         private const int port = 587;
         private const bool useSsl = false;
         

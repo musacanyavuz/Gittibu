@@ -68,7 +68,7 @@ namespace GittiBu.Services
                       "(select GetText(parent.SeoDescriptionID, @lang)) as SeoDescription, " +
                       "(select GetText(parent.SlugID, @lang) ) " +
                       "from AdvertCategories LEFT OUTER JOIN AdvertCategories as parent on AdvertCategories.ParentCategoryID=parent.ID " +
-                      "where (select GetText(AdvertCategories.SlugID, @lang)) ilike @slug ";
+                      "where (select GetText(AdvertCategories.SlugID, @lang)) like @slug ";
                 var x = GetConnection().Query<AdvertCategory,AdvertCategory,AdvertCategory>(sql,
                     (category, parentCategory) =>
                     {
@@ -142,7 +142,7 @@ namespace GittiBu.Services
                           "    (select GetText(SlugID, @lang)) as Slug "+
                           "from AdvertCategories " +
                           "where IsActive=true "+
-                          "order by Order ";  
+                          "order by `Order` ";  
                 var categories = GetConnection().Query<AdvertCategory>(sql, new { lang }).ToList();
                 var masterCategories = categories.Where(x => x.ParentCategoryID == 0).ToList();
                 var childCategories = categories.Where(x => x.ParentCategoryID > 0).ToList();

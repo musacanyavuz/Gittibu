@@ -29,18 +29,24 @@ namespace GittiBu.Services
                 //          "AND Adverts.UserID = Users.ID\n " +
                 //          " AND (( SELECT Users.IsActive  FROM Users WHERE (Users.ID = Adverts.UserID)) = true)\n  " +
                 //          "ORDER BY Adverts.ID DESC limit 37;";
-                var sql = @"SELECT
-                              Adverts.*,
-                              (SELECT count(*) AS count FROM AdvertLikes WHERE(AdvertLikes.AdvertID = Adverts.ID)) AS LikesCount,
-                               ( SELECT IsILiked(Adverts.ID, @userId) ) as IsILiked,
-                              GetText((AdvertCategories.SlugID), (1)) AS SubCategorySlugTr,
-                              GetText((AdvertCategories.SlugID), (2)) AS SubCategorySlugEn, GetText((AdvertCategories.NameID), (1)) AS CategoryNameTr, GetText((AdvertCategories.NameID), (1)) AS CategoryNameTr, Users.Name AS UserName FROM Adverts, AdvertCategories, Users
-                              WHERE Adverts.IsActive = true
-                              AND Adverts.CategoryID = AdvertCategories.ID
-                             AND Adverts.UserID = Users.ID
-                              AND((SELECT Users.IsActive  FROM Users WHERE(Users.ID = Adverts.UserID)) = true)                                                             
-                              limit 37; ";
-                // // ORDER BY Adverts.ID DESC
+                var sql = "SELECT  " +
+                              " Adverts.* ," + 
+                              " (SELECT count(*) AS count FROM AdvertLikes WHERE(AdvertLikes.AdvertID = Adverts.ID)) AS LikesCount, " +
+                              " IsILiked(Adverts.ID, @userId) as IsILiked, " +
+                              " GetText((AdvertCategories.SlugID), (1)) AS SubCategorySlugTr,"+
+                              " GetText((AdvertCategories.SlugID), (2)) AS SubCategorySlugEn," +
+                              " GetText((AdvertCategories.NameID), (1)) AS CategoryNameTr," +
+                              " GetText((AdvertCategories.NameID), (1)) AS CategoryNameTr " +
+                            //  " Users.Name AS UserName " +
+                              " FROM Adverts, " +
+                              " AdvertCategories " +
+                             // " Users "+ 
+                              " WHERE Adverts.IsActive = true "+ 
+                              " AND Adverts.CategoryID = AdvertCategories.ID "+
+                            //  " AND Adverts.UserID = Users.ID " +
+                              " AND((SELECT Users.IsActive  FROM Users WHERE(Users.ID = Adverts.UserID)) = true) "+
+                              " ORDER BY Adverts.ID DESC  limit 37; ";
+              
                 var list = GetConnection().Query<Advert>(sql, new { userId }).ToList();
                 using (var publicService = new PublicService())
                 {
@@ -52,10 +58,10 @@ namespace GittiBu.Services
                         x.LabelDopingModel = (x.LabelDoping != 0) ? dopingTypes.Single(d => d.ID == x.LabelDoping) : null;
                     });
                 }
-                if (list.Count > 0)
-                {
-                    list = list.OrderByDescending(x => x.ID).ToList();
-                }
+                //if (list.Count > 0)
+                //{
+                //    list = list.OrderByDescending(x => x.ID).ToList();
+                //}
                 return list;
             }
             catch (Exception e)
@@ -78,12 +84,12 @@ namespace GittiBu.Services
             {
                 var sql = "SELECT\n  Adverts.*,\n  " +
                           "( SELECT count(*) AS count FROM AdvertLikes WHERE (AdvertLikes.AdvertID = Adverts.ID)) AS LikesCount,\n  " +
-                          " ( SELECT IsILiked(Adverts.ID, @userId ) ) as IsILiked,\n  " +
+                          " IsILiked(Adverts.ID, @userId ) as IsILiked,\n  " +
                           "GetText((AdvertCategories.SlugID), (1)) AS SubCategorySlugTr,\n  " +
                           "GetText((AdvertCategories.SlugID), (2)) AS SubCategorySlugEn, " +
                           "GetText((AdvertCategories.NameID), (1)) AS CategoryNameTr, " +
-                          " GetText((AdvertCategories.NameID), (2)) AS CategoryNameEn " +
-                          " FROM Adverts, AdvertCategories\n  WHERE Adverts.IsActive = true\n  " +
+                          "GetText((AdvertCategories.NameID), (2)) AS CategoryNameEn " +
+                          "FROM Adverts, AdvertCategories\n  WHERE Adverts.IsActive = true\n  " +
                           "AND Adverts.CategoryID = AdvertCategories.ID\n " +
                           " AND (( SELECT Users.IsActive  FROM Users WHERE (Users.ID = Adverts.UserID)) = true)\n  " +
                           "ORDER BY Adverts.ID DESC limit @limit OFFSET @offset;";
@@ -123,17 +129,21 @@ namespace GittiBu.Services
                           "( SELECT count(*) AS count FROM AdvertLikes WHERE (AdvertLikes.AdvertID = Adverts.ID)) AS LikesCount,\n  " +
                           "( SELECT GetLabelDoping((Adverts.ID)) AS GetLabelDoping) AS LabelDoping,\n  " +
                           " ( SELECT IsILiked(Adverts.ID, @userId ) ) as IsILiked,\n  " +
-                          "GetText((AdvertCategories.SlugID), (1)) AS SubCategorySlugTr,\n  " +
-                          "GetText((AdvertCategories.SlugID), (2)) AS SubCategorySlugEn, " +
-                          "GetText((AdvertCategories.NameID), (1)) AS CategoryNameTr, " +
-                          " GetText((AdvertCategories.NameID), (2)) AS CategoryNameEn, " +
-                          "Users.Name AS UserName " +
-                          " FROM Adverts,Users,AdvertCategories\n  WHERE Adverts.IsActive = true\n  " +
-                          "AND Adverts.CategoryID = @categoryId " +
-                          "AND Adverts.UserID = Users.ID" +
-                          "AND Adverts.CategoryID = AdvertCategories.ID\n " +
+                          " GetText((AdvertCategories.SlugID), (1)) AS SubCategorySlugTr,\n  " +
+                          " GetText((AdvertCategories.SlugID), (2)) AS SubCategorySlugEn, " +
+                          " GetText((AdvertCategories.NameID), (1)) AS CategoryNameTr, " +
+                          " GetText((AdvertCategories.NameID), (2)) AS CategoryNameEn " +
+                        //  " Users.Name AS UserName " +
+                          " FROM Adverts," +
+                          // "Users," +
+                          " AdvertCategories\n  " +
+                          " WHERE Adverts.IsActive = true\n  " +
+                          " AND Adverts.CategoryID = @categoryId " +
+                         // " AND Adverts.UserID = Users.ID" +
+                          " AND Adverts.CategoryID = AdvertCategories.ID\n " +
                           " AND (( SELECT Users.IsActive  FROM Users WHERE (Users.ID = Adverts.UserID)) = true)\n  " +
-                          "ORDER BY Adverts.ID DESC limit @limit OFFSET @offset;";
+                          " ORDER BY Adverts.ID DESC " +
+                          " limit @limit OFFSET @offset;";
 
                 var list = GetConnection().Query<Advert>(sql, new { categoryId, userId, offset, limit }).ToList();
                 using (var publicService = new PublicService())
@@ -147,6 +157,10 @@ namespace GittiBu.Services
                         //x.LabelDopingModel = (x.LabelDoping != 0) ? dopingTypes.Single(d => d.ID == x.LabelDoping) : null;
                     });
                 }
+                //if (list.Count > 0)
+                //{
+                //    list = list.OrderByDescending(x => x.ID).ToList();
+                //}
                 return list;
             }
             catch (Exception e)
@@ -626,10 +640,10 @@ namespace GittiBu.Services
                       $" Users.* " +
                       $" from Adverts, Users " +
                       $"where UserID=Users.ID and (" +
-                      $"Title ilike @search or Content ilike @search or Brand ilike @search\nor " +
-                      $" (select GetText((select NameID from AdvertCategories where ID = Adverts.CategoryID), 1 )) ilike @search  or " +
-                      $" Users.Name ilike @search or " +
-                      $"cast(Adverts.ID as varchar) ilike @search ) " +
+                      $"Title like @search or Content like @search or Brand like @search\nor " +
+                      $" (select GetText((select NameID from AdvertCategories where ID = Adverts.CategoryID), 1 )) like @search  or " +
+                      $" Users.Name like @search or " +
+                      $"cast(Adverts.ID as varchar) like @search ) " +
                       $"order by Adverts.ID desc limit @count offset @offset";
             }
             return GetConnection().Query<Advert, User, Advert>(sql, (advert, user) =>
@@ -647,7 +661,7 @@ namespace GittiBu.Services
                 return GetConnection().Query<int>($"select count(*) from Adverts, Users where UserID=Users.ID").First();
             }
 
-            var sql = $"select count(Adverts.ID)\nfrom Adverts\nwhere\n  Title ilike @search\n  or Content ilike @search\n  or Brand ilike @search\n  or  (select GetText((select NameID from AdvertCategories where ID = Adverts.CategoryID), 1 )) ilike @search\n  or (select Name from Users where Users.ID=UserID) ilike @search\n  or cast(Adverts.ID as CHAR(10)) ilike @search";
+            var sql = $"select count(Adverts.ID)\nfrom Adverts\nwhere\n  Title like @search\n  or Content like @search\n  or Brand like @search\n  or  (select GetText((select NameID from AdvertCategories where ID = Adverts.CategoryID), 1 )) like @search\n  or (select Name from Users where Users.ID=UserID) like @search\n  or cast(Adverts.ID as CHAR(10)) like @search";
             var count = GetConnection().Query<int>(sql, new { search = "%" + search + "%" }).First();
             return count;
         }
@@ -656,7 +670,7 @@ namespace GittiBu.Services
         {
             try
             {
-                var sql = $"SELECT ( SELECT GetOrderFromDopingInHomepage((Adverts.ID)) AS GetOrderFromDopingInHomepage) AS AdvertOrder,\n       Adverts.*,    ( SELECT count(*) AS count           FROM AdvertLikes          WHERE (AdvertLikes.AdvertID = Adverts.ID)) AS LikesCount,\n       ( SELECT GetLabelDoping((Adverts.ID)) AS GetLabelDoping) AS LabelDoping,\n       ( SELECT GetYellowFrameDoping((Adverts.ID)) AS GetYellowFrameDoping) AS YellowFrameDoping,\n       ( SELECT IsILiked(Adverts.ID, @userId ) ) as IsILiked,\n       GetText((AdvertCategories.SlugID), (1)) AS SubCategorySlugTr,\n       GetText((AdvertCategories.SlugID), (2)) AS SubCategorySlugEn,\n       GetText((AdvertCategories.NameID), (1)) AS CategoryNameTr,\n       GetText((AdvertCategories.NameID), (2)) AS CategoryNameEn\nFROM Adverts,    AdvertCategories,Users\nWHERE (Adverts.IsActive = true) AND Adverts.CategoryID = AdvertCategories.ID\n  AND (Adverts.UserID=Users.ID)\n AND (Users.IsActive=true)\n AND (Adverts.Title ilike @query or Adverts.Content ilike @query or Adverts.ProductDefects ilike @query or Adverts.ID::text ilike @query or Users.Name ilike @query)\nORDER BY AdvertOrder, CreatedDate DESC limit 200;";
+                var sql = $"SELECT ( SELECT GetOrderFromDopingInHomepage((Adverts.ID)) AS GetOrderFromDopingInHomepage) AS AdvertOrder,\n       Adverts.*,    ( SELECT count(*) AS count           FROM AdvertLikes          WHERE (AdvertLikes.AdvertID = Adverts.ID)) AS LikesCount,\n       ( SELECT GetLabelDoping((Adverts.ID)) AS GetLabelDoping) AS LabelDoping,\n       ( SELECT GetYellowFrameDoping((Adverts.ID)) AS GetYellowFrameDoping) AS YellowFrameDoping,\n       ( SELECT IsILiked(Adverts.ID, @userId ) ) as IsILiked,\n       GetText((AdvertCategories.SlugID), (1)) AS SubCategorySlugTr,\n       GetText((AdvertCategories.SlugID), (2)) AS SubCategorySlugEn,\n       GetText((AdvertCategories.NameID), (1)) AS CategoryNameTr,\n       GetText((AdvertCategories.NameID), (2)) AS CategoryNameEn\nFROM Adverts,    AdvertCategories,Users\nWHERE (Adverts.IsActive = true) AND Adverts.CategoryID = AdvertCategories.ID\n  AND (Adverts.UserID=Users.ID)\n AND (Users.IsActive=true)\n AND (Adverts.Title like @query or Adverts.Content like @query or Adverts.ProductDefects like @query or Adverts.ID like @query or Users.Name like @query)\nORDER BY AdvertOrder, CreatedDate DESC limit 200;";
                 var list = GetConnection().Query<Advert>(sql, new { query = "%" + query + "%", userId, lang }).ToList();
                 using (var publicService = new PublicService())
                 {
