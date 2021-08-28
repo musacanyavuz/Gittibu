@@ -109,9 +109,23 @@
                                 var advertIndex = 0;
                             }
                             @{
+                                var index = 0;
                                 foreach (var advert in Model?.Adverts)
                                 {
                                     await Html.RenderPartialAsync("~/Views/Partials/HomePageItem_4Column.cshtml", advert);
+                                    index++;
+                                    @if (index % 4 == 0)
+                                    {
+                                        <div style="width: 100%">
+                                            <ins class="adsbygoogle"
+                                                 style="display:block"
+                                                 data-ad-client="ca-pub-9703328830778745"
+                                                 data-ad-slot="9567262438"
+                                                 data-ad-format="auto"
+                                                 data-full-width-responsive="true">
+                                            </ins>
+                                        </div>
+                                    }
                                 }
                             }
                         </div>

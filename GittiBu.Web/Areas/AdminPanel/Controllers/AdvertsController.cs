@@ -165,9 +165,12 @@ namespace GittiBu.Web.Areas.AdminPanel.Controllers
                             service.DeletePhoto(photo);
                         }
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
-                        // ignored
+                        
+                       
+                        return Json(new { isSuccess = false, message =e.ToString() });
+                       
                     }
                 }
                 service.DeletePublishRequests(id);

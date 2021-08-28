@@ -643,7 +643,7 @@ namespace GittiBu.Services
                       $"Title like @search or Content like @search or Brand like @search\nor " +
                       $" (select GetText((select NameID from AdvertCategories where ID = Adverts.CategoryID), 1 )) like @search  or " +
                       $" Users.Name like @search or " +
-                      $"cast(Adverts.ID as varchar) like @search ) " +
+                      $"cast(Adverts.ID as char(10)) like @search ) " +
                       $"order by Adverts.ID desc limit @count offset @offset";
             }
             return GetConnection().Query<Advert, User, Advert>(sql, (advert, user) =>

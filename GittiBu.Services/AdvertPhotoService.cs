@@ -26,9 +26,26 @@ namespace GittiBu.Services
         }
         public List<AdvertPhoto> GetAdvertPhotosByAdvertID(int advertId)
         {
-            return GetConnection().Find<AdvertPhoto>(s => s
-                    .Where($"{nameof(AdvertPhoto.AdvertID):C}=@advertid ")
-                    .WithParameters(new { advertId })).ToList();
+
+            try
+            {
+                return GetConnection().Find<AdvertPhoto>(s => s
+                                   .Where($"{nameof(AdvertPhoto.AdvertID):C}=@advertId ")
+                                   .WithParameters(new { advertId })).ToList();
+            }
+            catch (Exception e)
+            {
+                Log(new Log
+                {
+                    Function = "AdvertPhotoService.GetAdvertPhotosByAdvertID",
+                    CreatedDate = DateTime.Now,
+                    Message = e.Message,
+                    Detail = e.ToString(),
+                    IsError = true
+                });
+            }
+            return null;
+           
         }
         public void DeleteAdvertPhotosByAdvertId(int advertId)
         {
