@@ -22,7 +22,13 @@
             width: 100%;
             display: flex
         }
+        .dragging {
+            background-color: lightgray;
+        }
 
+        .draggingForContainer {
+            background-color: rgba(231, 12, 30, 0.50);
+        }
             #sortable li {
                 margin: 3px 3px 3px 0;
                 padding: 1px;
@@ -30,6 +36,10 @@
                 text-align: center;
                 cursor: grab;
             }
+        .ui-state-highlight {
+            height: 1.5em;
+            line-height: 1.2em;
+        }
 
         .btn {
             color: #fff !important;
@@ -259,15 +269,15 @@
                             </div>
                         </div>
                         @*<div class="row">
-                <div class="col-md-3">
-                    <label class="field-label">@Localization.Get("Gönderim Seçeneği", "Shipment Type", lang)</label>
-                    <select class="dropdown-4 select-urun urun-ozellik-select w-dropdown textfield valid" name="ShippingTypeID" id="shipmentType" required>
-                        <option value="@((int)Enums.ShipmentType.KargoIleGonderim)" selected="selected"> @Localization.Get("Kargo İle Gönderim", "I can send by Cargo", lang) </option>
-                    </select>
-                </div>
+            <div class="col-md-3">
+                <label class="field-label">@Localization.Get("Gönderim Seçeneği", "Shipment Type", lang)</label>
+                <select class="dropdown-4 select-urun urun-ozellik-select w-dropdown textfield valid" name="ShippingTypeID" id="shipmentType" required>
+                    <option value="@((int)Enums.ShipmentType.KargoIleGonderim)" selected="selected"> @Localization.Get("Kargo İle Gönderim", "I can send by Cargo", lang) </option>
+                </select>
+            </div>
 
 
-            </div>*@
+        </div>*@
                         <div class="p-b-5">
                             <label class="field-label">@Localization.Get("İlan Fotoğrafları", "Product Photos", lang)</label>
                             <input type="hidden" name="SelectedPhotos" id="selectedPhotos" value="" />
@@ -275,27 +285,27 @@
                         <hr><br>
                         @if (Model.Advert?.Photos != null && Model.Advert.Photos.Any())
                         {
-                            <p>
-                                @Localization.Get("Fotoğraf sıralamalarını düzenlemek için fotoğrafları sürükleyebilirsiniz.", "You can drag photos to edit the photo rankings.", lang)
-                            </p>
-                            <button onclick="saveOrder()" class="button w-button m-r-10 float-left m-b-10" type="button">@Localization.Get("Sıralamayı Kaydet", "Save Photos Order", lang)</button>
-                            @*                                 <button onclick="updateMainImage()"  class="button w-button width-auto " type="button">@Localization.Get("Ana Fotoğraf Seçimini Kaydet", "Save Main Photo", lang)</button> *@
-
-                            <ul id="sortable">
-                                @foreach (var photo in Model.Advert.Photos.OrderBy(p => p.OrderNumber))
-                                {
-                                    <li class="ui-state-default" id="q_@photo.ID">
-                                        <div class="card width-rem-10">
-                                            <img class="card-img-top old-image" src="@photo.Source" />
-                                            <div class="card-body">
-                                                <h5 class="card-title">@photo.CreatedDate.ToString("g")</h5>
-                                                <input type="radio" onclick="javascript:updateMainImage();" name="mainImage" @(Model.Advert.Thumbnail == photo.Thumbnail ? "checked" : "") value="@photo.ID" /> <span> @Localization.Get("Ana fotoğraf", "Main photo", lang)</span>
-                                                <a href="javascript:undefited;" onclick="ask(@photo.ID, '') " style="width: 72px !important;" class="button w-button button-sil m-t-10 display-inline-grid">@Localization.Get("Sil", "Delete", lang)</a>
+                            <div class="row">
+                                @*<label onclick="saveOrder()" class="button w-button m-r-10 float-left m-b-10">@Localization.Get("Sıralamayı Kaydet", "Save Photos Order", lang)</label>*@
+                                <ul id="sortable">
+                                    @foreach (var photo in Model.Advert.Photos.OrderBy(p => p.OrderNumber))
+                                    {
+                                        <li class="ui-state-default" id="q_@photo.ID">
+                                            <div class="card width-rem-10">
+                                                <img class="card-img-top old-image" src="@photo.Source" />
+                                                <div class="card-body" style="cursor:default">
+                                                    <h5 class="card-title">@photo.CreatedDate.ToString("g")</h5>
+                                                    <div class="custom-control custom-radio">
+                                                        <input onclick="updateMainImage(@photo.ID)" @(Model.Advert.Thumbnail == photo.Thumbnail ? "checked" : " ") type="radio" class="custom-control-input" name="mainImage" value="@photo.ID" id="inputM_@photo.ID">
+                                                        <label class="custom-control-label" style="padding-top: 2px; cursor:pointer" for="inputM_@photo.ID">@Localization.Get("Ana fotoğraf", "Main photo", lang)</label>
+                                                    </div>
+                                                    <a href="#" onclick="ask(@photo.ID, '')" style="width: 72px !important;" class="button w-button button-sil m-t-10 display-inline-grid">@Localization.Get("Sil", "Delete", lang)</a>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </li>
-                                }
-                            </ul>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
                         }
 
                         <h5>@Localization.Get("İşaretlediğiniz görsel ana fotoğraf olarak kullanılacak.", "Marked picture will be used as main picture", lang)</h5>
@@ -495,7 +505,7 @@
                     buttonCancel.style.zIndex = 9999;
                     buttonCancel.textContent = 'İptal';
                     editor.appendChild(buttonCancel);
-                   
+
                     var image = new Image();
                     image.src = URL.createObjectURL(file);
                     editor.appendChild(image);
@@ -533,12 +543,12 @@
                                     maxWidth: 2048,
                                     maxHeight: 2048,
                                     fillColor: "#fff"
-                                   
+
                                 });
                             @*console.log(canvas); *@
                             // Turn the canvas into a Blob (file object without a name)
-                            canvas.toBlob(function (blob) {     
-                              
+                            canvas.toBlob(function (blob) {
+
                                 // Create a new Dropzone file thumbnail
                                 myDropZone.createThumbnail(
                                     blob,
@@ -571,7 +581,19 @@
                         formData.append("MainImage", $('input[name="main-image"]:checked').val());
                     });
                 this.on("addedfile",
-                    function (file) {                        
+                    function (file) {
+                        $("#save").text(bntText).removeAttr('disabled');
+                        var type = file.type;
+                        var pattern = /^image\/(jpg|gif|png|jpeg|bmp)/;
+                        var result = pattern.test(type);
+                        if (result == false) {
+                            var errMsg = '@Localization.Get("Geçersiz resim formatı : ", " Invalid image file : ", lang)' + type;
+                            notify("error", errMsg);
+                            $(file.previewElement).remove();
+                            removeFromSelectedPhotos(id);
+                            myDropzone.removeFile(file);
+                        }
+
                         @*console.log(file); *@
                         if (file.size > 5242880) {
                             @*console.log("Dikkat 10 mb büyük!"); *@
@@ -581,7 +603,8 @@
                             @*console.log("remove it: " + id); *@
                             $(file.previewElement).remove();
                             removeFromSelectedPhotos(id);
-                        } else {                            
+                            myDropzone.removeFile(file);
+                        } else {
                             addedPhotosCount++;
                             $("#save").html(bntTextWait).attr('disabled','disabled');
                         }
@@ -599,7 +622,7 @@
                 this.on("success",
                     function (file, response) {
                         @*//console.log("success file", file);
-                        //console.log("success response", response);*@                       
+                        //console.log("success response", response);*@
                         if (response.isSuccess === true) {
                             uploadedFileCount++;
                             @*console.log("add: " + response.id); *@
@@ -607,11 +630,11 @@
                             $(file.previewElement).find(".dz-progress").remove();
                             $(file.previewElement).attr("id", response.id);
                             $($(file.previewElement).find("input")).attr("value", response.id);
+                            $("#save").text(bntText).removeAttr('disabled');
                            @* console.log($(file.previewElement).find("input"));*@
-                        } else {
-
-                            myDropzone.removeFile(file);
-                          //  $("#save").attr('disabled', 'disabled').text(bntTextWait);
+                        } else {                           
+                            //myDropzone.removeFile(file);
+                            $("#save").attr('disabled', 'disabled').text(bntText);
                             notify("error", response.message);
                         }
 
@@ -620,7 +643,7 @@
                         } else if (uploadedFileCount >= addedPhotosCount) {
                             $("#save").text(bntText).removeAttr('disabled');
                         }
-                        
+
                         console.log('uploadedFileCount : ' + uploadedFileCount);
                     });
                  this.on("maxfilesexceeded", function (file) {
@@ -675,33 +698,59 @@
 
     @if (Model.Advert != null)
     {
-        <script>
-            $( function() {
-                $( "#sortable" ).sortable();
-                $( "#sortable" ).disableSelection();
-            } );
+<script>
+             $(function () {
+                var arr = $("#sortable").sortable({
+                    start: function (e, ui) {
+                        $('.ui-sortable').addClass('draggingForContainer');
+                        $('li.ui-sortable-handle').not('#' + ui.item.get(0).id).find('div.card').addClass('dragging');
 
-            function updateMainImage() {
-                var mainImageId = $('input[name="mainImage"]:checked').val();
-                if (mainImageId == null) {
-                    notify("error", '@Localization.Get("Mevcut fotoğraflar kısmından bir fotoğraf seçmeniz gerekiyor.",
-                                     "You need to select a photo from the existing photos.",lang)');
-                    return;
-                }
-                notify("info", '@Localization.Get("Lütfen bekleyiniz","Please wait", lang)');
-                $.ajax({
-                    url:"/UpdateMainPhoto",
-                    type: "POST",
-                    data: { id:@Model.Advert.ID, photoId: parseInt(mainImageId) },
-                    success: function(data) {
-                        if (data.isSuccess) {
-                            notify("success", data.message);
-                        } else {
-                            notify("danger", data.message);
+                    },
+                    stop: function (e, ui) {
+                        setTimeout(
+                            function () {
+                                $('.ui-sortable').removeClass('draggingForContainer');
+                                $('li.ui-sortable-handle').not('#' + ui.item.get(0).id).find('div.card').removeClass('dragging');
+                            },
+                            200
+                        )
+                    },
+                    forcePlaceholderSize :true,
+                    placeholder: "ui-state-highlight",
+                    update: function (event, ui) {
+                        var items = $('#sortable li');
+                        if (items.length == 0) {
+                            noitfy("danger", '@Localization.Get("Fotoğraf bulunamadı", "Photo not found", lang)');
+                            return;
+                        }
+
+                        var ids = [];
+                        for (var i = 0; i < items.length; i++) {
+                            var id = $($('#sortable li')[i]).prop("id").replace("q_", "");
+                            ids.push(parseInt(id));
+                        }
+                        if (ids.length > 0) {
+                            notify("info", '@Localization.Get("Lütfen bekleyiniz", "Please wait", lang)');
+                            $.ajax({
+                                url: "/UpdatePhotosOrder",
+                                type: "POST",
+                                data: { id: @Model.Advert.ID, photos: ids },
+                                success: function (data) {
+                                    if (data.isSuccess) {
+                                        notify("success", data.message);
+                                        if (items.get(0).id === ui.item[0].id) {
+                                            updateMainImage(items.get(0).id.replace("q_", ""));
+                                        }
+                                    } else {
+                                        notify("danger", data.message);
+                                    }
+                                }
+                            });
                         }
                     }
                 });
-            }
+                $("#sortable").disableSelection();
+            });
 
             function saveOrder() {
                 var items = $('#sortable li');
@@ -723,14 +772,40 @@
                         success: function(data) {
                             if (data.isSuccess) {
                                 notify("success", data.message);
+                                if (items.get(0).id === ui.item[0].id)
+                                    updateMainImage(items.get(0).id.replace("q_", ""));
                             } else {
                                 notify("danger", data.message);
                             }
                         }
                     });
                 }
+    }
+
+ function updateMainImage(mainImageId) {
+                if (mainImageId == null) {
+                    notify("error",
+                        '@Localization.Get("Mevcut fotoğraflar kısmından bir fotoğraf seçmeniz gerekiyor.",
+                             "You need to select a photo from the existing photos.", lang)');
+                    return;
+                }
+                $("#inputM_" + mainImageId).prop("checked", true);
+                notify("info", '@Localization.Get("Lütfen bekleyiniz", "Please wait", lang)');
+                $.ajax({
+                    url: "/UpdateMainPhoto",
+                    type: "POST",
+                    data: { id: @Model.Advert.ID, photoId: parseInt(mainImageId) },
+                    success: function(data) {
+                        if (data.isSuccess) {
+                            notify("success", data.message);
+                            $("#sortable #q_" + mainImageId).insertBefore($("#sortable li:eq(0)"));
+                        } else {
+                            notify("danger", data.message);
+                        }
+                    }
+                });
             }
-        </script>
+</script>
 
     }
 
@@ -826,7 +901,7 @@
         $('#main-form').on("submit",
             function(e) {
                 @* console.log("submitting"); *@
-                debugger;
+               
                 var tinymceContent = tinymce.activeEditor.getContent({ format: 'text' });
 
                 if (tinymceContent.trim() === '') {

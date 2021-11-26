@@ -21,6 +21,7 @@ namespace GittiBu.Web.Areas.AdminPanel.Controllers
 
         public IActionResult Edit(int id)
         {
+            var model = new AdvertCategoryEditViewModel();
             using (var service = new AdvertCategoryService())
             {
                 var category = service.Get(id);
@@ -31,15 +32,16 @@ namespace GittiBu.Web.Areas.AdminPanel.Controllers
                     return RedirectToAction("Index");
                 }
                 var categoryEn = service.Get(id, 2);
-                var model = new AdvertCategoryEditViewModel
-                {
-                    CategoryTr = category,
-                    CategoryEn = categoryEn
-                };
+               
+               
+                    model.CategoryTr = category;
+                    model.CategoryEn = categoryEn;
+               
                 var categories = service.GetAllCategories();
                 ViewBag.Categories = categories;
-                return View(model);
+               
             }
+            return View(model);
         }
         [HttpPost]
         public async Task<IActionResult> SaveEdit(AdvertCategoryPostModel model)
@@ -101,11 +103,13 @@ namespace GittiBu.Web.Areas.AdminPanel.Controllers
 
         public IActionResult Create()
         {
+            var categories = new System.Collections.Generic.List<AdvertCategory>();
             using (var service = new AdvertCategoryService())
             {
-                var categories = service.GetAll();
-                return View(categories);
+                 categories = service.GetAll();
+                
             }
+            return View(categories);
         }
         [HttpPost]
         public async Task<IActionResult> Create(AdvertCategoryPostModel model)
@@ -159,8 +163,9 @@ namespace GittiBu.Web.Areas.AdminPanel.Controllers
                 }
                 
                 AdminNotification = new UiMessage(NotyType.success, "İlan kategorisi eklendi.");
-                return RedirectToAction("Index");
+               
             }
+            return RedirectToAction("Index");
         }
         
         [HttpPost]

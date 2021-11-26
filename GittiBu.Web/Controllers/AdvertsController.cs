@@ -570,7 +570,13 @@ namespace GittiBu.Web.Controllers
                         "Ad update failed", lang)
                     });
                 }
+                var allPhotosOfAdvert = service.GetPhotos(id);//.Where(x => x.OrderNumber == 0 || x.Thumbnail == ad.Thumbnail);
 
+                var photoFirstOrder = allPhotosOfAdvert.FirstOrDefault(x => x.OrderNumber == 1); // eski ilk foto al.               
+                var newFirstOrderPhoto = allPhotosOfAdvert.FirstOrDefault(x => x.ID == photoId);// yeni foto al
+
+                service.UpdatePhotoOrder(photoFirstOrder.ID, newFirstOrderPhoto.OrderNumber);
+                service.UpdatePhotoOrder(photoId, 1);
                 return Json(new
                 {
                     isSuccess = true,

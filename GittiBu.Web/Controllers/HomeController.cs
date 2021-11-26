@@ -24,6 +24,7 @@ namespace GittiBu.Web.Controllers
         public IActionResult Index()
         {
             var lang = GetLang();
+            var model = new HomePageViewModel();
             using (var advertCategoryService = new AdvertCategoryService())
             using (var bannerService = new BannerService())
             using (var textService = new TextService())
@@ -34,30 +35,32 @@ namespace GittiBu.Web.Controllers
                 //var homepageSplitBanners = banners.Where(x => x.TypeID == Enums.BannerType.Banner)?.OrderBy(b=>b.ID).ToList();
                 //var homepageBottomAd = banners.SingleOrDefault(x => x.TypeID == Enums.BannerType.Slider);
 
-                var model = new HomePageViewModel
+
+
+                model.AdvertCategories = advertCategoryService.GetMasterCategories(GetLang());
+                model.Banners = banners;
+                //HomepageSplitBanners = homepageSplitBanners,
+                //HomepageBottomAd = homepageBottomAd,
+                model.Items = Ads2HomePageItems(adverts, lang);
+                model.SeoValues = new SeoKeys
                 {
-                    AdvertCategories = advertCategoryService.GetMasterCategories(GetLang()),
-                    Banners = banners,
-                    //HomepageSplitBanners = homepageSplitBanners,
-                    //HomepageBottomAd = homepageBottomAd,
-                    Items = Ads2HomePageItems(adverts, lang),
-                    SeoValues = new SeoKeys
-                    {
-                        Title = textService.GetText(Enums.Texts.AnasayfaTitle, lang),
-                        Description = textService.GetText(Enums.Texts.AnasayfaAciklama, lang),
-                        Keywords = textService.GetText(Enums.Texts.AnasayfaSEOKeywords, lang),
-                        Separator = textService.GetText(Enums.Texts.Ayrac, lang)
-                    }
+                    Title = textService.GetText(Enums.Texts.AnasayfaTitle, lang),
+                    Description = textService.GetText(Enums.Texts.AnasayfaAciklama, lang),
+                    Keywords = textService.GetText(Enums.Texts.AnasayfaSEOKeywords, lang),
+                    Separator = textService.GetText(Enums.Texts.Ayrac, lang)
                 };
+                
                 ViewBag.IsMainPage = true;
-                return View(model);
+               
             }
+            return View(model);
         }
 
         [Route("{id:int}")]
         public IActionResult Index(int id)
         {
             var lang = GetLang();
+            var model = new AdvertDetailsViewModel();
             using (var catService = new AdvertCategoryService())
             using (var service = new AdvertService())
             {
@@ -65,7 +68,7 @@ namespace GittiBu.Web.Controllers
                 if (advert == null)
                     return Redirect("/");
                 var advertCats = catService.GetAll();
-                var model = new AdvertDetailsViewModel
+                var modeltemp = new AdvertDetailsViewModel
                 {
                     Advert = advert,
                     AdvertCategories = advertCats,
@@ -80,23 +83,25 @@ namespace GittiBu.Web.Controllers
                     ViewBag.TranslateUrl = "/Ilan/" +  Common.Localization.Slug(advert.Title) + "/" + advert.ID;
                 }
                 service.UpdateViewCount(id);
-                return View("~/Views/Adverts/Details.cshtml", model);
+                model = modeltemp;
+                
             }
+            return View("~/Views/Adverts/Details.cshtml", model);
         }
 
 
         public PartialViewResult GetAdverts(int offset)
         {
             var lang = GetLang();
+            List <Advert> list = new List<Advert>();
             using (var service = new AdvertService())
             {
-                var list = service.GetHomePageAdverts(lang, offset, GetLoginID());
-                if (list == null || list.Count == 0)
-                {
-                    return null;
-                }
-                return PartialView("~/Views/Shared/AdvertItem_5ColumnList.cshtml", Ads2HomePageItems(list, lang));
+                 list = service.GetHomePageAdverts(lang, offset, GetLoginID());               
+               
             }
+           
+
+            return PartialView("~/Views/Shared/AdvertItem_5ColumnList.cshtml", Ads2HomePageItems(list, lang));
         }
 
         private List<HomePageItem> MergeAdsBlogs(List<Advert> ads, List<BlogPost> posts, int lang, bool take)
@@ -552,22 +557,19 @@ namespace GittiBu.Web.Controllers
                 return RedirectToAction("Index");
 
             var lang = GetLang(false);
-
+            var model = new HomePageViewModel();
             using (var advertCategoryService = new AdvertCategoryService())
             using (var blogService = new BlogPostService())
             using (var adService = new AdvertService())
             {
                 var ads = adService.Search(query, GetLoginID(), lang);
                 var posts = blogService.Search(query);
+              
+                model.Items = MergeAdsBlogs(ads, posts, lang, false);
+                model.AdvertCategories = advertCategoryService.GetMasterCategories(GetLang());              
 
-                var model = new HomePageViewModel()
-                {
-                    Items = MergeAdsBlogs(ads, posts, lang, false),
-                    AdvertCategories = advertCategoryService.GetMasterCategories(GetLang()),
-                };
-
-                return View(model);
             }
+            return View(model);
         }
 
 
@@ -635,8 +637,9 @@ namespace GittiBu.Web.Controllers
                     "Registration failed. You can contact us from the contact page.", lang)
                     });
                 }
-                return Json(new { isSuccess = true, message = t.Get("E-bülten kaydınız oluşturuldu.", "Your newsletter registration has been created.", lang) });
+
             }
+            return Json(new { isSuccess = true, message = t.Get("E-bülten kaydınız oluşturuldu.", "Your newsletter registration has been created.", lang) });
         }
 
         [Route("404")]

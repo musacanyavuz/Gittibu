@@ -48,13 +48,13 @@
     <script src="/AdminContent/assets/vendors/custom/datatables/datatables.bundle.js" type="text/javascript"></script>
     <script>
 
-        $("#m_table_1").DataTable({
+        var m_table_1 =    $("#m_table_1").DataTable({
             order: [0, 'desc'],
             dom:
                 "<'row'<'col-sm-6 text-left'f><'col-sm-6 text-right'B>>\n\t\t\t<'row'<'col-sm-12'tr>>\n\t\t\t<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7 dataTables_pager'lp>>",
             buttons: ["print", "copyHtml5", "excelHtml5", "csvHtml5", "pdfHtml5"],
             processing: true,
-            serverSide: true,
+            serverSide: true,          
             "pageLength": 25,
             ajax: {
                 url: "/AdminPanel/Listing/GetList",
@@ -74,7 +74,7 @@
                     title: 'Seçenekler',
                     orderable: false,
                     render: function(data, type, full, meta) {
-                        @*console.log(full);*@
+                        @*console.log(full);*@                      
                         var html = `
                         <div class="btn-group btn-group-sm" role="group">
                         <a href="/AdminPanel/Adverts/Details/${full.id}" class="m-btn btn btn-info" title="Detaylar">
@@ -137,7 +137,7 @@
                 confirmButtonText: 'Evet',
                 cancelButtonText: 'Vazgeç'
             }).then((result) => {
-                if (result.value) {
+                if (result.value) {                 
                     updateStatus(id, isActive);
                 }
             });
@@ -149,19 +149,20 @@
                 url: "/AdminPanel/UpdateListingStatus",
                 type: "POST",
                 data: { id, status },
-                success: function(data) {
+                success: function (data) {                   
                     if (data.isSuccess) {
-                        $('#status_' + id).html(newStatus);
-                        if(newStatus=="Pasif"){
-                             $('#isActive_' + id).removeClass("btn-warning").addClass("btn-success");
-                             $('#isActivei_' + id).removeClass("la-close").addClass("la-check");
-                             $('#isActive_' + id).attr("title", "Pasifleştir");
+                        m_table_1.ajax.reload();
+                        //$('#status_' + id).html(newStatus);
+                        //if(newStatus=="Pasif"){
+                        //     $('#isActive_' + id).removeClass("btn-warning").addClass("btn-success");
+                        //     $('#isActivei_' + id).removeClass("la-close").addClass("la-check");
+                        //     $('#isActive_' + id).attr("title", "Pasifleştir");
                              
-                        }else{
-                             $('#isActive_' + id).removeClass("btn-success").addClass("btn-warning");
-                              $('#isActivei_' + id).removeClass("la-check").addClass("la-close");
-                              $('#isActive_' + id).attr("title", "Aktifleştir");
-                        }
+                        //}else{
+                        //     $('#isActive_' + id).removeClass("btn-success").addClass("btn-warning");
+                        //      $('#isActivei_' + id).removeClass("la-check").addClass("la-close");
+                        //      $('#isActive_' + id).attr("title", "Aktifleştir");
+                        //}
 
                         notify("success", data.message);
                     } else {
@@ -196,8 +197,10 @@
                 data: { id },
                 success: function(data) {
                     if (data.isSuccess) {
-                        $('#row_' + id).remove();
+                        //$('#row_' + id).remove();
+                        m_table_1.ajax.reload();
                         notify("success", data.message);
+
                     } else {
                         notify("danger", data.message);
                     }

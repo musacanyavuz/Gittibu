@@ -23,7 +23,10 @@ namespace GittiBu.Web.Controllers
     public class BaseController : Controller
     {
         public bool Production = true;
+        public BaseController()
+        {
 
+        }
 
         public int GetLang(bool setTranslate = true)
         {
@@ -209,6 +212,7 @@ namespace GittiBu.Web.Controllers
         public List<HomePageItem> Ads2HomePageItems(List<Advert> ads, int lang)
         {
             var result = new List<HomePageItem>();
+            if(ads != null)
             foreach (var ad in ads)
             {
                 result.Add(Ad2HomePageItem(ad, lang));
