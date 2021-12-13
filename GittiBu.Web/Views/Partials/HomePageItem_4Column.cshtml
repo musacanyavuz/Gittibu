@@ -43,9 +43,9 @@
                 {
                     <img alt="PayPal Türkiye" id="likeImage_@Model.ID" src="/Content/img/images/kalp.png" class="kalp" onclick="likeAd(@Model.ID)" title="@Localization.Get("Beğen", "Like", lang)">
                 }
-                <span class="description" hidden>
+                @*<span class="description" hidden>
                     <span itemprop="description">@Html.Raw(Model.Description)</span>
-                </span>
+                </span>*@
                 <meta itemprop="brand" content="@(!string.IsNullOrWhiteSpace(Model.CategoryName) ? Html.Raw(Model.CategoryName) : Html.Raw(title))" />
                 <div class="new-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
                     <span itemprop="price">@Model.Price</span><span itemprop="priceCurrency"> @Model.PriceCurrency</span>

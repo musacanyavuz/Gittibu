@@ -47,6 +47,8 @@
     <meta property="og:title" content="GittiBu | @Html.Raw(ViewBag.Title)" />
     <meta property="og:description" content="@Html.Raw(ViewBag.SeoDescription != null ? ViewBag.SeoDescription : defaultSeoDesc)" />
     <meta property="og:site_name" content="@Html.Raw(ViewBag.SeoKeywords != null ? ViewBag.SeoKeywords : defaultSeoKeywords)" />
+    <meta property="og:image:secure_url" content="http://www.gittibu.com/Content/img/images/GittiBuLogo.jpg" />
+    <meta property="og:url" content="https://www.gittibu.com" />
     @await RenderSectionAsync("MetaTag", false)
     <meta name="smartbanner:title" content="Gittibu.com" />
     <meta name="smartbanner:author" content="GittiBu" />
