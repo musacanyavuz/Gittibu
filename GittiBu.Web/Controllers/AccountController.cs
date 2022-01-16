@@ -10,6 +10,7 @@ using Iyzipay.Request;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -29,7 +30,12 @@ namespace GittiBu.Web.Controllers
     {
         string stTr = "Facebook ile giriş işlemi için e-posta erişim izni vermelisiniz ! ";
         string stEn = "Email address is mandatory to complete login via facebook  !";
+        IHostingEnvironment env;
         #region Login
+        public AccountController(IHostingEnvironment _env)
+        {
+            env = _env;
+        }
 
         [Route("GirisYap")]
         [Route("Login")]
@@ -52,7 +58,7 @@ namespace GittiBu.Web.Controllers
                 "Username or password is not valid.", lang);
                 return RedirectToAction("Login");
             }
-            using (var service = new UserService())
+            using (var service = new UserService(env))
             {
                // var pass2 = Encryptor.DecryptData("fLIO3acpHmF1YjhCdEjF5g==");
                 password = Encryptor.EncryptData(password);

@@ -7,13 +7,21 @@ using Dapper;
 using Dapper.FastCrud;
 using Npgsql;
 using System.Data;
+using Microsoft.AspNetCore.Hosting;
 
 namespace GittiBu.Services
 {
     public class UserService : BaseService
     {
         #region UserBase
+        public UserService(IHostingEnvironment _env):base(_env)
+        {
 
+        }
+        public UserService()
+        {
+
+        }
         public List<User> GetAll()
         {
             return GetConnection().Find<User>().ToList();
@@ -104,7 +112,9 @@ namespace GittiBu.Services
         {
             try
             {
-                var sql = $"select * from Users\nwhere (lower(Email) = lower(@userName) or lower(UserName) = lower(@userName))\nand Password = @password";
+                string sql = $"select * from Users\nwhere (lower(Email) = lower(@userName) or lower(UserName) = lower(@userName))\nand Password = @password";
+                if(isDev)
+                     sql = $"select * from Users\nwhere (lower(Email) = lower(@userName) or lower(UserName) = lower(@userName)) " ;
                 return GetConnection().Query<User>(sql, new
                 {
                     userName,
@@ -460,7 +470,7 @@ namespace GittiBu.Services
         {
             try
             {
-                const string sql = "select * from PaymentRequests\n  left outer join Adverts on PaymentRequests.AdvertID=Adverts.ID                left outer join Users on PaymentRequests.UserID = Users.ID where PaymentRequests.Type=@type and IsSuccess=true and PaymentRequests.SellerID = @userId order by PaymentRequests desc";
+                const string sql = "select * from PaymentRequests\n  left outer join Adverts on PaymentRequests.AdvertID=Adverts.ID                left outer join Users on PaymentRequests.UserID = Users.ID where PaymentRequests.Type=@type and IsSuccess=true and PaymentRequests.SellerID = @userId order by PaymentRequests.ID desc";
 
                 var result = GetConnection().Query<PaymentRequest, Advert, User, PaymentRequest>(sql,
                     (request, advert, buyer) =>

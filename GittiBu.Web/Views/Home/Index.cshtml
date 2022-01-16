@@ -7,9 +7,9 @@
     Layout = "_Layout";
 }
 @*@section head{
-    <meta property="og:image" content="http://www.gittibu.com/Content/img/images/GittiBuLogo.jpg" />
-    <meta property="og:url" content="https://www.gittibu.com" />
-}*@
+        <meta property="og:image" content="http://www.gittibu.com/Content/img/images/GittiBuLogo.jpg" />
+        <meta property="og:url" content="https://www.gittibu.com" />
+    }*@
 @section style {
     <link href="~/Content/css/main.css" rel="stylesheet" type="text/css" />
     <style>
@@ -105,16 +105,16 @@
 
                 @foreach (var category in Model.AdvertCategories)
                 {
-                    <a href="/@(Localization.Get("Kategori", "Category" , lang))/@category.Slug" class="link-block w-clearfix w-inline-block">
-                        <img alt="@Html.Raw(category.Description)" src="@(string.IsNullOrEmpty(category.IconSource)?"/favicon.png":category.IconSource)" onerror="this.src = '/favicon.png';" width="19" height="19" title="@Html.Raw(category.Name)" />
-                        <h2 class="home-left-item">@Html.Raw(category.Name)</h2>
-                    </a>
+                <a href="/@(Localization.Get("Kategori", "Category" , lang))/@category.Slug" class="link-block w-clearfix w-inline-block">
+                    <img alt="@Html.Raw(category.Description)" src="@(string.IsNullOrEmpty(category.IconSource)?"/favicon.png":category.IconSource)" onerror="this.src = '/favicon.png';" width="19" height="19" title="@Html.Raw(category.Name)" />
+                    <h2 class="home-left-item">@Html.Raw(category.Name)</h2>
+                </a>
                     if (category.Name == "Ev Eşyası, Dekor" || category.Name == "Household Appliances")
                     {
-                        <a href="https://www.audiophile.org" target="_blank" class="link-block w-clearfix w-inline-block">
-                            <img alt="@Html.Raw(Localization.Get("Ev Elektroniği", "Home Electronics" , lang))" src="/Upload/Categories/ev-elektronigi.png" width="19" height="19" title="@Html.Raw(Localization.Get(" Ev Elektroniği", "Home Electronics" , lang))" />
-                            <h2 class="home-left-item">@Html.Raw(Localization.Get("Ev Elektroniği", "Home Electronics", lang))</h2>
-                        </a>
+                <a href="https://www.audiophile.org" target="_blank" class="link-block w-clearfix w-inline-block">
+                    <img alt="@Html.Raw(Localization.Get("Ev Elektroniği", "Home Electronics" , lang))" src="/Upload/Categories/ev-elektronigi.png" width="19" height="19" title="@Html.Raw(Localization.Get(" Ev Elektroniği", "Home Electronics" , lang))" />
+                    <h2 class="home-left-item">@Html.Raw(Localization.Get("Ev Elektroniği", "Home Electronics", lang))</h2>
+                </a>
                     }
                 }
             </div>
@@ -156,17 +156,17 @@
                             {
                                 await Html.RenderPartialAsync("~/Views/Partials/HomePageItem_4Column.cshtml", Model.Items[index]);
                                 index++;
-                                @if (index % 4 == 0)
+                            @if (index % 4 == 0)
                                 {
-                                    <div style="width: 100%">
-                                        <ins class="adsbygoogle"
-                                             style="display:block"
-                                             data-ad-client="ca-pub-9703328830778745"
-                                             data-ad-slot="9567262438"
-                                             data-ad-format="auto"
-                                             data-full-width-responsive="true">
-                                        </ins>
-                                    </div>
+                            <div style="width: 100%">
+                                <ins class="adsbygoogle"
+                                     style="display:block"
+                                     data-ad-client="ca-pub-9703328830778745"
+                                     data-ad-slot="9567262438"
+                                     data-ad-format="auto"
+                                     data-full-width-responsive="true">
+                                </ins>
+                            </div>
                                 }
                             }
                         }
@@ -200,59 +200,61 @@
                     </div>
                     <div class="products" id="listing">
                         @{
-                            for (; index < Model.Items.Count; index++)
+                                        int counter = 1;
+                                        for (; index < Model.Items.Count; index++)
+                                        {
+                                            await Html.RenderPartialAsync("~/Views/Partials/HomePageItem_5Column.cshtml", Model.Items[index]);
+
+                            @if (counter % 5 == 0)
+                                            {
+                            <div style="width: 100%">
+                                <ins class="adsbygoogle"
+                                     style="display:block"
+                                     data-ad-client="ca-pub-9703328830778745"
+                                     data-ad-slot="9567262438"
+                                     data-ad-format="auto"
+                                     data-full-width-responsive="true">
+                                </ins>
+                            </div>
+                                }
+                                if (counter == 21)
+                                {
+                            <div class="ayirackalip splitbanner">
+                                <div class="section-2 ayirackalip-backcolor">
+                                    <div class="div-ad-text ayirackalip-padding">
+                                        <h4 class="h4-style">
+                                            @Localization.Get("Kullanılmış Eşyanızı Sosyal Medyanızda Paylaşıp Kolayca Satış Yapıp Ödeme Alın",
+                                                "Buy and Sell second hand stuff online in safe environment", lang)
+                                        </h4>
+                                        <h5 class="h5-style">
+                                            @Localization.Get("Nasıl mı? GittiBu.com a ücretsiz üye olun, eski bisikletinizi kredi kartına taksit ile satın. " +
+                                                              "Alıcıyı GittiBu.com kredilendirsin, paranız birkaç gün içinde banka hesabınıza gelsin.",
+                                                "Buy and Sell second hand stuff online in safe environment. Sell things you don't use by credit card and find great deals", lang)
+                                        </h5>
+                                    </div>
+                                </div>
+                            </div>
+                                }
+                            if (counter == 31)
                             {
-                                await Html.RenderPartialAsync("~/Views/Partials/HomePageItem_5Column.cshtml", Model.Items[index]);
-                                
-                                @if (index % 5 == 0)
-                                {
-                                    <div style="width: 100%">
-                                        <ins class="adsbygoogle"
-                                             style="display:block"
-                                             data-ad-client="ca-pub-9703328830778745"
-                                             data-ad-slot="9567262438"
-                                             data-ad-format="auto"
-                                             data-full-width-responsive="true">
-                                        </ins>
+                            <div class="ayirackalip splitbanner">
+                                <div class="section-2 ayirackalip-backcolor text-center">
+                                    <div class="div-ad-text ayirackalip-padding">
+                                        <h4 class="h4-style">
+                                            @Localization.Get("GittiBu.com ile satılması güç eşyalarınızı kredi kartına taksitlendirerek satış şansını arttırırsınız",
+                                                "Buy & Sell your second hands in Turkey easily by credit card.", lang)
+                                        </h4>
+                                        <h5 class="h5-style">
+                                            @Localization.Get("Nasıl mı? Ücretsiz üye olun, satılık eşyanızı kaydedin, oluşturduğunuz linki sosyal medya hesaplarınızda paylaşın. " +
+                                                              "Alıcının tek yapması gereken şey GittiBu.com a üye olarak kredi kartı ile ödemeyi gerçekleştirmesi.",
+                                                "Register at GittiBu, post your item, share it on facebook, twitter, instagram pages or on whatsApp or email groups that’s all. " +
+                                                "What the buyer does it to register and pay by credit card. Full process is followed up by GittiBu", lang)
+                                        </h5>
                                     </div>
+                                </div>
+                            </div>
                                 }
-                                if (index == 21)
-                                {
-                                    <div class="ayirackalip splitbanner">
-                                        <div class="section-2 ayirackalip-backcolor">
-                                            <div class="div-ad-text ayirackalip-padding">
-                                                <h4 class="h4-style">
-                                                    @Localization.Get("Kullanılmış Eşyanızı Sosyal Medyanızda Paylaşıp Kolayca Satış Yapıp Ödeme Alın",
-                                                        "Buy and Sell second hand stuff online in safe environment", lang)
-                                                </h4>
-                                                <h5 class="h5-style">
-                                                    @Localization.Get("Nasıl mı? GittiBu.com a ücretsiz üye olun, eski bisikletinizi kredi kartına taksit ile satın. " +
-                                                                      "Alıcıyı GittiBu.com kredilendirsin, paranız birkaç gün içinde banka hesabınıza gelsin.",
-                                                        "Buy and Sell second hand stuff online in safe environment. Sell things you don't use by credit card and find great deals", lang)
-                                                </h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
-                                if (index == 31)
-                                {
-                                    <div class="ayirackalip splitbanner">
-                                        <div class="section-2 ayirackalip-backcolor text-center">
-                                            <div class="div-ad-text ayirackalip-padding">
-                                                <h4 class="h4-style">
-                                                    @Localization.Get("GittiBu.com ile satılması güç eşyalarınızı kredi kartına taksitlendirerek satış şansını arttırırsınız",
-                                                        "Buy & Sell your second hands in Turkey easily by credit card.", lang)
-                                                </h4>
-                                                <h5 class="h5-style">
-                                                    @Localization.Get("Nasıl mı? Ücretsiz üye olun, satılık eşyanızı kaydedin, oluşturduğunuz linki sosyal medya hesaplarınızda paylaşın. " +
-                                                                      "Alıcının tek yapması gereken şey GittiBu.com a üye olarak kredi kartı ile ödemeyi gerçekleştirmesi.",
-                                                        "Register at GittiBu, post your item, share it on facebook, twitter, instagram pages or on whatsApp or email groups that’s all. " +
-                                                        "What the buyer does it to register and pay by credit card. Full process is followed up by GittiBu", lang)
-                                                </h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                }
+                                counter++;
                             }
                         }
                     </div>
