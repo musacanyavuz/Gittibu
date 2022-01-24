@@ -113,6 +113,8 @@ namespace GittiBu.Web.Controllers
                             {
                                 _ad.AvailableInstallments = Constants.Array2String(AvailableInstallments);
                             }
+                            _ad.IsApproved = false;
+                            _ad.ApprovalStatus = Enums.ApprovalStatusEnum.WaitingforApproval;
                             _ad.IsActive = false;
                             var update = service.Update(_ad);
                             if (!update)
@@ -153,6 +155,9 @@ namespace GittiBu.Web.Controllers
                         advert.UseSecurePayment = true;
                         advert.IpAddress = GetIpAddress();
                         advert.MoneyTypeID = (int)Enums.MoneyType.tl;
+                        advert.IsDraft = true;
+                        advert.IsApproved = false;
+                        advert.ApprovalStatus = Enums.ApprovalStatusEnum.WaitingforApproval;
                         if (AvailableInstallments == null || AvailableInstallments.Length == 0)
                         {
                             advert.AvailableInstallments = allInstallments(category.MaxInstallment);
@@ -597,6 +602,8 @@ namespace GittiBu.Web.Controllers
             using (var service = new AdvertService())
             {
                 var advert = service.GetMyAdvert(id, GetLoginID());
+                advert.IsDraft = false;
+                service.Update(advert);               
                 return View(advert);
             }
         }

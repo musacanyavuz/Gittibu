@@ -60,7 +60,7 @@ namespace GittiBu.Web.Controllers
             }
             using (var service = new UserService(env))
             {
-               // var pass2 = Encryptor.DecryptData("fLIO3acpHmF1YjhCdEjF5g==");
+                // var pass2 = Encryptor.DecryptData("sBlNIYEgS6Y=");
                 password = Encryptor.EncryptData(password);
                 var user = service.Get(username, password);
                 if (user == null)
@@ -2329,7 +2329,7 @@ namespace GittiBu.Web.Controllers
         {
             using (var service = new AdvertService())
             {
-                var list = service.GetUserAdverts(GetLoginID());
+                var list = service.GetUserAdverts(GetLoginID(),false);
                 MyListingViewModel myListingViewModel = SearchMyListing(list, page, advertCount);
                 return View(myListingViewModel);
             }

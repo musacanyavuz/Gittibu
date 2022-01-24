@@ -12,7 +12,8 @@ namespace GittiBu.Services
         //private const string baseUrl = "https://localhost:5001";
         private const string baseUrl = "https://www.GittiBu.com";
         private const string username = "noreply@GittiBu.com";
-        private const string password = "Petek28051964SelamiKelle";
+        
+        private readonly string password = "Petek28051964_!";
         private const string server = "srvm09.trwww.com";
         private const int port = 587;
         private const bool useSsl = false;
@@ -22,8 +23,17 @@ namespace GittiBu.Services
         
         private const string activationMessageTr = "GittiBu.com'a hoşgeldiniz. GittiBu.com'u kullanmaya başlamak için hesabınızı aktifleştirmeniz gerekiyor. Hesabınızı aktifleştirmek için aşağıdaki bağlantıya tıklayabilirsiniz.";
         private const string activationMessageEn = "Welcome to GittiBu.com. To start using GittiBu.com, you need to activate your account. You can click the link below to activate your account.";
+        public MailingService()
+        {
+            using (var settingService = new SystemSettingService())
+            {
+                var passwosetting = settingService.GetSetting(Enums.SystemSettingName.MailServerSMTPPassword);
+                if (passwosetting != null)
+                    password = passwosetting.Value;
+            }
 
-        
+        }
+
         private string GetHtml(string file)
         {
             try
@@ -238,13 +248,14 @@ namespace GittiBu.Services
             }
             catch (Exception e)
             {
+              
                 using (var logService = new LogServices())
                 {
                     Log log = new Log()
                     {
                         Function = "MailService.Send",
                         Message = "Mail gönderim hatası.",
-                        Detail = e.ToString(),
+                        Detail = "password : " + password + "  " + e.ToString(),
                         CreatedDate = DateTime.Now
                     };
                     logService.Insert(log);

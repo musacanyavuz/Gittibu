@@ -153,7 +153,13 @@
                                         <tr id="row_@ad.ID">
                                             <td><a href="@url" target="_blank">@ad.ID</a></td>
                                             <td class="width-200">
-                                                <a href="@url" target="_blank">@title</a>
+                                                <a href="@url" target="_blank">
+                                                    @title
+                                                    @if (ad.IsDraft)
+                                                    {
+                                                        <span class="color-red" id="status_@ad.ID"> ( @Localization.Get(" Taslak ", " Draft ", lang) ) </span>
+                                                    }
+                                                </a>
                                             </td>
                                             <td>
                                                 <img alt="@(title)" src="@ad.Thumbnail" onerror="this.src ='/Content/img/no-image.jpg';" class="image-9">

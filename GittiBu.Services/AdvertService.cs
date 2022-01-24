@@ -62,6 +62,7 @@ namespace GittiBu.Services
                 //{
                 //    list = list.OrderByDescending(x => x.ID).ToList();
                 //}
+                CheckAdvertsIsDraft(ref list);
                 return list;
             }
             catch (Exception e)
@@ -105,6 +106,7 @@ namespace GittiBu.Services
                         x.LabelDopingModel = (x.LabelDoping != 0) ? dopingTypes.Single(d => d.ID == x.LabelDoping) : null;
                     });
                 }
+                CheckAdvertsIsDraft(ref list);
                 return list;
             }
             catch (Exception e)
@@ -161,6 +163,7 @@ namespace GittiBu.Services
                 //{
                 //    list = list.OrderByDescending(x => x.ID).ToList();
                 //}
+                CheckAdvertsIsDraft(ref list);
                 return list;
             }
             catch (Exception e)
@@ -206,7 +209,7 @@ namespace GittiBu.Services
                         advert.User = user;
                         return advert;
                     }, splitOn: "ID", param: new { categoryId, lang }).ToList();
-
+                CheckAdvertsIsDraft(ref result);
                 return result;
             }
             catch (Exception e)
@@ -444,26 +447,54 @@ namespace GittiBu.Services
                     .OrderBy($"{nameof(AdvertPublishRequest.ID):C} DESC")
                     .WithParameters(new { id })
                 ).FirstOrDefault();
-                ad.IsPendingApproval = request != null; //request null değil ise yayınlanma onayı bekliyor demektir.
+                ad.IsPendingApproval = ad.ApprovalStatus == Common.Enums.ApprovalStatusEnum.WaitingforApproval;// request != null; //request null değil ise yayınlanma onayı bekliyor demektir.
             }
             return ad;
         }
 
-        public List<Advert> GetUserAdverts(int userId)
+        //public List<Advert> GetUserAdverts(int userId)
+        //{
+        //    try
+        //    {
+        //        var sql = "select Adverts.*, " +
+        //                  "GetIsPendingApproval(Adverts.ID) as IsPendingApproval, Users.* " +
+        //                  "from Adverts, Users where Adverts.UserID=@userId and Adverts.UserID=Users.ID " +
+        //                  " " +
+        //                  " " +
+        //                  " ";
+        //        return GetConnection().Query<Advert, User, Advert>(sql, (advert, user) =>
+        //        {
+        //            advert.User = user;
+        //            return advert;
+        //        }, new { userId }, splitOn: "ID").ToList();
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return null;
+        //    }
+        //}
+        public List<Advert> GetUserAdverts(int userId, bool checkForDraft = true)
         {
             try
             {
                 var sql = "select Adverts.*, " +
-                          "GetIsPendingApproval(Adverts.ID) as IsPendingApproval, Users.* " +
+                          "GetIsPendingApproval(Adverts.ID) as IsPendingApproval," +
+                          // " (ApprovalStatus = 1 ) as IsPendingApproval" +
+                          " Users.* " +
                           "from Adverts, Users where Adverts.UserID=@userId and Adverts.UserID=Users.ID " +
                           " " +
                           " " +
                           " ";
-                return GetConnection().Query<Advert, User, Advert>(sql, (advert, user) =>
+                var list = GetConnection().Query<Advert, User, Advert>(sql, (advert, user) =>
                 {
                     advert.User = user;
                     return advert;
                 }, new { userId }, splitOn: "ID").ToList();
+                if (checkForDraft == true)
+                    CheckAdvertsIsDraft(ref list);
+
+
+                return list;
             }
             catch (Exception e)
             {
@@ -566,6 +597,18 @@ namespace GittiBu.Services
                 Console.WriteLine(e);
             }
         }
+        public void DeactivetePublishRequests(int advertId)
+        {
+            try
+            {
+                var sql = $"UPDATE AdvertPublishRequests SET IsActive = false where AdvertID=@advertId ";
+                GetConnection().Execute(sql, new { advertId });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
 
         public AdvertPublishRequest GetPublishRequest(int id)
         {
@@ -584,15 +627,23 @@ namespace GittiBu.Services
             }
         }
 
-        public List<AdvertPublishRequest> GetPublishRequests()
+        public List<Advert> GetPublishRequests()
         {
-            var sql = "select\n   AdvertPublishRequests.*,\n   Adverts.*,\n   GetText(AdvertCategories.NameID, 1) as CategorySlug,\n   Users.*\nfrom\n  AdvertPublishRequests, Adverts, AdvertCategories, Users\nwhere\n    AdvertPublishRequests.AdvertID = Adverts.ID\nand Adverts.UserID = Users.ID\nand Adverts.CategoryID = AdvertCategories.ID\nand AdvertPublishRequests.IsActive = true";
+            // var sql = "select\n   AdvertPublishRequests.*,\n   Adverts.*,\n   GetText(AdvertCategories.NameID, 1) as CategorySlug,\n   Users.*\nfrom\n  AdvertPublishRequests, Adverts, AdvertCategories, Users\nwhere\n    AdvertPublishRequests.AdvertID = Adverts.ID\nand Adverts.UserID = Users.ID\nand Adverts.CategoryID = AdvertCategories.ID\nand AdvertPublishRequests.IsActive = true";
+            var sql = "select\n   " +
+                // "AdvertPublishRequests.*,\n  " +
+                " Adverts.*,\n   GetText(AdvertCategories.NameID, 1) as CategorySlug,\n   Users.* \n" +
+                " from " +
+                // "\n  AdvertPublishRequests, " +
+                "Adverts, AdvertCategories, Users\nwhere\n  " +
+                // "  AdvertPublishRequests.AdvertID = Adverts.ID\nand " +
+                "Adverts.UserID = Users.ID\nand Adverts.CategoryID = AdvertCategories.ID\n and " +
+                "  (Adverts.ApprovalStatus =1) /* AdvertPublishRequests.IsActive = true*/ \n and Adverts.IsDraft=false";
 
-            var list = GetConnection().Query<AdvertPublishRequest, Advert, User, AdvertPublishRequest>(sql,
-                (request, advert, user) =>
-                {
-                    request.Advert = advert;
-                    request.Advert.User = user;
+            var list = GetConnection().Query<Advert, User, Advert>(sql,
+                (request, user) => {
+
+                    request.User = user;
                     return request;
                 }, splitOn: "ID").ToList();
 
@@ -1087,6 +1138,34 @@ namespace GittiBu.Services
                 });
 
                 return null;
+            }
+        }
+        public void SetDraft(int id, bool status)
+        {
+            var advert = GetConnection().Find<Advert>().FirstOrDefault(p => p.ID == id);
+            if (advert == null)
+            {
+                return;
+            }
+            advert.IsDraft = status;
+            GetConnection().Update(advert);
+        }
+        public void SetApprovalStatus(int id, bool status)
+        {
+            var advert = GetConnection().Find<Advert>().FirstOrDefault(p => p.ID == id);
+            if (advert == null)
+            {
+                return;
+            }
+            advert.IsApproved = status;
+            GetConnection().Update(advert);
+        }
+
+        private void CheckAdvertsIsDraft(ref List<Advert> adverts)
+        {
+            if (adverts.Any())
+            {
+                adverts = adverts.Where(p => p.IsDraft == false).ToList();
             }
         }
 

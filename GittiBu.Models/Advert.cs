@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Http;
+using static GittiBu.Common.Enums;
 
 namespace GittiBu.Models
 {
@@ -51,8 +52,10 @@ namespace GittiBu.Models
         public bool IsAvailableBargain { get; set; }
         public string Thumbnail { get; set; }
         public int ViewCount { get; set; }
+        public bool IsDraft { get; set; }
         public bool IsDeleted { get; set; }
         public string IpAddress { get; set; }
+        public bool IsApproved { get; set; }
 
         public IEnumerable<AdvertDoping> AdvertDopings { get; set; }
         public AdvertCategory Category { get; set; }
@@ -60,7 +63,9 @@ namespace GittiBu.Models
         public User User { get; set; }
         public IEnumerable<AdvertPhoto> Photos { get; set; }
         public DopingType LabelDopingModel { get; set; }
-        
+
+        public ApprovalStatusEnum ApprovalStatus { get; set; }
+
         [NotMapped] public string CategorySlug { get; set; }
         [NotMapped] public string SubCategorySlug { get; set; }
         [NotMapped] public int LikesCount { get; set; }
