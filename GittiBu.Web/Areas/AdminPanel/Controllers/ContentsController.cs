@@ -33,6 +33,11 @@ namespace GittiBu.Web.Areas.AdminPanel.Controllers
                 {
                     return View("EditRichText", content);
                 }
+                else
+                {
+
+                    return View("EditNormal", content);
+                }
                 return RedirectToAction("Index");
             }
         }

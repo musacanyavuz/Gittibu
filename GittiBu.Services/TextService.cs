@@ -54,11 +54,11 @@ namespace GittiBu.Services
             try
             {
                 var sql =
-                    $"UPDATE Contents set TextContent=@content where Key=@key and LanguageID=@lang";
+                    $"UPDATE Contents set TextContent=@content where `Key`=@key and LanguageID=@lang";
                 var count = GetConnection().Execute(sql, new { content, key, lang });
                 return count > 0;
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
                 return false;
             }
