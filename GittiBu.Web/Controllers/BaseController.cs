@@ -72,7 +72,7 @@ namespace GittiBu.Web.Controllers
                 var userLang = Constants.GetUserBrowserLanguage(headerLang);
                 if (userLang != null)
                 {
-                    userLang = userLang == "tr" ? "tr" : "en";
+                    userLang = userLang.IndexOf("tr")>-1 ? "tr" : "en";
                     SetLang(userLang);
                 }
                
