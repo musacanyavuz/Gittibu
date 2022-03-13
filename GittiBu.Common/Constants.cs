@@ -1,6 +1,8 @@
-﻿namespace GittiBu.Common
+﻿
+
+namespace GittiBu.Common
 {
-    public class Constants
+    public static class Constants
     {
         public const string RecaptchaSiteKey = "6LeVNngUAAAAAPkjVdGRfqxxjT4bVM3G5kpm5xYf";
         public const string RecaptchaSecretKey = "6LeVNngUAAAAAAAxh4JvwM3-8edILMs19tgzx7Qh";
@@ -14,7 +16,7 @@
         public const string messageDangerEn =
             "Sending a password connection failed. Please create a support request using the contact page.";
 
-        public string GetGender(int id)
+        public static string GetGender(int id)
         {
             switch (id)
             {
@@ -38,6 +40,13 @@
                 default:
                     return 1;
             }
+        }
+        public static string GetUserBrowserLanguage(string acceptLanguage)
+        {
+            var userLangs = acceptLanguage;
+            var firstLang = userLangs.Split(',')[0];
+            var defaultLang = string.IsNullOrEmpty(firstLang) ? "en" : firstLang;
+            return defaultLang;
         }
 
         public static string GetMoney(int code)

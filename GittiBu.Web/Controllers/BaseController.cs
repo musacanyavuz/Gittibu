@@ -39,6 +39,7 @@ namespace GittiBu.Web.Controllers
                     return Constants.GetLang(userLang);
                 }
             }
+           
 
             Localization();
             var lang = Constants.GetLang(HttpContext.Session.GetString("lang"));
@@ -67,7 +68,14 @@ namespace GittiBu.Web.Controllers
         {
             if (string.IsNullOrEmpty(HttpContext.Session.GetString("lang")))
             {
-                HttpContext.Session.SetString("lang", "tr");
+                var headerLang = Request.Headers["Accept-Language"].ToString();
+                var userLang = Constants.GetUserBrowserLanguage(headerLang);
+                if (userLang != null)
+                {
+                    userLang = userLang == "tr" ? "tr" : "en";
+                    SetLang(userLang);
+                }
+               
             }
         }
 
