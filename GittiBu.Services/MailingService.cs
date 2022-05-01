@@ -17,7 +17,8 @@ namespace GittiBu.Services
         private const string server = "srvm09.trwww.com";
         private const int port = 587;
         private const bool useSsl = false;
-        
+        private MailServerSMTPSettings allSettings;
+
         private const string resetPasswordMessageTr = "Bir şifre sıfırlama bağlantısı oluşturuldu. Eğer bu bağlantıyı siz oluşturmadıysanız bu maili dikkate almayınız. Şifrenizi sıfırlamak için aşağıdaki bağlantıya tıklayabilirsiniz.";
         private const string resetPasswordMessageEn = "A password reset link has been created. If you did not create this link, please ignore this mail. You can click the link below to reset your password.";
         
@@ -30,6 +31,12 @@ namespace GittiBu.Services
                 var passwosetting = settingService.GetSetting(Enums.SystemSettingName.MailServerSMTPPassword);
                 if (passwosetting != null)
                     password = passwosetting.Value;
+                var temp = settingService.GetSetting(Enums.SystemSettingName.MailServerSettings);
+                if (temp != null)
+                {
+                    allSettings = Newtonsoft.Json.JsonConvert.DeserializeObject<MailServerSMTPSettings>(temp.Value);
+
+                }
             }
 
         }
@@ -192,15 +199,15 @@ namespace GittiBu.Services
         {
             try
             { 
-                var fromAddress = new MailAddress(username, "GittiBu.com");
+                var fromAddress = new MailAddress(allSettings.UserName, "GittiBu.com");
                 var smtp = new SmtpClient
                 {
-                    Host = server,
-                    Port = port,
-                    EnableSsl = useSsl,
-                    DeliveryMethod = SmtpDeliveryMethod.Network,
-                    UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential(fromAddress.Address, password)
+                    Host = allSettings.Host,
+                    Port = allSettings.Port,
+                    EnableSsl = allSettings.EnableSsl,
+                    DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network,
+                    UseDefaultCredentials = allSettings.UseDefaultCredentials,//true,
+                    Credentials = new System.Net.NetworkCredential(fromAddress.Address, allSettings.Password)
                 };
                 var mail = new MailMessage()
                 {
@@ -226,15 +233,15 @@ namespace GittiBu.Services
             try
             {
                 var toAddress = new MailAddress(toMail, toName);
-                var fromAddress = new MailAddress(username, "GittiBu.com");
+                var fromAddress = new MailAddress(allSettings.UserName, "GittiBu.com");
                 var smtp = new SmtpClient
                 {
-                    Host = server,
-                    Port = port,
-                    EnableSsl = useSsl,
+                    Host = allSettings.Host,
+                    Port = allSettings.Port,
+                    EnableSsl = allSettings.EnableSsl,
                     DeliveryMethod = SmtpDeliveryMethod.Network,
-                    UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential(fromAddress.Address, password)
+                    UseDefaultCredentials = allSettings.UseDefaultCredentials,
+                    Credentials = new NetworkCredential(fromAddress.Address, allSettings.Password)
                 };
                 using (var mail = new MailMessage(fromAddress, toAddress)
                 {
@@ -263,10 +270,22 @@ namespace GittiBu.Services
                 return false;
             }
         }
+      
 
         public void Dispose()
         {
             
         }
+    }
+
+    public class MailServerSMTPSettings
+    {
+        public int Port { get; set; }
+
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        public string Host { get; set; }
+        public bool EnableSsl { get; set; }
+        public bool UseDefaultCredentials { get; set; }
     }
 }

@@ -66,17 +66,7 @@ namespace GittiBu.Web.Controllers
 
         public void Localization()
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString("lang")))
-            {
-                var headerLang = Request.Headers["Accept-Language"].ToString();
-                var userLang = Constants.GetUserBrowserLanguage(headerLang);
-                if (userLang != null)
-                {
-                    userLang = userLang.IndexOf("tr")>-1 ? "tr" : "en";
-                    SetLang(userLang);
-                }
-               
-            }
+            HttpContext.Session.SetString("lang", "tr");
         }
 
         public void SetLang(string lang)

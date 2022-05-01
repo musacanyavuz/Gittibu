@@ -100,7 +100,8 @@
             XMLListBaslik = 415,
             XMLInsertBaslik = 416,
             Ayrac = 421,
-            MesafeliSatisSozlesmesi = 432
+            MesafeliSatisSozlesmesi = 432,
+            HeraderIlanVer=448
         }
 
 
@@ -229,7 +230,8 @@
             XMLMinimumPrice,
             xmlstart,
             xmlstop,
-            MailServerSMTPPassword
+            MailServerSMTPPassword,
+            MailServerSettings
         }
 
         public enum HomePageItemType
