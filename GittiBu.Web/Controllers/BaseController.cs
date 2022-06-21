@@ -41,7 +41,7 @@ namespace GittiBu.Web.Controllers
             }
            
 
-            Localization();
+           // Localization();
             var lang = Constants.GetLang(HttpContext.Session.GetString("lang"));
             if (setTranslate)
             {
