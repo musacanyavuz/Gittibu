@@ -531,7 +531,7 @@ else
         }
         <meta itemprop="availabilityStarts" content="@Model.Advert?.CreatedDate.ToString("dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)">
         <meta itemprop="priceValidUntil" content="@Model.Advert?.CreatedDate.AddYears(3).ToString("dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture)">
-        <meta itemprop="priceCurrency" content="TL">
+        <meta itemprop="priceCurrency" content="@Constants.GetMoneySchema(Model.Advert.MoneyTypeID)">
         <meta itemprop="price" content="@Model.Advert?.Price">
         <meta itemprop="sku" content="Kalem">
         <meta itemprop="eligibleRegion" content="@Model.CargoArea.Name">

@@ -46,7 +46,7 @@
                 </span>*@
                 <meta itemprop="brand" content="@(!string.IsNullOrWhiteSpace(Model.CategoryName) ? Html.Raw(Model.CategoryName) : Html.Raw(title))" />
                 <div class="new-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-                    <span itemprop="priceCurrency">@Model.PriceCurrency</span>
+                    <span itemprop="priceCurrency" content="@Model.PriceCurrency.Replace("TL","TRY")">@Model.PriceCurrency</span>
                     <span itemprop="price">@Model.Price</span>
                     <link itemprop="availability" href="https://schema.org/InStock" />
                     <meta itemprop="priceValidUntil" content="@Model.CreatedDate.AddYears(1).ToString("yyyy-MM-dd")">
