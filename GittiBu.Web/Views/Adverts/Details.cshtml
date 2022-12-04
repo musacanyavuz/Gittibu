@@ -280,7 +280,7 @@ else
                                                 </button>
                                                 <img src="/content/img/images/VisaMaster.png" alt="Visa Master" width="120" height="100%" />
                                             </div>*@
-                                    </div>
+                                        </div>
                                     }
                            
 
@@ -429,16 +429,24 @@ else
                                             int[] installments = Array.ConvertAll(items, s => int.Parse(s));
                                             var max = installments.Max().ToString();
 
-
-                                            <span style="font-weight: 500;    float: right;
-    font-size: 12px;
-    margin-right: -3px;
-    ">@Localization.Get("Kredi Kartına ", "Credit Card ", lang)@max@Localization.Get(" Taksit", " Settlem", lang)</span>
+                                            if (Model.Advert.IsActive)
+                                            {
+                                                <span style="font-weight: 500;    float: right;
+                                                    font-size: 12px;
+                                                    margin-right: -3px;
+                                                    ">
+                                                    @Localization.Get("Kredi Kartına ", "Credit Card ", lang)@max@Localization.Get(" Taksit", " Settlem", lang)
+                                                </span>
+                                            }
+                                            
 
 }
 else
 {
-    <span style="float:right;font-weight: 500;">@Localization.Get("Kredi Kartına ", "Credit Card ", lang) @choices @Localization.Get(" Taksit", " Settlem", lang)</span>
+     if (Model.Advert.IsActive){
+         <span style="float:right;font-weight: 500;">@Localization.Get("Kredi Kartına ", "Credit Card ", lang) @choices @Localization.Get(" Taksit", " Settlem", lang)</span>
+     }
+    
 
 }
 }

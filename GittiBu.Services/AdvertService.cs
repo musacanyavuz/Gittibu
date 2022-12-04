@@ -41,8 +41,8 @@ namespace GittiBu.Services
                               " FROM Adverts, " +
                               " AdvertCategories " +
                              // " Users "+ 
-                              " WHERE Adverts.IsActive = true "+ 
-                              " AND Adverts.CategoryID = AdvertCategories.ID "+
+                              //" WHERE Adverts.IsActive = true "+
+                              " WHERE Adverts.CategoryID = AdvertCategories.ID " +
                             //  " AND Adverts.UserID = Users.ID " +
                               " AND((SELECT Users.IsActive  FROM Users WHERE(Users.ID = Adverts.UserID)) = true) "+
                               " ORDER BY Adverts.ID DESC  limit 37; ";
@@ -722,7 +722,7 @@ namespace GittiBu.Services
         {
             try
             {
-                var sql = $"SELECT ( SELECT GetOrderFromDopingInHomepage((Adverts.ID)) AS GetOrderFromDopingInHomepage) AS AdvertOrder,\n       Adverts.*,    ( SELECT count(*) AS count           FROM AdvertLikes          WHERE (AdvertLikes.AdvertID = Adverts.ID)) AS LikesCount,\n       ( SELECT GetLabelDoping((Adverts.ID)) AS GetLabelDoping) AS LabelDoping,\n       ( SELECT GetYellowFrameDoping((Adverts.ID)) AS GetYellowFrameDoping) AS YellowFrameDoping,\n       ( SELECT IsILiked(Adverts.ID, @userId ) ) as IsILiked,\n       GetText((AdvertCategories.SlugID), (1)) AS SubCategorySlugTr,\n       GetText((AdvertCategories.SlugID), (2)) AS SubCategorySlugEn,\n       GetText((AdvertCategories.NameID), (1)) AS CategoryNameTr,\n       GetText((AdvertCategories.NameID), (2)) AS CategoryNameEn\nFROM Adverts,    AdvertCategories,Users\nWHERE (Adverts.IsActive = true) AND Adverts.CategoryID = AdvertCategories.ID\n  AND (Adverts.UserID=Users.ID)\n AND (Users.IsActive=true)\n AND (Adverts.Title like @query or Adverts.Content like @query or Adverts.ProductDefects like @query or Adverts.ID like @query or Users.Name like @query)\nORDER BY AdvertOrder, CreatedDate DESC limit 200;";
+                var sql = $"SELECT ( SELECT GetOrderFromDopingInHomepage((Adverts.ID)) AS GetOrderFromDopingInHomepage) AS AdvertOrder,\n       Adverts.*,    ( SELECT count(*) AS count           FROM AdvertLikes          WHERE (AdvertLikes.AdvertID = Adverts.ID)) AS LikesCount,\n       ( SELECT GetLabelDoping((Adverts.ID)) AS GetLabelDoping) AS LabelDoping,\n       ( SELECT GetYellowFrameDoping((Adverts.ID)) AS GetYellowFrameDoping) AS YellowFrameDoping,\n       ( SELECT IsILiked(Adverts.ID, @userId ) ) as IsILiked,\n       GetText((AdvertCategories.SlugID), (1)) AS SubCategorySlugTr,\n       GetText((AdvertCategories.SlugID), (2)) AS SubCategorySlugEn,\n       GetText((AdvertCategories.NameID), (1)) AS CategoryNameTr,\n       GetText((AdvertCategories.NameID), (2)) AS CategoryNameEn\nFROM Adverts,    AdvertCategories,Users\nWHERE Adverts.CategoryID = AdvertCategories.ID\n  AND (Adverts.UserID=Users.ID)\n AND (Users.IsActive=true)\n AND (Adverts.Title like @query or Adverts.Content like @query or Adverts.ProductDefects like @query or Adverts.ID like @query or Users.Name like @query)\nORDER BY AdvertOrder, CreatedDate DESC limit 200;";
                 var list = GetConnection().Query<Advert>(sql, new { query = "%" + query + "%", userId, lang }).ToList();
                 using (var publicService = new PublicService())
                 {
