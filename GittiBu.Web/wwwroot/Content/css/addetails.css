@@ -34,7 +34,11 @@
 .font-weight-800 {
     font-weight: inherit;
 }
-
+.passive-ad-warning {
+    font-weight: bold;
+    color: #e70c1e;
+    font-size: 1.3rem;
+}
 @media (max-width: 767px) {
     .w-container .h-kat h4 {
         margin-top: 5px !important;

@@ -20,7 +20,7 @@
 @section style{
     <link href="/Content/plugins/fancybox/jquery.fancybox.css" rel="stylesheet" />
     <link href="~/Content/css/alertify.css" rel="stylesheet" />
-    <link href="~/Content/css/addetails.css" rel="stylesheet" />
+    <link href="~/Content/css/addetails.css?v10000" rel="stylesheet" />
     <style>
         .alertify-notifier {
             color: white;
@@ -173,6 +173,12 @@
                     <div class="div-block-10 w-clearfix" style="    background-color: white;
     border-bottom: 1px solid #e9e9e9;">
                         <div class="form-block-4 w-clearfix w-form adetform">
+                            @if (!Model.Advert.IsActive)
+                            {
+                                <p class="passive-ad-warning">
+                                    @Localization.Get("Bu İlan Pasiftir", "This sd is passive", lang)
+                                </p>
+                            }
                             <h1>@advertTitle</h1>
                         </div>
                     </div>
@@ -224,7 +230,9 @@ else
 
 
                                     <div class="div-block-12 w-clearfix">
-                                        <select id="stockAmount" name="amount" class="detay-btn">
+                                        @if (Model.Advert.IsActive)
+                                        {
+                                            <select id="stockAmount" name="amount" class="detay-btn">
                                             @for (int i = 1; i <= Model.Advert.StockAmount; i++)
                                             {
                                                 <option value="@i">@i</option>
@@ -234,6 +242,8 @@ else
                                             @Localization.Get("Satın Al", "Buy Now", lang)
                                         </button>
 
+                                        }
+                                        
                                         <a href='@(User.Identity.IsAuthenticated ? "mailto:"+Model.Advert?.User?.Email: ("javascript:UnauthenticatedMailAlert('"+Localization.Get("Mail Atmak için Lütfen Üye Girişi Yapınız", "Please Login to see Email", lang)+"')"))' title='@(User.Identity.IsAuthenticated ? Model.Advert?.User?.Email : "")' class="detay-btn">
                                             <span>@Localization.Get("Mail Gönder", "Send Mail", lang)</span>
                                         </a>
@@ -251,8 +261,9 @@ else
                                         }
 
                                     </div>
-
-                                    <div class="div-block-12 w-clearfix ">
+                                    @if (Model.Advert.IsActive)
+                                    {
+                                        <div class="div-block-12 w-clearfix ">
 
 
                                         <span>
@@ -270,6 +281,8 @@ else
                                                 <img src="/content/img/images/VisaMaster.png" alt="Visa Master" width="120" height="100%" />
                                             </div>*@
                                     </div>
+                                    }
+                           
 
                                 }
                             }
@@ -800,12 +813,12 @@ else
                     string similarAdvertTitle = Html.TitleFormat(advert.Title);
                     <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3  benzer-urun">
                         <div class="img-alt urun-imaj">
-                            <a href="@Constants.GetURL((int) Enums.Routing.Ilan, lang)/@advert.CategorySlug/@advert.SubCategorySlug/@Localization.Slug(similarAdvertTitle)/@advert.ID" title="@similarAdvertTitle">
+                            <a href="@Constants.GetURL((int) Enums.Routing.Ilan, lang)@advert.CategorySlug/@advert.SubCategorySlug/@Localization.Slug(similarAdvertTitle)/@advert.ID" title="@similarAdvertTitle">
                                 <img alt="@similarAdvertTitle" src="@advert.Thumbnail" onerror="this.src = '/Content/img/no-image.jpg';" class="width-100-100 height-100 object-fit-contain">
                             </a>
                         </div>
                         <div class="pCategories kategoriler text-alt urun-text font-size-12 p-10 height-100">
-                            <a href="@Constants.GetURL((int) Enums.Routing.Ilan, lang)/@advert.CategorySlug/@advert.SubCategorySlug/@Localization.Slug(similarAdvertTitle)/@advert.ID" title="@similarAdvertTitle">
+                            <a href="@Constants.GetURL((int) Enums.Routing.Ilan, lang)@advert.CategorySlug/@advert.SubCategorySlug/@Localization.Slug(similarAdvertTitle)/@advert.ID" title="@similarAdvertTitle">
                                 @similarAdvertTitle
                                 <div class="ilan-aciklama-alani m-t-5">
                                     <p class="color-000"><span>@Localization.Get("İlan No", "Number", lang)</span>: #@advert.ID</p>

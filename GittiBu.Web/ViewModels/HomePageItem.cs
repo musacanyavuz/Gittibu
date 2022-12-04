@@ -34,6 +34,9 @@ namespace GittiBu.Web.ViewModels
         public string NewProductPrice { get; set; }
 
         public string DecPrice { get; set; }
+
+        public bool IsActive { get; set; }
+        public bool IsApproved { get; set; }
     }
 
     public class FisterResultViewModel {

@@ -139,9 +139,10 @@ namespace GittiBu.Services
                           " FROM Adverts," +
                           // "Users," +
                           " AdvertCategories\n  " +
-                          " WHERE Adverts.IsActive = true\n  " +
-                          " AND Adverts.CategoryID = @categoryId " +
-                         // " AND Adverts.UserID = Users.ID" +
+                          " WHERE Adverts.CategoryID = @categoryId " +
+                          //" WHERE Adverts.IsActive = true\n  " +
+                          //" AND Adverts.CategoryID = @categoryId " +
+                          // " AND Adverts.UserID = Users.ID" +
                           " AND Adverts.CategoryID = AdvertCategories.ID\n " +
                           " AND (( SELECT Users.IsActive  FROM Users WHERE (Users.ID = Adverts.UserID)) = true)\n  " +
                           " ORDER BY Adverts.ID DESC " +
@@ -238,7 +239,7 @@ namespace GittiBu.Services
                             "   WHERE (AdvertLikes.AdvertID = Adverts.ID)) AS LikesCount,\n     " +
                             "(GetText(AdvertCategories.SlugID, 1)) as SubCategorySlugTr,\n  " +
                             "     (GetText(AdvertCategories.SlugID, 2)) as SubCategorySlugEn,\n\n   " +
-                            "    AdvertCategories.*,Users.* from\n  Adverts, AdvertCategories, Users\nwhere\n      Adverts.UserID=Users.ID\n  and Adverts.CategoryID = AdvertCategories.ID\n  and Adverts.IsActive = true\n  and Users.IsActive = true\n  and Adverts.ID = @id; ";
+                            "    AdvertCategories.*,Users.* from\n  Adverts, AdvertCategories, Users\nwhere\n      Adverts.UserID=Users.ID\n  and Adverts.CategoryID = AdvertCategories.ID\n     and Users.IsActive = true\n  and Adverts.ID = @id; ";
 
 
                 var adv = GetConnection().Query<Advert, AdvertCategory, User, Advert>(sql,

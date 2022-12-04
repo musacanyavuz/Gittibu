@@ -94,6 +94,12 @@
                     <div>@Localization.Get(Model.LabelDopingType, enText, lang)</div>
                 </div>
             }
+            @if (!Model.IsActive && Model.IsApproved)
+            {
+                <div class="div-block-40 ad-passive">
+                    <div>@Localization.Get("Bu İlan Pasiftir", "This ad is passive", lang)</div>
+                </div>
+            }
             @if (!string.IsNullOrEmpty(Model.SecurePayment))
             {
                 <div class="fiyati-dustu gittibu"><div> @Model.SecurePayment </div></div>

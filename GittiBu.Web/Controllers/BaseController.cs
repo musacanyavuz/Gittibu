@@ -243,6 +243,8 @@ namespace GittiBu.Web.Controllers
             result.LastUpdateDate = ad.LastUpdateDate;
             result.UserName = ad.UserName;
             result.Content = ad.Content;
+            result.IsActive = ad.IsActive;
+            result.IsApproved = ad.IsApproved;
             result.Url = $"{Constants.GetURL((int)Enums.Routing.Ilan, lang)}/{Common.Localization.Slug(ad.Title)}/{ad.ID}";
 
             if (ad.LabelDopingModel != null)
