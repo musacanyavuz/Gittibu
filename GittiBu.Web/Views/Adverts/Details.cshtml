@@ -540,6 +540,7 @@ else
     <meta itemprop="mpn" content="@Model.Advert.ID" />
     <meta itemprop="name" content="@advertTitle" />
     <meta itemprop="brand" content="@Html.Raw(Model.Advert?.Title?.Length > 20 ? Model.Advert.Title.Substring(0,20).ToString() : Model.Advert.Title) " />
+    <meta itemprop="gtin" content="{    }" />
     <meta itemprop="sku" content="Kalem">
     <meta itemprop="category" content="@Model.Advert.CategoryNameTr">
     <meta itemprop="description" content="@Html.Raw(Model.Advert?.Title)" />

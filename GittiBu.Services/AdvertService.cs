@@ -1085,7 +1085,9 @@ namespace GittiBu.Services
                           "GetText((AdvertCategories.SlugID), (2)) AS SubCategorySlugEn, " +
                           "GetText((AdvertCategories.NameID), (1)) AS CategoryNameTr, " +
                           " GetText((AdvertCategories.NameID), (2)) AS CategoryNameEn " +
-                          " FROM Adverts, AdvertCategories\n  WHERE Adverts.IsActive = true\n  " +
+                          " FROM Adverts, AdvertCategories\n  " +
+                          "WHERE   LastUpdateDate > DATE_ADD(CURRENT_DATE() , INTERVAL -30 DAY) " +
+                          "and Adverts.IsActive = true\n  " +
                           "AND Adverts.CategoryID = AdvertCategories.ID\n " +
                           " AND (( SELECT Users.IsActive  FROM Users WHERE (Users.ID = Adverts.UserID)) = true)\n  " +
                           "ORDER BY Adverts.ID DESC;";

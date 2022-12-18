@@ -124,6 +124,7 @@ namespace GittiBu.Common.Rss
                 //{
                 //    item.Body = $"{item.Body}  <![CDATA[\r\n  Image inside RSS\r\n  <img src=\"{item.Image}\">         \r\n]> ";
                 //}
+                itemElement.Add(new XElement("logo", item.Logo));
                 itemElement.Add(new XElement("description", item.Body));
                 if (item.Author != null)
                     itemElement.Add(new XElement("author", $"{item.Author.Email} ({item.Author.Name})"));

@@ -143,6 +143,7 @@ namespace GittiBu.Web.Controllers
                     {
                         Title = item.Title,
                         Image = $"{urlBase}{item.ImageSource}",
+                        Logo = $"{urlBase}{item.ImageSource}",
                         Body = item.Description,
                         Link = new Uri(urlBase + item.Url),
                         Permalink = new Uri(urlBase + item.Url).AbsoluteUri,
@@ -229,6 +230,7 @@ namespace GittiBu.Web.Controllers
                         Body = item.Description,
                         Link = new Uri(urlBase + item.Url),
                         Image = $"{urlBase}{item.ImageSource}",
+                        Logo = $"{urlBase}{item.ImageSource}",
                         Permalink = new Uri(urlBase + item.Url).AbsoluteUri,
                         PublishDate = item.LastUpdateDate ?? item.CreatedDate,
                         Categories = new List<string> { item.CategoryName }
@@ -267,6 +269,7 @@ namespace GittiBu.Web.Controllers
                         Body = item.Description,
                         Link = new Uri(urlBase + item.Url),
                         Image = $"{urlBase}{item.ImageSource}",
+                        Logo = $"{urlBase}{item.ImageSource}",
                         Permalink = new Uri(urlBase + item.Url).AbsoluteUri,
                         PublishDate = item.LastUpdateDate ?? item.CreatedDate,
                         Categories = new List<string> { item.CategoryName }
@@ -319,6 +322,7 @@ namespace GittiBu.Web.Controllers
                         Body = item.Description,
                         Link = new Uri(urlBase + item.Url),
                         Image = $"{urlBase}{item.ImageSource}",
+                        Logo = $"{urlBase}{item.ImageSource}",
                         Permalink = new Uri(urlBase + item.Url).AbsoluteUri,
                         PublishDate = item.LastUpdateDate ?? item.CreatedDate,
                         Categories = new List<string> { item.CategoryName }
