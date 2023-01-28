@@ -110,6 +110,7 @@ namespace GittiBu.Web
             //                .AddSessionStateTempDataProvider(); 
         }
 
+        [Obsolete]
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -170,7 +171,6 @@ namespace GittiBu.Web
                         ctx.Context.Response.Headers[HeaderNames.CacheControl] =
                             "public,max-age=" + durationInSeconds;
                     }
-
                 });
 
             //app.UseHttpsRedirection();
@@ -181,6 +181,7 @@ namespace GittiBu.Web
                 MinimumSameSitePolicy = Microsoft.AspNetCore.Http.SameSiteMode.Lax,
                 Secure = CookieSecurePolicy.Always
             };
+            
             app.UseCookiePolicy(cookiePolicyOptions);
 
             app.UseMvc(routes =>

@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Quartz">
       <Version>3.0.7</Version>
     </PackageReference>
-    <PackageReference Include="Iyzipay" Version="2.1.25" />
+    <PackageReference Include="Iyzipay" Version="2.1.55" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GittiBu.Services\GittiBu.Services.csproj" />

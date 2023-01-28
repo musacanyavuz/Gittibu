@@ -6,7 +6,6 @@ using GittiBu.Web.ViewModels.Parse;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Internal;
 using SixLabors.ImageSharp;
 using System;
 using System.Collections.Generic;

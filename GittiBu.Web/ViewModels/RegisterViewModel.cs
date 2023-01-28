@@ -4,8 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using GittiBu.Models;
 using GittiBu.Web.ViewModels.Validation;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Http; 
 using OfficeOpenXml.Utils;
 
 namespace GittiBu.Web.ViewModels

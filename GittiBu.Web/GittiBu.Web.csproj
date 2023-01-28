@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Platforms>AnyCPU</Platforms>
       <UserSecretsId>c9855cbe-6a2a-421b-a662-c33964d9fa75</UserSecretsId>
   </PropertyGroup>
@@ -19,7 +19,6 @@
     <None Remove="wwwroot\Upload\**" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting">
       <Version>2.1.1</Version>
     </PackageReference>
