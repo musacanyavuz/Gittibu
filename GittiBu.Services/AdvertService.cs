@@ -42,7 +42,7 @@ namespace GittiBu.Services
                               " AdvertCategories " +
                              // " Users "+ 
                               " WHERE Adverts.IsApproved = true "+
-                              " WHERE Adverts.CategoryID = AdvertCategories.ID " +
+                              " and Adverts.CategoryID = AdvertCategories.ID " +
                             //  " AND Adverts.UserID = Users.ID " +
                               " AND((SELECT Users.IsActive  FROM Users WHERE(Users.ID = Adverts.UserID)) = true) "+
                               " ORDER BY Adverts.ID DESC  limit 37; ";
