@@ -227,10 +227,14 @@
                 @if (Model.CurrentPage > 1)
                 {
                     <li class="page-item">
-                        <a class="page-link" asp-route-advertCount="30" asp-route-page="1">@Localization.Get("İlk", "First", lang)</a>
+                        <a class="page-link" asp-route-advertCount="30"
+                        href="@Constants.GetURL(Enums.Routing.Ilanlarim, lang)?page=1" 
+                        asp-route-page="1">@Localization.Get("İlk", "First", lang)</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" asp-route-advertCount="30" asp-route-page="@(Model.CurrentPage - 1)">@Localization.Get("Önceki", "Previous", lang)</a>
+                        <a class="page-link" asp-route-advertCount="30"
+                   href="@Constants.GetURL(Enums.Routing.Ilanlarim, lang)?page=@(Model.CurrentPage - 1)"
+                   asp-route-page="@(Model.CurrentPage - 1)">@Localization.Get("Önceki", "Previous", lang)</a>
                     </li>
                 }
 
@@ -259,7 +263,8 @@
                     if (i > 0 && i <= Model.TotalPages)
                     {
                         <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                            <a class="page-link" asp-route-advertCount="30" asp-route-page="@i">@i</a>
+                        <a class="page-link" asp-route-advertCount="30" asp-route-page="@i"
+                        href="@Constants.GetURL(Enums.Routing.Ilanlarim, lang)?page=@i">@i</a>
                         </li>
                     }
                 }
@@ -267,10 +272,10 @@
                 @if (Model.CurrentPage < Model.TotalPages)
                 {
                     <li class="page-item">
-                    <a class="page-link" asp-route-advertCount="30" href="@Constants.GetURL(Enums.Routing.Ilanlarim, lang)?page=@(Model.CurrentPage + 1)">@Localization.Get("Sonraki", "Next", lang)</a>
+                    <a class="page-link" asp-route-advertCount="30" asp-route-page="@(Model.CurrentPage + 1)" href="@Constants.GetURL(Enums.Routing.Ilanlarim, lang)?page=@(Model.CurrentPage + 1)">@Localization.Get("Sonraki", "Next", lang)</a>
                     </li>
                     <li class="page-item">
-                        <a class="page-link" asp-route-advertCount="30" asp-route-page="@(Model.TotalPages)">@Localization.Get("Son", "Last", lang)</a>
+                    <a class="page-link" asp-route-advertCount="30" asp-route-page="@(Model.TotalPages)" href="@Constants.GetURL(Enums.Routing.Ilanlarim, lang)?page=@(Model.TotalPages)">@Localization.Get("Son", "Last", lang)</a>
                     </li>
                 }
             </ul>

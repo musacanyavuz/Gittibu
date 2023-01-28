@@ -41,7 +41,7 @@ namespace GittiBu.Services
                               " FROM Adverts, " +
                               " AdvertCategories " +
                              // " Users "+ 
-                              //" WHERE Adverts.IsActive = true "+
+                              " WHERE Adverts.IsApproved = true "+
                               " WHERE Adverts.CategoryID = AdvertCategories.ID " +
                             //  " AND Adverts.UserID = Users.ID " +
                               " AND((SELECT Users.IsActive  FROM Users WHERE(Users.ID = Adverts.UserID)) = true) "+
@@ -482,7 +482,7 @@ namespace GittiBu.Services
                           "GetIsPendingApproval(Adverts.ID) as IsPendingApproval," +
                           // " (ApprovalStatus = 1 ) as IsPendingApproval" +
                           " Users.* " +
-                          "from Adverts, Users where Adverts.UserID=@userId and Adverts.UserID=Users.ID " +
+                          "from Adverts, Users where Adverts.UserID=@userId and Adverts.UserID=Users.ID" +
                           " " +
                           " " +
                           " ";
