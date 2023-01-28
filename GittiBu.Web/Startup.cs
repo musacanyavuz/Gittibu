@@ -70,10 +70,10 @@ namespace GittiBu.Web
                     {
                         Name = "GittibuCookie",
                         HttpOnly = false,
-                        Expiration = TimeSpan.FromDays(30),
+                        //Expiration = TimeSpan.FromDays(30),
                         SecurePolicy = CookieSecurePolicy.Always
                     };
-                    options.ExpireTimeSpan = TimeSpan.FromDays(5);
+                    options.ExpireTimeSpan = TimeSpan.FromDays(30);
                     options.SlidingExpiration = true; // the cookie would be re-issued on any request half way through the ExpireTimeSpan
                     options.LoginPath = new PathString("/GirisYap");
                 });
@@ -130,11 +130,11 @@ namespace GittiBu.Web
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
-
+            app.UseRouting();
             app.UseAuthentication();
             app.UseSession();
             app.UseRequestLocalization();
-
+            app.UseAuthorization();
             app.Use(async (context, next) =>
             {
                 string path = context.Request.Path;
@@ -183,16 +183,19 @@ namespace GittiBu.Web
             };
             
             app.UseCookiePolicy(cookiePolicyOptions);
-
-            app.UseMvc(routes =>
+            
+   
+            app.UseEndpoints(routes =>
             {
-                routes.MapRoute(name: "admin",
-                    template: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
+                routes.MapControllerRoute(name: "admin",
+                     "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
 
-                routes.MapRoute(
+                routes.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    "{controller=Home}/{action=Index}/{id?}");
             });
+
+           
         }
     }
 }

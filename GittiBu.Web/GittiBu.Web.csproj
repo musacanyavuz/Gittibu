@@ -330,9 +330,9 @@
     <_ContentIncludedByDefault Remove="Areas\AdminPanel\Views\BlogPosts\Details.cshtml" />
     <_ContentIncludedByDefault Remove="Areas\AdminPanel\Views\BlogPosts\Index.cshtml" />
   </ItemGroup>
-  <ItemGroup>
+  <!--<ItemGroup>
     <Content Include="wwwroot\Upload\Sales\9uIR3w7pnkiYAJrRFQM2oAO1zxMepiUe5hXd4laMgbQ_1_thumb..jpg" />
-  </ItemGroup>
+  </ItemGroup>-->
   <ItemGroup>
     <ProjectReference Include="..\GittiBu.Common\GittiBu.Common.csproj" />
     <ProjectReference Include="..\GittiBu.Services\GittiBu.Services.csproj" />
