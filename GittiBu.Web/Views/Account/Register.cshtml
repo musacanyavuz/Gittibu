@@ -80,17 +80,17 @@
                             <div class="row margin_bottom ">
                                 <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                                     <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Kullanıcı Adı", "Username", lang):</label>
-                                    <input class="textfield w-input" data-val="true" maxlength="50" asp-for="UserName" type="text" id="username" onkeydown="letterControl(this,event)">
+                                    <input class="textfield w-input" data-val="true" maxlength="50" name="UserName" type="text" id="username" onkeydown="letterControl(this,event)">
                                     <span asp-validation-for="UserName" class="text-danger"></span>
                                 </div>
                                 <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
                                     <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Ad", "Name", lang):</label>
-                                    <input class="textfield w-input" data-val="true" maxlength="100" asp-for="Name" type="text" onkeydown="letterControl(this,event)">
+                                    <input class="textfield w-input" data-val="true" maxlength="100" name="Name" type="text" onkeydown="letterControl(this,event)">
                                     <span asp-validation-for="Name" class="text-danger"></span>
                                 </div>
                                 <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
                                     <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Soyad", "Surname", lang):</label>
-                                    <input class="textfield w-input" data-val="true" maxlength="100" asp-for="Surname" type="text" onkeydown="letterControl(this,event)">
+                                    <input class="textfield w-input" data-val="true" maxlength="100" name="Surname" type="text" onkeydown="letterControl(this,event)">
                                     <span asp-validation-for="Surname" class="text-danger"></span>
                                 </div>
 
@@ -98,17 +98,17 @@
                             <div class="row margin_bottom">
                                 <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                                     <label class="field-label"><span class="text-danger">*</span> @Localization.Get("E-Posta", "E-Mail", lang):</label>
-                                    <input class="textfield w-input" data-val="true" maxlength="100" asp-for="Email" type="email" id="email">
+                                    <input class="textfield w-input" data-val="true" maxlength="100" name="Email" type="email" id="email">
                                     <span asp-validation-for="Email" class="text-danger"></span>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                                     <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Şifre", "Password", lang):</label>
-                                    <input id="pass1" class="textfield w-input" data-val="true" maxlength="100" asp-for="Password" type="password" autocomplete="off">
+                                    <input id="pass1" class="textfield w-input" data-val="true" maxlength="100" name="Password" type="password" autocomplete="off">
                                     <span asp-validation-for="Password" class="text-danger"></span>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                                     <label class="field-label">@Localization.Get("Şifre Tekrar", "Re Password", lang):</label>
-                                    <input id="pass2" class="textfield w-input" data-val="true" maxlength="100" asp-for="Password2" type="password" autocomplete="off">
+                                    <input id="pass2" class="textfield w-input" data-val="true" maxlength="100" name="Password2" type="password" autocomplete="off">
                                     <span asp-validation-for="Password2" class="text-danger"></span>
                                 </div>
                             </div>
@@ -124,7 +124,7 @@
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                     <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Telefon Numarası", "Phone Number", lang):</label>
-                                    <input class="textfield w-input" data-val="true" maxlength="100" type="text" id="phone" asp-for="MobilePhone" data-val-intlTelNumber="asdqwdqwdasd">
+                                    <input class="textfield w-input" data-val="true" maxlength="100" type="text" id="phone" name="MobilePhone" data-val-intlTelNumber="asdqwdqwdasd">
                                     <span asp-validation-for="MobilePhone" class="text-danger"></span>
                                     <input class="textfield w-input" maxlength="100" name="" type="hidden" id="hdnPhone">
                                 </div>
@@ -222,11 +222,11 @@
                             </div>
                             <div class="margin_bottom">
                                 <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" asp-for="MemberType" class="custom-control-input" id="MemberTypeBuyer" onchange="getSellerFields(@((int)MemberType.Buyer))" value="@((int)MemberType.Buyer)">
+                                    <input type="radio" name="MemberType" class="custom-control-input" id="MemberTypeBuyer" onchange="getSellerFields(@((int)MemberType.Buyer))" value="@((int)MemberType.Buyer)">
                                     <label class="custom-control-label" for="MemberTypeBuyer">@Localization.Get("Alıcıyım", "Buyer", lang)</label>
                                 </div>
                                 <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" asp-for="MemberType" class="custom-control-input" id="MemberTypeSeller" onchange="getSellerFields(@((int)MemberType.Seller))" value="@((int)MemberType.Seller)">
+                                    <input type="radio" name="MemberType" class="custom-control-input" id="MemberTypeSeller" onchange="getSellerFields(@((int)MemberType.Seller))" value="@((int)MemberType.Seller)">
                                     <label class="custom-control-label" for="MemberTypeSeller">@Localization.Get("Satıcıyım", "Seller", lang)</label>
                                 </div>
                             </div>
@@ -236,28 +236,28 @@
                                 </p>
                                 @*<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                     <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Cep Telefonu", "Mobile Phone", lang):</label>
-                                    <input class="textfield w-input" data-val="true" maxlength="100" type="text" id="phone" asp-for="MobilePhone" data-val-intlTelNumber="asdqwdqwdasd">
+                                    <input class="textfield w-input" data-val="true" maxlength="100" type="text" id="phone" name="MobilePhone" data-val-intlTelNumber="asdqwdqwdasd">
                                     <span asp-validation-for="MobilePhone" class="text-danger"></span>
                                     <input class="textfield w-input" maxlength="100" name="" type="hidden" id="hdnPhone">
                                 </div>*@
                                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 margin_bottom">
                                     <label class="field-label" id="tc-field-label"><span class="text-danger">*</span> @Localization.Get("TC Kimlik Numaranız", "TC Identity Number", lang):</label>
-                                    <input class="textfield w-input" maxlength="11" asp-for="TC" type="text" id="tc">
+                                    <input class="textfield w-input" maxlength="11" name="TC" type="text" id="tc">
                                     <span asp-validation-for="TC" class="text-danger"></span>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                     <label class="field-label"><span class="text-danger">*</span> IBAN:</label>
-                                    <input class="textfield w-input" maxlength="35" asp-for="IBAN" id="IBAN" type="text" value="TR">
+                                    <input class="textfield w-input" maxlength="35" name="IBAN" id="IBAN" type="text" value="TR">
                                     <span asp-validation-for="IBAN" class="text-danger"></span>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 margin_bottom">
                                     <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Gönderici Adresi", "Sender Address", lang):</label>
-                                    <textarea class="textfield w-input form-error-sahis" rows="2" asp-for="SenderAddress" maxlength="200"></textarea>
+                                    <textarea class="textfield w-input form-error-sahis" rows="2" name="SenderAddress" maxlength="200"></textarea>
                                     <span asp-validation-for="SenderAddress" class="text-danger"></span>
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                     <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Fatura Adresi", "Invoice Address", lang):</label>
-                                    <textarea class="textfield w-input form-error-sahis" rows="2" asp-for="InvoiceAddress" maxlength="200"></textarea>
+                                    <textarea class="textfield w-input form-error-sahis" rows="2" name="InvoiceAddress" maxlength="200"></textarea>
                                     <span asp-validation-for="InvoiceAddress" class="text-danger"></span>
                                 </div>
                                 <div class="col-12 mt-3 margin_bottom">
@@ -291,27 +291,27 @@
 
                                         <div class="col-xs-12 col-sm-12 col-md-6 margin_bottom ">
                                             <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Firma Adı", "Company Name", lang):</label>
-                                            <input class="textfield w-input" maxlength="100" asp-for="CompanyName" type="text">
+                                            <input class="textfield w-input" maxlength="100" name="CompanyName" type="text">
                                             <span asp-validation-for="CompanyName" class="text-danger"></span>
                                         </div>
                                         <div class="col-xs-12 col-sm-12 col-md-6">
                                             <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Firma Email", "Company Email", lang):</label>
-                                            <input class="textfield w-input" maxlength="100" type="text" asp-for="CompanyEmail">
+                                            <input class="textfield w-input" maxlength="100" type="text" name="CompanyEmail">
                                             <span asp-validation-for="CompanyEmail" class="text-danger"></span>
                                         </div>
                                         <div class="col-xs-12 col-sm-12 col-md-6 margin_bottom">
                                             <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Vergi Dairesi", "Tax Office", lang):</label>
-                                            <input class="textfield w-input" maxlength="50" asp-for="TaxOffice" type="text">
+                                            <input class="textfield w-input" maxlength="50" name="TaxOffice" type="text">
                                             <span asp-validation-for="TaxOffice" class="text-danger"></span>
                                         </div>
                                         <div class="col-xs-12 col-sm-12 col-md-6">
                                             <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Vergi No", "Tax Number", lang):</label>
-                                            <input class="textfield w-input" maxlength="40" asp-for="TaxNumber" name="TaxNumber" type="text">
+                                            <input class="textfield w-input" maxlength="40" name="TaxNumber" name="TaxNumber" type="text">
                                             <span asp-validation-for="TaxNumber" class="text-danger"></span>
                                         </div>
                                         <div class="col-xs-12 col-sm-12 col-md-6">
                                             <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Firma Telefonu", "Company Phone", lang):</label>
-                                            <input class="textfield w-input" id="compPhone" maxlength="50" asp-for="CompanyPhone" name="CompanyPhone" type="text">
+                                            <input class="textfield w-input" id="compPhone" maxlength="50" name="CompanyPhone" name="CompanyPhone" type="text">
                                         </div>
                                         @*<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
                                                 <label class="field-label">@Localization.Get("Firma Fax", "Company Fax", lang):</label>
@@ -343,7 +343,7 @@
                             <div class="row margin_bottom">
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="text-align:center">
                                     <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" asp-for="TermsAndConditions">
+                                        <input type="checkbox" class="custom-control-input" name="TermsAndConditions" id="TermsAndConditions">
                                         <label class="custom-control-label" for="TermsAndConditions">  <a href="@(Constants.GetURL(Enums.Routing.KullanimKosullari, lang))" target="_blank">@Localization.Get("Üyelik Sözleşmesini okudum, kabul ediyorum", "I have read the membership agreement, I accept", lang) </a></label>
                                     </div>
                                     <span asp-validation-for="TermsAndConditions" class="text-danger"></span>
