@@ -5,6 +5,7 @@
     ViewBag.Title = Localization.Get("Giriş Yap", "Login", lang);
     Layout = "_Layout";
 }
+
 @section Style{
     <style>
         .cc-window {
@@ -57,10 +58,14 @@
 
                     <div class="text-right">
                         <div>
-                            <fb:login-button size="large" scope="public_profile,email" onlogin="checkLoginState();">
+                           @* <fb:login-button size="large" scope="public_profile,email" onlogin="checkLoginState();">
                                 @Localization.Get("Facebook ile Giriş Yap", "Continue with Facebook", lang)
                             </fb:login-button>
                             <div id="fberror" style="color:red; display:none;"> @ViewBag.FacebookLoginError</div>
+                            *@
+                       
+                            <div id="fb-root"></div>
+                           <div class="fb-login-button" data-width="" data-size="" data-button-type="" data-layout="" data-auto-logout-link="true" data-use-continue-as="false"></div>
                         </div>
                         <div>
                             <a class="f-r m-t-100-2" href="@Constants.GetURL((int)Enums.Routing.SifremiUnuttum, lang)">@Localization.Get("Şifremi Unuttum", "I forgot my password", lang)</a>
@@ -85,27 +90,31 @@
 </div>
 
 @section Scripts {
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/tr_TR/sdk.js#xfbml=1&version=v17.0&appId=784471912075991&autoLogAppEvents=1" nonce="bXvtLCYL"></script>
+
     <script>
 
     $(".cc-window .close").click(function () { $(".cc-window").hide(); });
 
     FB.getLoginStatus(function (response) {
-        statusChangeCallback(response);
+         statusChangeCallback(response);
     });
 
     function statusChangeCallback(response) {
+          
         if (response.status === 'connected') {
             testAPI();
         }
     }
 
-    function checkLoginState() {
+    function checkLoginState() {  
         FB.getLoginStatus(function (response) {
             statusChangeCallback(response);
         });
     }
 
     function testAPI() {
+        console.log("asdadsasdasdadsadas111");
             var hasError = false;
             FB.api('/me/permissions', function (response) {
                 var declined = [];
@@ -130,11 +139,13 @@
 
 
         function saveUserData(userInfo) {
+            console.log("asdadsasdasdadsadas25555");
+
             var data = { OAuth_Uid: userInfo.id, Name: userInfo.name, Email: userInfo.email, PictureUrl: userInfo.picture.data.url };
         $.post('/Account/FBLogin', {
             oauth_provider: @Html.Raw((int)OauthProviders.Facebook), userData: data
         }, function (response) {
-
+            console.log("ressss",response)
                 if (response != undefined && response.type == 1) {
                     alert(response.message);
                 }

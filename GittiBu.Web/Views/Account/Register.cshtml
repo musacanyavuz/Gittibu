@@ -124,7 +124,7 @@
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                                     <label class="field-label"><span class="text-danger">*</span> @Localization.Get("Telefon Numarası", "Phone Number", lang):</label>
-                                    <input class="textfield w-input" data-val="true" maxlength="100" type="text" id="phone" name="MobilePhone" data-val-intlTelNumber="asdqwdqwdasd">
+                                    <input class="textfield w-input" data-val="true"  maxlength="100" type="text" id="phone" name="MobilePhone" data-val-intlTelNumber="asdqwdqwdasd">
                                     <span asp-validation-for="MobilePhone" class="text-danger"></span>
                                     <input class="textfield w-input" maxlength="100" name="" type="hidden" id="hdnPhone">
                                 </div>
@@ -459,11 +459,11 @@
                 }
             }
 
-            $("#phone").rules("add", { phoneNumberControl: true });
-                $("#phone").mask("+99 (999) 999-9999");
-                $("#phone").mask("+9 (999) 999-9999");
-            //$("#workPhone").mask("+99 (999) 999-9999");
-            $("#compPhone").mask("+99 (999) 999-9999");
+            //    $("#phone").rules("add", { phoneNumberControl: true });
+            //    $("#phone").mask("+9 (999) 999-9999");
+            //    $("#phone").mask("+99 (999) 999-9999");
+            ////$("#workPhone").mask("+99 (999) 999-9999");
+            //$("#compPhone").mask("+99 (999) 999-9999");
             //$("#birthDay").mask("99/99/9999");
             //loadDistricts(parseInt($('#city').val()));
         });
